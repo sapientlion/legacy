@@ -74,9 +74,13 @@ class UserController implements IUserController
 
 		$stmt = $this->dbh->prepare("INSERT INTO `user` (`username`, `email`, `password`) VALUES (':username', ':email', ':password')");
 
-		$stmt->bindParam(':username', $this->user->getUsername());
-		$stmt->bindParam(':email', $this->user->getEmail());
-		$stmt->bindParam(':password', $this->user->getPass());
+		$username = $this->user->getUsername();
+		$email = $this->user->getEmail();
+		$password = $this->user->getPass();
+
+		$stmt->bindParam(':username', $username);
+		$stmt->bindParam(':email', $email);
+		$stmt->bindParam(':password', $password);
 		
 		$result = $stmt->execute();
 
