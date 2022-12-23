@@ -72,7 +72,7 @@ class UserController implements IUserController
 			return false;
 		}
 
-		$stmt = $this->dbh->prepare("INSERT INTO `user` (`username`, `email`, `password`) VALUES (':username', ':email', ':password')");
+		$stmt = $this->dbh->prepare("INSERT INTO user (username, email, password) VALUES (:username, :email, :password)");
 
 		$username = $this->user->getUsername();
 		$email = $this->user->getEmail();
