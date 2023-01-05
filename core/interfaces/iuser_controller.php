@@ -4,8 +4,8 @@ interface IUserController
 {
 	public function create() : bool;
 	public function read() : bool;
-	public function update() : bool;
-	public function delete() : bool;
+	public function update(string $currentUsername) : bool;
+	public function delete(string $currentUsername) : bool;
 	public function signIn() : bool;
 	public function signOut() : bool;
 }

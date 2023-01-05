@@ -90,24 +90,28 @@ class UserController implements IUserController
 	/**
 	 * Update preceding user account by supplying it with fresh data.
 	 *
+	 * @param  string $currentUsername user name that is currently used by a signed-in account.
 	 * @return bool TRUE on success or FALSE on failure.
 	 * @throws PDOException — On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	private function doUpdate() : bool
+	private function doUpdate(string $currentUsername) : bool
 	{
 		if($this->check() !== 0)
 		{
 			return false;
 		}
 
+		$stmt = $this->dbh->prepare("UPDATE user SET username = :username, email = :email, password = :password 
+		WHERE username = :current_username");
+
 		$username = $this->user->getUsername();
 		$email = $this->user->getEmail();
 		$password = $this->user->getPass();
 
-		$stmt = $this->dbh->prepare("UPDATE user SET 
-			username = " . $username . 
-			" email = " . $email . 
-			" password = " . $password . "WHERE username = " . $username);
+		$stmt->bindParam(':username', $username);
+		$stmt->bindParam(':current_username', $currentUsername);
+		$stmt->bindParam(':email', $email);
+		$stmt->bindParam(':password', $password);
 
 		//
 		// Reflect all user account changes on $_SESSION variables.
@@ -127,17 +131,21 @@ class UserController implements IUserController
 	/**
 	 * Remove user account from database.
 	 *
+	 * @param  string $currentUsername user name that is currently used by a signed-in account.
 	 * @return bool TRUE on success or FALSE on failure.
 	 * @throws PDOException — On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	private function doDelete() : bool
+	private function doDelete(string $currentUsername) : bool
 	{
 		if($this->check() != 0)
 		{
 			return false;
 		}
 
-		$stmt = $this->dbh->prepare("DELETE FROM user WHERE user = " . $this->user->getUsername());
+		$stmt = $this->dbh->prepare("DELETE FROM user WHERE username = :username");
+
+		$stmt->bindParam(':username', $currentUsername);
+
 		$result = $stmt->execute();
 		
 		return $result;
@@ -172,8 +180,10 @@ class UserController implements IUserController
 		//
 		if($this->checkUserName() === 1)
 		{
-			$stmt = $this->dbh->prepare("SELECT password FROM user WHERE username = " . $this->user->getUsername());
+			$stmt = $this->dbh->prepare("SELECT password FROM user WHERE username = :username");
+			$username = $this->user->getUsername();
 
+			$stmt->bindParam(':username', $username);
 			$stmt->execute();
 
 			$result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -186,8 +196,10 @@ class UserController implements IUserController
 				return false;
 			}
 
-			$stmt = $this->dbh->prepare("SELECT username, email, password FROM user WHERE username = " . $this->user->getUsername());
+			$stmt = $this->dbh->prepare("SELECT username, email, password FROM user WHERE username = :username");
+			$username = $this->user->getUsername();
 
+			$stmt->bindParam(':username', $username);
 			$stmt->execute();
 			$this->set($stmt);
 
@@ -199,7 +211,10 @@ class UserController implements IUserController
 		//
 		if($this->checkEmail() === 1)
 		{
-			$stmt = $this->dbh->prepare("SELECT password FROM user WHERE email = " . $this->user->getEmail());
+			$stmt = $this->dbh->prepare("SELECT password FROM user WHERE email = :email");
+			$email = $this->user->getEmail();
+
+			$stmt->bindParam(':email', $email);
 			$stmt->execute();
 
 			$result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -212,8 +227,9 @@ class UserController implements IUserController
 				return false;
 			}
 
-			$stmt = $this->dbh->prepare("SELECT username, email, password FROM user WHERE email = " . $this->user->getEmail());
+			$stmt = $this->dbh->prepare("SELECT username, email, password FROM user WHERE email = :email");
 
+			$stmt->bindParam(':email', $email);
 			$stmt->execute();
 			$this->set($stmt);
 
@@ -274,14 +290,15 @@ class UserController implements IUserController
 	/**
 	 * A method wrapper used for user account update in DB.
 	 *
+	 * @param  string $currentUsername user name that is currently used by a signed-in account.
 	 * @return bool TRUE on success or FALSE on failure.
 	 * @throws PDOException — On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	public function update() : bool
+	public function update(string $currentUsername) : bool
 	{
 		try
 		{
-			$result = $this->doUpdate();
+			$result = $this->doUpdate($currentUsername);
 
 			return $result;
 		}
@@ -296,14 +313,15 @@ class UserController implements IUserController
 	/**
 	 * A method wrapper used for user account removal from DB.
 	 *
+	 * @param  string $currentUsername user name that is currently used by a signed-in account.
 	 * @return bool TRUE on success or FALSE on failure.
 	 * @throws PDOException — On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	public function delete() : bool
+	public function delete(string $currentUsername) : bool
 	{
 		try
 		{
-			$result = $this->doDelete();
+			$result = $this->doDelete($currentUsername);
 
 			return $result;
 		}
@@ -427,12 +445,12 @@ class UserController implements IUserController
 
 		if(isset($_GET['update'])) 
 		{
-			$userController->update();
+			$userController->update($_SESSION['UserName']);
 			header('Location: ../../update.php');
 		}
 
 		if(isset($_GET['delete'])) {
-			$userController->delete();
+			$userController->delete($_SESSION['UserName']);
 			$userController->signOut();
 			header('Location: ../../index.php');
 		}
