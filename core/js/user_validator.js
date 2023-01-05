@@ -71,7 +71,7 @@ class UserController
 	 * @param {int} passwordMinLength minimal password length.
 	 * @param {int} passwordMaxLength maximal password length.
 	 */
-	constructor(usernameLength = 24, emailLength = 255, passwordMinLength = 5, passwordMaxLength = 16)
+	constructor(usernameLength = 24, emailLength = 255, passwordMinLength = 8, passwordMaxLength = 16)
 	{
 		this.usernameLength = usernameLength;
 		this.emailLength = emailLength;
