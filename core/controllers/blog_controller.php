@@ -44,8 +44,13 @@ class BlogController implements IBlogController
 		$author = $this->post->author;
 		$content = $this->post->content;
 
-		$stmt = $this->dbh->prepare("UPDATE post SET title = " . $title . " author = " . $author . " content = " . 
-		$content . "WHERE id = " . $id);
+		$stmt = $this->dbh->prepare("UPDATE post SET title = :title, author = :author, content = :content WHERE id = :id");
+
+		$stmt->bindParam(':title', $title);
+		$stmt->bindParam(':author', $author);
+		$stmt->bindParam(':content', $content);
+		$stmt->bindParam(':id', $id);
+
 		$result = $stmt->execute();
 
 		return $result;
@@ -60,7 +65,10 @@ class BlogController implements IBlogController
 	 */
 	private function doDelete(int $id) : bool
 	{
-		$stmt = $this->dbh->prepare("DELETE FROM post WHERE id = " . $id);
+		$stmt = $this->dbh->prepare("DELETE FROM post WHERE id = :id");
+
+		$stmt->bindParam(':id', $id);
+
 		$result = $stmt->execute();
 
 		return $result;
@@ -96,7 +104,7 @@ class BlogController implements IBlogController
 	 */
 	public function define(Post $post) : Post
 	{
-		return $this->$post = $post;
+		return $this->post = $post;
 	}
 	
 	/**
@@ -133,7 +141,9 @@ class BlogController implements IBlogController
 	{
 		try
 		{
-			$stmt = $this->dbh->prepare("SELECT * FROM post WHERE id = " . $id);
+			$stmt = $this->dbh->prepare("SELECT * FROM post WHERE id = :id");
+
+			$stmt->bindParam(':id', $id);
 			$stmt->execute();
 			$result = $stmt->fetch();
 	
@@ -187,7 +197,10 @@ class BlogController implements IBlogController
 			//
 			// The following statement is incompatible with some of the SQL-based languages.
 			//
-			$stmt = $this->dbh->prepare("SELECT * FROM post WHERE id BETWEEN " . $from . " AND " . $to);
+			$stmt = $this->dbh->prepare("SELECT * FROM post WHERE id BETWEEN :from AND :to");
+
+			$stmt->bindParam(':from', $from);
+			$stmt->bindParam(':to', $to);
 			$stmt->execute();
 			$result = $stmt->fetchAll();
 	
