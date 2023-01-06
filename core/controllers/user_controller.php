@@ -13,21 +13,25 @@ class UserController implements IUserController
 {
 	private PDO $dbh;
 	private User $user;
-
-	private function checkUserName() : int
+	
+	/**
+	 * Find matching user account names in DB.
+	 *
+	 * @param  string $username a user account name to check.
+	 * @return int Total number of matching entries found in DB.
+	 */
+	private function tryToFindMatchingUserNames(string $username = '') : int
 	{
-		$stmt = $this->dbh->prepare("SELECT username FROM user");
-		$stmt->execute();
-		$result = $stmt->fetchAll();
-		$result = count($result);
+		$stmt = $this->dbh->prepare("SELECT username FROM user WHERE username = :username");
 
-		return $result;
-	}
+		if(empty($username))
+		{
+			$username = $this->user->getUsername();
+		}
 
-	private function checkEmail() : int
-	{
-		$stmt = $this->dbh->prepare("SELECT email FROM user");
+		$stmt->bindParam(':username', $username);
 		$stmt->execute();
+
 		$result = $stmt->fetchAll();
 		$result = count($result);
 
@@ -35,39 +39,70 @@ class UserController implements IUserController
 	}
 	
 	/**
-	 * A method wrapper which combines both checkUserName() and checkEmail() methods into one. It is used for searching of
-	 * preceding data entries (by username or by email) in DB for duplicate prevention.
+	 * Find matching user account emails in DB.
 	 *
-	 * @return int total number of existing user accounts that have identical credentials.
+	 * @param  string $email an email address to check.
+	 * @return int Total number of matching entries found in DB.
 	 */
-	private function check() : int
+	private function tryToFindMatchingEmails(string $email = '') : int
 	{
-		$num_of_rows = $this->checkUserName();
+		$stmt = $this->dbh->prepare("SELECT email FROM user WHERE email = :email");
 
-		if($num_of_rows != 0)
+		if(empty($email))
 		{
-			return $num_of_rows;
+			$email = $this->user->getEmail();
 		}
 
-		$num_of_rows = $this->checkEmail();
+		$stmt->bindParam(':email', $email);
+		$stmt->execute();
 
-		if($num_of_rows != 0)
+		$result = $stmt->fetchAll();
+		$result = count($result);
+
+		return $result;
+	}
+	
+	/**
+	 * Validate all given user credentials.
+	 *
+	 * @return bool TRUE on success or FALSE on failure.
+	 */
+	private function validate() : bool
+	{
+		$username = $this->user->getUsername();
+		$username_len = strlen($username);
+
+		//
+		// Check user name string length.
+		//
+		if($username_len <= 0 || $username_len > DATA_USER_NAME_LENGTH)
 		{
-			return $num_of_rows;
+			return false;
 		}
 
-		return 0;
+		$email = $this->user->getEmail();
+		$email_len = strlen($email);
+
+		//
+		// Check email string length.
+		//
+		if($email_len <= 0 || $email_len > DATA_USER_EMAIL_LENGTH)
+		{
+			return false;
+		}
+
+		return true;
 	}
 		
 	/**
 	 * Create a new user account entry in database.
 	 *
 	 * @return bool TRUE on success or FALSE on failure.
-	 * @throws PDOException — On error if PDO::ERRMODE_EXCEPTION option is true.
+	 * @throws PDOException On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
 	private function doCreate() : bool
 	{
-		if($this->check() != 0)
+		if(!$this->validate() || $this->tryToFindMatchingEntries() > 0)
 		{
 			return false;
 		}
@@ -96,7 +131,7 @@ class UserController implements IUserController
 	 */
 	private function doUpdate(string $currentUsername) : bool
 	{
-		if($this->check() !== 0)
+		if(!$this->validate() || $this->tryToFindMatchingUserNames() > 1)
 		{
 			return false;
 		}
@@ -137,7 +172,7 @@ class UserController implements IUserController
 	 */
 	private function doDelete(string $currentUsername) : bool
 	{
-		if($this->check() != 0)
+		if($this->tryToFindMatchingUserNames() > 1)
 		{
 			return false;
 		}
@@ -178,7 +213,7 @@ class UserController implements IUserController
 		//
 		// Sign user in when user name is supplied via respective form input field.
 		//
-		if($this->checkUserName() === 1)
+		if($this->tryToFindMatchingUserNames() === 1)
 		{
 			$stmt = $this->dbh->prepare("SELECT password FROM user WHERE username = :username");
 			$username = $this->user->getUsername();
@@ -209,7 +244,7 @@ class UserController implements IUserController
 		//
 		// Sign user in when email address is supplied via respective form input field.
 		//
-		if($this->checkEmail() === 1)
+		if($this->tryToFindMatchingEmails() === 1)
 		{
 			$stmt = $this->dbh->prepare("SELECT password FROM user WHERE email = :email");
 			$email = $this->user->getEmail();
@@ -257,7 +292,7 @@ class UserController implements IUserController
 	{
 		return $this->user = $user;
 	}
-	
+
 	/**
 	 * Create a new user account.
 	 *
@@ -331,6 +366,30 @@ class UserController implements IUserController
 
 			return false;
 		}
+	}
+
+	/**
+	 * tryToFindMatchingEntries
+	 *
+	 * @param  string $username a user account name to check.
+	 * @param  string $email an email address to check.
+	 * @return int Total number of matching entries found in DB.
+	 */
+	public function tryToFindMatchingEntries(string $username = '', string $email = '') : int
+	{
+		$numOfMatchingRows = 0;
+
+		if($numOfMatchingRows = $this->tryToFindMatchingUserNames($username) > 0)
+		{
+			return $numOfMatchingRows;
+		}
+
+		if($numOfMatchingRows = $this->tryToFindMatchingEmails($email) > 0)
+		{
+			return $numOfMatchingRows;
+		}
+
+		return $numOfMatchingRows;
 	}
 	
 	/**
