@@ -136,7 +136,7 @@ class UserController implements IUserController
 	 */
 	private function doUpdate(string $currentUsername) : bool
 	{
-		if(!$this->validate() || $this->tryToFindMatchingUserNames() > 1)
+		if(!$this->validate() || $this->tryToFindMatchingEmails() > 0)
 		{
 			return false;
 		}
