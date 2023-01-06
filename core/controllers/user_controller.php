@@ -12,7 +12,7 @@ require_once(SITE_ROOT . '/core/models/user.php');
 class UserController implements IUserController 
 {
 	private PDO $dbh;
-	private User $user;
+	private ?User $user;
 	
 	/**
 	 * Find matching user account names in DB.
@@ -274,8 +274,15 @@ class UserController implements IUserController
 		return false;
 	}
 
-	public function __construct()
+	public function __construct(User $user = NULL)
 	{
+		$this->user = $user;
+
+		if(is_null($this->user))
+		{
+			return;
+		}
+
 		try
 		{
 			$this->dbh = new PDO('mysql:host=' . DB_HOSTNAME . ';dbname=' . DB_NAME, DB_USERNAME, DB_PASSWORD);
@@ -286,11 +293,6 @@ class UserController implements IUserController
 		{
 			print 'Error!: ' . $e->getMessage() . '<br/>';
 		}
-	}
-
-	public function define(User $user) : User
-	{
-		return $this->user = $user;
 	}
 
 	/**
