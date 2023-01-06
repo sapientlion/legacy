@@ -210,7 +210,7 @@ class UserController implements IUserController
 	 */
 	private function doDelete(string $currentUsername) : bool
 	{
-		if($this->tryToFindMatchingUserNames() > 1)
+		if($this->tryToFindMatchingUserNames() !== 1)
 		{
 			return false;
 		}
