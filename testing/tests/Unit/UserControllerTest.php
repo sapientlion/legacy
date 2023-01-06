@@ -15,31 +15,17 @@ class UserControllerTest extends \Codeception\Test\Unit
 {
 
 	private UserController $userController;
-	private User $user;
     protected UnitTester $tester;
 
     protected function _before()
     {
-		$this->userController = new UserController();
+		$this->userController = new UserController(
+			new User('SapientLion', 'hello@world.org', '1234567890'));
     }
 
     // tests
-    public function testUserDefinition()
-    {
-		$this->user = new User('SapientLion', 'hello@world.org', '1234567890');
-		
-		$result = $this->userController->define($this->user);
-
-		$this->assertIsObject($result);
-		$this->assertEquals($result, $this->user);
-    }
-
 	public function testUserCreation()
 	{
-		$this->user = new User('SapientLion', 'hello@world.org', '1234567890');
-
-		$this->userController->define($this->user);
-
 		$result = $this->userController->create();
 		
 		$this->assertIsBool($result);
@@ -48,9 +34,8 @@ class UserControllerTest extends \Codeception\Test\Unit
 
 	public function testUserUpdate()
 	{
-		$this->user = new User('LionTheSapient', 'hello@world.org', '1234567890');
-
-		$this->userController->define($this->user);
+		$this->userController = new UserController(
+			new User('LionTheSapient', 'hello@world.org', '1234567890'));
 
 		$result = $this->userController->update('SapientLion');
 		
@@ -60,9 +45,8 @@ class UserControllerTest extends \Codeception\Test\Unit
 
 	public function testUserRemoval()
 	{
-		$this->user = new User('LionTheSapient', 'hello@world.org', '1234567890');
-
-		$this->userController->define($this->user);
+		$this->userController = new UserController(
+			new User('LionTheSapient', 'hello@world.org', '1234567890'));
 
 		$result = $this->userController->delete('LionTheSapient');
 		

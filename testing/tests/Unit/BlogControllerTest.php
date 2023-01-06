@@ -24,10 +24,9 @@ class BlogControllerTest extends \Codeception\Test\Unit
 
     protected function _before()
     {
-		$user = new User('SapientLion', 'hello@world.org', '1234567890');
-		$userController = new UserController(); 
-
-		$userController->define($user);
+		$userController = new UserController(
+			new User('SapientLion', 'hello@world.org', '1234567890'));
+			
 		$userController->create();
 
 		$this->blogController = new BlogController();
