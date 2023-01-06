@@ -29,8 +29,7 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 
 		<?php
 
-		if(!isset($_SESSION['UserName']) || empty($_SESSION['UserName']) || 
-		SITE_DEBUG && !isset($_GET['UserName']) && empty($_GET['UserName']))
+		if(!isset($_SESSION['UserName']) || empty($_SESSION['UserName']))
 		{
 			print '<form action="core/controllers/user_controller.php?signup" method="post">
 			<label for="username">Username:</label><br>
