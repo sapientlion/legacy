@@ -147,22 +147,45 @@ class UserController implements IUserController
 		if(!empty($password) || !empty($confirmationPassword))
 		{
 			$password = $this->validatePassword();
-		}
 
-		if(empty($password))
-		{
-			return false;
+			if(empty($password))
+			{
+				return false;
+			}
 		}
 
 		$username = $this->user->getUsername();
 		$email = $this->user->getEmail();
-		$stmt = $this->dbh->prepare("UPDATE user SET username = :username, email = :email, password = :password 
+
+		if(!empty($password))
+		{
+			$stmt = $this->dbh->prepare("UPDATE user SET username = :username, email = :email, password = :password 
+			WHERE username = :current_username");
+	
+			$stmt->bindParam(':username', $username);
+			$stmt->bindParam(':current_username', $currentUsername);
+			$stmt->bindParam(':email', $email);
+			$stmt->bindParam(':password', $password);
+	
+			//
+			// Reflect all user account changes on $_SESSION variables.
+			//
+			if($stmt->execute())
+			{
+				$_SESSION['UserName'] = $username;
+				$_SESSION['Email'] = $email;
+				$_SESSION['Password'] = $password;
+	
+				return true;
+			}
+		}
+
+		$stmt = $this->dbh->prepare("UPDATE user SET username = :username, email = :email 
 		WHERE username = :current_username");
 
 		$stmt->bindParam(':username', $username);
 		$stmt->bindParam(':current_username', $currentUsername);
 		$stmt->bindParam(':email', $email);
-		$stmt->bindParam(':password', $password);
 
 		//
 		// Reflect all user account changes on $_SESSION variables.
@@ -171,7 +194,6 @@ class UserController implements IUserController
 		{
 			$_SESSION['UserName'] = $username;
 			$_SESSION['Email'] = $email;
-			$_SESSION['Password'] = $password;
 
 			return true;
 		}

@@ -38,12 +38,8 @@ class UserTest extends \Codeception\Test\Unit
 		$this->assertIsString($result);
 		$this->assertEquals($result, $email);
 
-		$result = $this->user->getPass();
+		$result = $this->user->getPassword();
 
 		$this->assertIsString($result);
-		//
-		// Passwords shouldn't be equal because password hashing is used during object initialization.
-		//
-		$this->assertNotEquals($result, $password);
     }
 }

@@ -20,7 +20,7 @@ class UserControllerTest extends \Codeception\Test\Unit
     protected function _before()
     {
 		$this->userController = new UserController(
-			new User('SapientLion', 'hello@world.org', '1234567890'));
+			new User('SapientLion', 'hello@world.org', '1234567890', '1234567890'));
     }
 
     // tests
@@ -35,7 +35,7 @@ class UserControllerTest extends \Codeception\Test\Unit
 	public function testUserUpdate()
 	{
 		$this->userController = new UserController(
-			new User('LionTheSapient', 'hello@world.org', '1234567890'));
+			new User('LionTheSapient', 'hello@world.org'));
 
 		$result = $this->userController->update('SapientLion');
 		
