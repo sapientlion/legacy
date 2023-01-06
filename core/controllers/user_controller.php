@@ -107,11 +107,16 @@ class UserController implements IUserController
 			return false;
 		}
 
-		$stmt = $this->dbh->prepare("INSERT INTO user (username, email, password) VALUES (:username, :email, :password)");
+		$password = $this->validatePassword($this->user->getPassword(), $this->user->getConfirmationPassword());
+
+		if(empty($password))
+		{
+			return false;
+		}
 
 		$username = $this->user->getUsername();
 		$email = $this->user->getEmail();
-		$password = $this->user->getPass();
+		$stmt = $this->dbh->prepare("INSERT INTO user (username, email, password) VALUES (:username, :email, :password)");
 
 		$stmt->bindParam(':username', $username);
 		$stmt->bindParam(':email', $email);
@@ -136,12 +141,23 @@ class UserController implements IUserController
 			return false;
 		}
 
-		$stmt = $this->dbh->prepare("UPDATE user SET username = :username, email = :email, password = :password 
-		WHERE username = :current_username");
+		$password = $this->user->getPassword();
+		$confirmationPassword = $this->user->getConfirmationPassword();
+
+		if(!empty($password) || !empty($confirmationPassword))
+		{
+			$password = $this->validatePassword();
+		}
+
+		if(empty($password))
+		{
+			return false;
+		}
 
 		$username = $this->user->getUsername();
 		$email = $this->user->getEmail();
-		$password = $this->user->getPass();
+		$stmt = $this->dbh->prepare("UPDATE user SET username = :username, email = :email, password = :password 
+		WHERE username = :current_username");
 
 		$stmt->bindParam(':username', $username);
 		$stmt->bindParam(':current_username', $currentUsername);
@@ -215,8 +231,18 @@ class UserController implements IUserController
 		//
 		if($this->tryToFindMatchingUserNames() === 1)
 		{
-			$stmt = $this->dbh->prepare("SELECT password FROM user WHERE username = :username");
+			$password = $this->user->getPassword();
+
+			//
+			// Given password must comply with currently set limits.
+			//
+			if(empty($this->validatePassword($password, $password)))
+			{
+				return false;
+			}
+
 			$username = $this->user->getUsername();
+			$stmt = $this->dbh->prepare("SELECT password FROM user WHERE username = :username");
 
 			$stmt->bindParam(':username', $username);
 			$stmt->execute();
@@ -226,7 +252,7 @@ class UserController implements IUserController
 			//
 			// Given password might be different than the one saved in database.
 			//
-			if($this->user->getPass() !== $result)
+			if(!password_verify($this->user->getPassword(), $result))
 			{
 				return false;
 			}
@@ -257,7 +283,7 @@ class UserController implements IUserController
 			//
 			// Given password might be different than the one saved in database.
 			//
-			if($this->user->getPass() !== $result)
+			if($this->user->getPassword() !== $result)
 			{
 				return false;
 			}
@@ -273,7 +299,13 @@ class UserController implements IUserController
 
 		return false;
 	}
-
+	
+	/**
+	 * __construct
+	 *
+	 * @param  User $user user credentials as an object.
+	 * @return void on failure.
+	 */
 	public function __construct(User $user = NULL)
 	{
 		$this->user = $user;
@@ -392,6 +424,60 @@ class UserController implements IUserController
 		}
 
 		return $numOfMatchingRows;
+	}
+	
+	/**
+	 * Validate given password.
+	 *
+	 * @param  string $password password to check.
+	 * @param  string $confirmationPassword confirmation password for verification.
+	 * @return string Returns the hashed password.
+	 */
+	public function validatePassword(string $password = '', string $confirmationPassword = '') : string
+	{
+		//
+		// If password is empty, switch to the one provided in $user object. Return an empty string on failure.
+		//
+		if(empty($password))
+		{
+			$password = $this->user->getPassword();
+
+			if(empty($password))
+			{
+				return '';
+			}
+		}
+
+		//
+		// The same principle is applied here as in the previous example.
+		//
+		if(empty($confirmationPassword))
+		{
+			$confirmationPassword = $this->user->getConfirmationPassword();
+
+			if(empty($confirmationPassword))
+			{
+				return '';
+			}
+		}
+
+		//
+		// Return an empty string if passwords are mismatched.
+		//
+		if($password != $confirmationPassword)
+		{
+			return '';
+		}
+
+		//
+		// Given password mustn't exceed the current limits.
+		//
+		if(strlen($password) < DATA_USER_PASSWORD_MIN_LENGTH || strlen($password) > DATA_USER_PASSWORD_MAX_LENGTH)
+		{
+			return '';
+		}
+
+		return password_hash($password, PASSWORD_DEFAULT);
 	}
 	
 	/**

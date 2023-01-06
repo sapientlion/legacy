@@ -4,13 +4,15 @@ class User
 {
 	private string $username;
 	private string $email;
-	private string $pass;
+	private string $password;
+	private string $confirmationPassword;
 
-	public function __construct(string $username, string $email, string $pass)
+	public function __construct(string $username, string $email, string $password = '', string $confirmationPassword = '')
 	{
 		$this->username = htmlspecialchars($username);
 		$this->email = htmlspecialchars($email);
-		$this->pass = password_hash(htmlspecialchars($pass), PASSWORD_DEFAULT);
+		$this->password = htmlspecialchars($password);
+		$this->confirmationPassword = htmlspecialchars($confirmationPassword);
 	}
 
 	public function getUsername() : string
@@ -23,24 +25,14 @@ class User
 		return $this->email;
 	}
 
-	public function getPass() : string
+	public function getPassword() : string
 	{
-		return $this->pass;
+		return $this->password;
 	}
 
-	public function setUsername(string $username) : void
+	public function getConfirmationPassword() : string
 	{
-		$this->username = htmlspecialchars($username);
-	}
-
-	public function setEmail(string $email) : void
-	{
-		$this->email = htmlspecialchars($email);
-	}
-
-	public function setPass(string $pass) : void
-	{
-		$this->pass = password_hash(htmlspecialchars($pass), PASSWORD_DEFAULT);
+		return $this->confirmationPassword;
 	}
 }
 
