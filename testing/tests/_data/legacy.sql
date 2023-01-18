@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 22, 2022 at 03:12 PM
+-- Generation Time: Jan 18, 2023 at 03:01 PM
 -- Server version: 10.5.18-MariaDB
 -- PHP Version: 8.1.13
 
@@ -20,6 +20,19 @@ SET time_zone = "+00:00";
 --
 -- Database: `legacy`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `comment`
+--
+
+CREATE TABLE `comment` (
+  `id` int(11) NOT NULL,
+  `post` int(11) NOT NULL,
+  `author` varchar(24) NOT NULL,
+  `content` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
@@ -52,6 +65,14 @@ CREATE TABLE `user` (
 --
 
 --
+-- Indexes for table `comment`
+--
+ALTER TABLE `comment`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `comment_ibfk_1` (`post`),
+  ADD KEY `author` (`author`);
+
+--
 -- Indexes for table `post`
 --
 ALTER TABLE `post`
@@ -70,6 +91,12 @@ ALTER TABLE `user`
 --
 
 --
+-- AUTO_INCREMENT for table `comment`
+--
+ALTER TABLE `comment`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `post`
 --
 ALTER TABLE `post`
@@ -84,6 +111,13 @@ ALTER TABLE `user`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `comment`
+--
+ALTER TABLE `comment`
+  ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`post`) REFERENCES `post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`author`) REFERENCES `user` (`username`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `post`
