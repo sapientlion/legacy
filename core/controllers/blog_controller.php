@@ -22,14 +22,80 @@ class BlogController implements IBlogController
 			return false;
 		}
 
-		$stmt = $this->dbh->prepare("INSERT INTO post (title, author, content) VALUES (:title, :author, :content)");
+		//
+		// INSERT INTO post (title, author, content) VALUES (:title, :author, :content)
+		//
+		$string = "INSERT INTO " . 
+		DB_TABLE_BLOG_POST . " (" . 
+		DB_TABLE_BLOG_POST_TITLE . ", " . 
+		DB_TABLE_BLOG_POST_USER . ", " . 
+		DB_TABLE_BLOG_POST_CONTENT . ") VALUES (:" . 
+		DB_TABLE_BLOG_POST_TITLE . ", :" . 
+		DB_TABLE_BLOG_POST_USER . ", :" . 
+		DB_TABLE_BLOG_POST_CONTENT . ")";
 
-		$stmt->bindParam(':title', $this->post->title);
-		$stmt->bindParam(':author', $this->post->author);
-		$stmt->bindParam(':content', $this->post->content);
+		$stmt = $this->dbh->prepare($string);
+
+		$stmt->bindParam(':' . DB_TABLE_BLOG_POST_TITLE , $this->post->title);
+		$stmt->bindParam(':' . DB_TABLE_BLOG_POST_USER, $this->post->author);
+		$stmt->bindParam(':' . DB_TABLE_BLOG_POST_CONTENT, $this->post->content);
 
 		$result = $stmt->execute();
 
+		return $result;
+	}
+	
+	/**
+	 * Fetch a blog post from DB.
+	 *
+	 * @param  int $id identification number of a blog post.
+	 * @return array Filled with blog post data.
+	 */
+	private function doRead(int $id) : array
+	{
+		//
+		// SELECT * FROM post WHERE id = :id
+		//
+		$string = "SELECT * FROM " . 
+		DB_TABLE_BLOG_POST . " WHERE " . 
+		DB_TABLE_BLOG_POST_ID . " = :" . 
+		DB_TABLE_BLOG_POST_ID;
+
+		$stmt = $this->dbh->prepare($string);
+
+		$stmt->bindParam(':' . DB_TABLE_BLOG_POST_ID, $id);
+		$stmt->execute();
+		$result = $stmt->fetch();
+
+		return $result;
+	}
+	
+	/**
+	 * Fetch all blog posts from DB.
+	 *
+	 * @param  int $from ID to begin from.
+	 * @param  int $to ID to stop at.
+	 * @return array Of all known blog posts.
+	 */
+	private function doReadAll(int $from, int $to) : array
+	{
+		//
+		// The following statement is incompatible with some of the SQL-based languages.
+		//
+		// SELECT * FROM post WHERE id BETWEEN :from AND :to
+		//
+		$string = "SELECT * FROM " . 
+		DB_TABLE_BLOG_POST . " WHERE " . 
+		DB_TABLE_BLOG_POST_ID . " BETWEEN :from AND :to";
+		
+		$stmt = $this->dbh->prepare($string);
+
+		$stmt->bindParam(':from', $from);
+		$stmt->bindParam(':to', $to);
+		$stmt->execute();
+
+		$result = $stmt->fetchAll();
+	
 		return $result;
 	}
 	
@@ -47,19 +113,28 @@ class BlogController implements IBlogController
 			return false;
 		}
 
-		//
-		// TODO get rid of this and instead use an array of $_POST values.
-		//
 		$title = $this->post->title;
 		$author = $this->post->author;
 		$content = $this->post->content;
 
-		$stmt = $this->dbh->prepare("UPDATE post SET title = :title, author = :author, content = :content WHERE id = :id");
+		//
+		// UPDATE post SET title = :title, author = :author, content = :content WHERE id = :id
+		//
+		$string = "UPDATE " . 
+		DB_TABLE_BLOG_POST . " SET " . 
+		DB_TABLE_BLOG_POST_TITLE . " = :" . 
+		DB_TABLE_BLOG_POST_TITLE . ", " . 
+		DB_TABLE_BLOG_POST_USER . " = :" . 
+		DB_TABLE_BLOG_POST_USER . ", " . 
+		DB_TABLE_BLOG_POST_CONTENT . " = :" . 
+		DB_TABLE_BLOG_POST_CONTENT . " WHERE " . DB_TABLE_BLOG_POST_ID . " = :" . DB_TABLE_BLOG_POST_ID;
 
-		$stmt->bindParam(':title', $title);
-		$stmt->bindParam(':author', $author);
-		$stmt->bindParam(':content', $content);
-		$stmt->bindParam(':id', $id);
+		$stmt = $this->dbh->prepare($string);
+
+		$stmt->bindParam(':' . DB_TABLE_BLOG_POST_TITLE, $title);
+		$stmt->bindParam(':' . DB_TABLE_BLOG_POST_USER, $author);
+		$stmt->bindParam(':' . DB_TABLE_BLOG_POST_CONTENT, $content);
+		$stmt->bindParam(':' . DB_TABLE_BLOG_POST_ID, $id);
 
 		$result = $stmt->execute();
 
@@ -75,9 +150,17 @@ class BlogController implements IBlogController
 	 */
 	private function doDelete(int $id) : bool
 	{
-		$stmt = $this->dbh->prepare("DELETE FROM post WHERE id = :id");
+		//
+		// DELETE FROM post WHERE id = :id
+		//
+		$string = "DELETE FROM " . 
+		DB_TABLE_BLOG_POST . " WHERE " . 
+		DB_TABLE_BLOG_POST_ID . " = :" . 
+		DB_TABLE_BLOG_POST_ID;
 
-		$stmt->bindParam(':id', $id);
+		$stmt = $this->dbh->prepare($string);
+
+		$stmt->bindParam(':' . DB_TABLE_BLOG_POST_ID, $id);
 
 		$result = $stmt->execute();
 
@@ -145,12 +228,8 @@ class BlogController implements IBlogController
 	{
 		try
 		{
-			$stmt = $this->dbh->prepare("SELECT * FROM post WHERE id = :id");
+			$result = $this->doRead($id);
 
-			$stmt->bindParam(':id', $id);
-			$stmt->execute();
-			$result = $stmt->fetch();
-	
 			return $result;
 		}
 		catch(PDOException $e)
@@ -173,15 +252,7 @@ class BlogController implements IBlogController
 	{
 		try
 		{
-			//
-			// The following statement is incompatible with some of the SQL-based languages.
-			//
-			$stmt = $this->dbh->prepare("SELECT * FROM post WHERE id BETWEEN :from AND :to");
-
-			$stmt->bindParam(':from', $from);
-			$stmt->bindParam(':to', $to);
-			$stmt->execute();
-			$result = $stmt->fetchAll();
+			$result = $this->doReadAll($from, $to);
 	
 			return $result;
 		}
