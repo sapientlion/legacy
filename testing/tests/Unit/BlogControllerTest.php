@@ -6,19 +6,19 @@ namespace Tests\Unit;
 require_once(__DIR__ . '../../../../config.php');
 require_once(SITE_ROOT . '/core/controllers/blog_controller.php');
 require_once(SITE_ROOT . '/core/controllers/user_controller.php');
-require_once(SITE_ROOT . '/core/models/post.php');
+require_once(SITE_ROOT . '/core/models/blog_post.php');
 require_once(SITE_ROOT . '/core/models/user.php');
 
 use Tests\Support\UnitTester;
 use BlogController;
 use UserController;
-use Post;
+use BlogPost;
 use User;
 
 class BlogControllerTest extends \Codeception\Test\Unit
 {
 
-	private Post $post;
+	private BlogPost $post;
     protected UnitTester $tester;
 
     protected function _before()
@@ -33,7 +33,7 @@ class BlogControllerTest extends \Codeception\Test\Unit
 	public function testPostCreation()
 	{
 		$blogController = new BlogController(
-			new Post('Hello, World!', 'SapientLion', 'Hello, World?'));
+			new BlogPost('Hello, World!', 'SapientLion', 'Hello, World?'));
 		$result = $blogController->create();
 		
 		$this->assertIsBool($result);
@@ -43,7 +43,7 @@ class BlogControllerTest extends \Codeception\Test\Unit
 	public function testPostUpdate()
 	{
 		$blogController = new BlogController(
-			new Post('Hello, World?', 'SapientLion', 'Hello, World!', 1));
+			new BlogPost('Hello, World?', 'SapientLion', 'Hello, World!', 1));
 		$result = $blogController->update(1);
 		
 		$this->assertIsBool($result);
@@ -53,7 +53,7 @@ class BlogControllerTest extends \Codeception\Test\Unit
 	public function testPostRemoval()
 	{
 		$blogController = new BlogController(
-			new Post('Hello, World?', 'SapientLion', 'Hello, World!', 1));
+			new BlogPost('Hello, World?', 'SapientLion', 'Hello, World!', 1));
 		$result = $blogController->delete(1);
 		
 		$this->assertIsBool($result);
@@ -75,7 +75,7 @@ class BlogControllerTest extends \Codeception\Test\Unit
 		// Failure: title length is greater than given limit.
 		//
 		$result = $blogController->validate(
-			new Post($title, 'SapientLion', 'See?'));
+			new BlogPost($title, 'SapientLion', 'See?'));
 
 		$this->assertIsBool($result);
 		$this->assertEquals($result, false);
@@ -91,7 +91,7 @@ class BlogControllerTest extends \Codeception\Test\Unit
 		// Failure: author length is greater than given limit.
 		//
 		$result = $blogController->validate(
-			new Post('This is a test', $title, 'See?'));
+			new BlogPost('This is a test', $title, 'See?'));
 
 		$this->assertIsBool($result);
 		$this->assertEquals($result, false);
@@ -100,7 +100,7 @@ class BlogControllerTest extends \Codeception\Test\Unit
 		// Success.
 		//
 		$result = $blogController->validate(
-			new Post('This is a test', 'SapientLion', 'See?'));
+			new BlogPost('This is a test', 'SapientLion', 'See?'));
 
 		$this->assertEquals($result, true);
 	}
@@ -108,18 +108,18 @@ class BlogControllerTest extends \Codeception\Test\Unit
 	public function testBlogPostNumberFetching()
 	{
 		$blogController = new BlogController(
-			new Post('That Dark Side of the Luna', 'SapientLion', 
+			new BlogPost('That Dark Side of the Luna', 'SapientLion', 
 			'I wonder if someone`s still up there to play a song for me.'));
 			
 		$blogController->create();
 
 		$blogController = new BlogController(
-			new Post('The Bell That Divides...', 'SapientLion', 'I have high hopes for this project.'));
+			new BlogPost('The Bell That Divides...', 'SapientLion', 'I have high hopes for this project.'));
 			
 		$blogController->create();
 
 		$blogController = new BlogController(
-			new Post('Infinite River', 'SapientLion', 'No comment.'));
+			new BlogPost('Infinite River', 'SapientLion', 'No comment.'));
 			
 		$blogController->create();
 

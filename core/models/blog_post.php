@@ -1,6 +1,6 @@
 <?php
 
-class Post
+class BlogPost
 {
 	public int $id;
 	public string $title;

@@ -2,12 +2,12 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_once(SITE_ROOT . '/core/interfaces/iblog_controller.php');
-require_once(SITE_ROOT . '/core/models/post.php');
+require_once(SITE_ROOT . '/core/models/blog_post.php');
 
 class BlogController implements IBlogController
 {
 	private PDO $dbh;
-	private Post $post;
+	private BlogPost $post;
 	
 	/**
 	 * Create a new blog post.
@@ -173,7 +173,7 @@ class BlogController implements IBlogController
 	 * @return void
 	 * @throws PDOException On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	public function __construct(?Post $post = NULL)
+	public function __construct(?BlogPost $post = NULL)
 	{
 		if(is_null($post))
 		{
@@ -315,7 +315,7 @@ class BlogController implements IBlogController
 	*
 	* @return bool TRUE on success or FALSE on failure.
 	*/
-	public function validate(?Post $post = NULL) : bool
+	public function validate(?BlogPost $post = NULL) : bool
 	{
 		$blogPostTitle = '';
 		$blogPostAuthor = '';
@@ -416,7 +416,7 @@ class BlogController implements IBlogController
 		}
 
 		$blogController = new BlogController(
-			new Post($post[1], $post[2], $post[3]));
+			new BlogPost($post[1], $post[2], $post[3]));
 	
 		if(isset($_GET['create'])) 
 		{
