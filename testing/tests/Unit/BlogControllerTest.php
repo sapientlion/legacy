@@ -18,7 +18,6 @@ use User;
 class BlogControllerTest extends \Codeception\Test\Unit
 {
 
-	//private BlogController $blogController;
 	private Post $post;
     protected UnitTester $tester;
 
@@ -28,8 +27,6 @@ class BlogControllerTest extends \Codeception\Test\Unit
 			new User('SapientLion', 'hello@world.org', '1234567890', '1234567890'));
 			
 		$userController->create();
-
-		//$this->blogController = new BlogController();
     }
 
     // tests
