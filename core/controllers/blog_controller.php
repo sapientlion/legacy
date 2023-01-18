@@ -17,6 +17,11 @@ class BlogController implements IBlogController
 	 */
 	private function doCreate() : bool
 	{
+		if(!$this->validate())
+		{
+			return false;
+		}
+
 		$stmt = $this->dbh->prepare("INSERT INTO post (title, author, content) VALUES (:title, :author, :content)");
 
 		$stmt->bindParam(':title', $this->post->title);
@@ -37,6 +42,11 @@ class BlogController implements IBlogController
 	 */
 	private function doUpdate(int $id) : bool
 	{
+		if(!$this->validate())
+		{
+			return false;
+		}
+
 		//
 		// TODO get rid of this and instead use an array of $_POST values.
 		//
@@ -152,31 +162,6 @@ class BlogController implements IBlogController
 	}
 	
 	/**
-	 * Get total number of blog posts that exist in DB.
-	 *
-	 * @return int total number of preceding blog posts or 0 if nothing was found in DB.
-	 * @throws PDOException On error if PDO::ERRMODE_EXCEPTION option is true.
-	 */
-	public function getRowNum() : int
-	{
-		try
-		{
-			$stmt = $this->dbh->prepare("SELECT * FROM post");
-			$stmt->execute();
-			$result = $stmt->fetchAll();
-			$result = count($result);
-	
-			return $result;
-		}
-		catch(PDOException $e)
-		{
-			print 'Error!: ' . $e->getMessage() . '<br/>';
-
-			return 0;
-		}
-	}
-	
-	/**
 	 * Get all possible preceding blog posts within the given range.
 	 *
 	 * @param  int $from ID to begin from.
@@ -251,6 +236,82 @@ class BlogController implements IBlogController
 			print 'Error!: ' . $e->getMessage() . '<br/>';
 
 			return false;
+		}
+	}
+
+	/**
+	* Validate all given blog post data.
+	*
+	* @return bool TRUE on success or FALSE on failure.
+	*/
+	public function validate(?Post $post = NULL) : bool
+	{
+		$blogPostTitle = '';
+		$blogPostAuthor = '';
+		$blogPostContent = '';
+
+		//
+		// Always prioritize the local instance of the object.
+		//
+		if(!is_null($post))
+		{
+			$blogPostTitle = $post->title;
+			$blogPostAuthor = $post->author;
+			$blogPostContent = $post->content;
+		}
+		else
+		{
+			$blogPostTitle = $this->post->title;
+			$blogPostAuthor = $this->post->author;
+			$blogPostContent = $this->post->content;
+		}
+
+		$blogPostTitleLen = strlen($blogPostTitle);
+
+		if($blogPostTitleLen <= 0 || $blogPostTitleLen > DATA_BLOG_POST_TITLE_LENGTH)
+		{
+			return false;
+		}
+
+		$blogPostAuthorLen = strlen($blogPostAuthor);
+
+		if($blogPostAuthorLen <= 0 || $blogPostAuthorLen > DATA_BLOG_POST_USER_LENGTH)
+		{
+			return false;
+		}
+
+		$blogPostContentLen = strlen($blogPostContent);
+
+		if($blogPostContentLen <= 0 || $blogPostContentLen > DATA_BLOG_POST_CONTENT_LENGTH)
+		{
+			return false;
+		}
+
+		return true;
+	}
+	
+	/**
+	 * Get total number of blog posts that exist in DB.
+	 *
+	 * @return int total number of preceding blog posts or 0 if nothing was found in DB.
+	 * @throws PDOException On error if PDO::ERRMODE_EXCEPTION option is true.
+	 */
+	public function getRowNum() : int
+	{
+		try
+		{
+			$stmt = $this->dbh->prepare("SELECT * FROM post");
+			$stmt->execute();
+			$result = $stmt->fetchAll();
+			$result = count($result);
+	
+			return $result;
+		}
+		catch(PDOException $e)
+		{
+			print 'Error!: ' . $e->getMessage() . '<br/>';
+
+			return 0;
 		}
 	}
 	
