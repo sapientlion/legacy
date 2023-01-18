@@ -266,6 +266,14 @@ class BlogController implements IBlogController
 			$blogPostContent = $this->post->content;
 		}
 
+		//
+		// It's possible that these variables might end up being empty.
+		//
+		if(empty($blogPostTitle) || empty($blogPostAuthor) || empty($blogPostContent))
+		{
+			return false;
+		}
+
 		$blogPostTitleLen = strlen($blogPostTitle);
 
 		if($blogPostTitleLen <= 0 || $blogPostTitleLen > DATA_BLOG_POST_TITLE_LENGTH)
