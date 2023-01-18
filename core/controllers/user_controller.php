@@ -12,7 +12,7 @@ require_once(SITE_ROOT . '/core/models/user.php');
 class UserController implements IUserController 
 {
 	private PDO $dbh;
-	private ?User $user;
+	private User $user;
 	
 	/**
 	 * Find matching user account names in DB.
@@ -328,14 +328,14 @@ class UserController implements IUserController
 	 * @param  User $user user credentials as an object.
 	 * @return void on failure.
 	 */
-	public function __construct(User $user = NULL)
+	public function __construct(?User $user = NULL)
 	{
-		$this->user = $user;
-
-		if(is_null($this->user))
+		if(is_null($user))
 		{
 			return;
 		}
+
+		$this->user = $user;
 
 		try
 		{
