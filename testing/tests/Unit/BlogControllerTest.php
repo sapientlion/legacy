@@ -18,7 +18,7 @@ use User;
 class BlogControllerTest extends \Codeception\Test\Unit
 {
 
-	private BlogController $blogController;
+	//private BlogController $blogController;
 	private Post $post;
     protected UnitTester $tester;
 
@@ -29,27 +29,15 @@ class BlogControllerTest extends \Codeception\Test\Unit
 			
 		$userController->create();
 
-		$this->blogController = new BlogController();
+		//$this->blogController = new BlogController();
     }
 
     // tests
-    public function testPostDefinition()
-    {
-		$this->post = new Post('Hello, World!', 'SapientLion', 'Hello, World?');
-		
-		$result = $this->blogController->define($this->post);
-
-		$this->assertIsObject($result);
-		$this->assertEquals($result, $this->post);
-    }
-
 	public function testPostCreation()
 	{
-		$this->post = new Post('Hello, World!', 'SapientLion', 'Hello, World?');
-
-		$this->blogController->define($this->post);
-
-		$result = $this->blogController->create();
+		$blogController = new BlogController(
+			new Post('Hello, World!', 'SapientLion', 'Hello, World?'));
+		$result = $blogController->create();
 		
 		$this->assertIsBool($result);
 		$this->assertTrue($result);
@@ -57,11 +45,9 @@ class BlogControllerTest extends \Codeception\Test\Unit
 
 	public function testPostUpdate()
 	{
-		$this->post = new Post('Hello, World?', 'SapientLion', 'Hello, World!', 1);
-
-		$this->blogController->define($this->post);
-
-		$result = $this->blogController->update(1);
+		$blogController = new BlogController(
+			new Post('Hello, World?', 'SapientLion', 'Hello, World!', 1));
+		$result = $blogController->update(1);
 		
 		$this->assertIsBool($result);
 		$this->assertTrue($result);
@@ -69,11 +55,9 @@ class BlogControllerTest extends \Codeception\Test\Unit
 
 	public function testPostRemoval()
 	{
-		$this->post = new Post('Hello, World?', 'SapientLion', 'Hello, World!', 1);
-
-		$this->blogController->define($this->post);
-
-		$result = $this->blogController->delete(1);
+		$blogController = new BlogController(
+			new Post('Hello, World?', 'SapientLion', 'Hello, World!', 1));
+		$result = $blogController->delete(1);
 		
 		$this->assertIsBool($result);
 		$this->assertTrue($result);

@@ -80,8 +80,15 @@ class BlogController implements IBlogController
 	 * @return void
 	 * @throws PDOException On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	public function __construct()
+	public function __construct(?Post $post = NULL)
 	{
+		if(is_null($post))
+		{
+			return;
+		}
+
+		$this->post = $post;
+
 		try
 		{
 			$this->dbh = new PDO('mysql:host=' . DB_HOSTNAME . ';dbname=' . DB_NAME, DB_USERNAME, DB_PASSWORD);
@@ -92,19 +99,6 @@ class BlogController implements IBlogController
 		{
 			print 'Error!: ' . $e->getMessage() . '<br/>';
 		}
-	}
-	
-	/**
-	 * Define a blog post object. This method is supposed to be an overloaded class constructor, 
-	 * but due to limitations of PHP it was repurposed as a standalone method which must be used in situations where
-	 * DB modification is involved.
-	 *
-	 * @param  Post $post A blog post object containing title, author and content information.
-	 * @return Post post Object declared and defined within the scope of the class.
-	 */
-	public function define(Post $post) : Post
-	{
-		return $this->post = $post;
 	}
 	
 	/**
@@ -281,13 +275,8 @@ class BlogController implements IBlogController
 			return false;
 		}
 
-		$blogController = new BlogController();
-
-		$blogController->define(new Post(
-			$post[1],
-			$post[2],
-			$post[3]
-		));;
+		$blogController = new BlogController(
+			new Post($post[1], $post[2], $post[3]));
 	
 		if(isset($_GET['create'])) 
 		{
