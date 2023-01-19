@@ -107,6 +107,11 @@ class UserController implements IUserController
 			return false;
 		}
 
+		if(!preg_match('/^[\w-]+$/', $username))
+		{
+			return false;
+		}
+
 		return true;
 	}
 		
