@@ -9,10 +9,10 @@ class User
 
 	public function __construct(string $username, string $email, string $password = '', string $confirmationPassword = '')
 	{
-		$this->username = htmlspecialchars($username);
-		$this->email = htmlspecialchars($email);
-		$this->password = htmlspecialchars($password);
-		$this->confirmationPassword = htmlspecialchars($confirmationPassword);
+		$this->username = $username;
+		$this->email = $email;
+		$this->password = $password;
+		$this->confirmationPassword = $confirmationPassword;
 	}
 
 	public function getUsername() : string
