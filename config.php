@@ -11,6 +11,11 @@ define('DB_PASSWORD', 'password');
 //
 // Names of the columns stored in various database tables.
 //
+define('DB_TABLE_USER', 'user');
+define('DB_TABLE_USER_ID', 'id');
+define('DB_TABLE_USER_NAME', 'username');
+define('DB_TABLE_USER_EMAIL', 'email');
+define('DB_TABLE_USER_PASSWORD', 'password');
 define('DB_TABLE_BLOG_POST', 'post');
 define('DB_TABLE_BLOG_POST_ID', 'id');
 define('DB_TABLE_BLOG_POST_TITLE', 'title');

@@ -22,14 +22,22 @@ class UserController implements IUserController
 	 */
 	private function tryToFindMatchingUserNames(string $username = '') : int
 	{
-		$stmt = $this->dbh->prepare("SELECT username FROM user WHERE username = :username");
+		//
+		// SELECT username FROM user WHERE username = :username
+		//
+		$string = "SELECT " . 
+		DB_TABLE_USER_NAME . " FROM " . 
+		DB_TABLE_USER . " WHERE " . 
+		DB_TABLE_USER_NAME . " = :" . DB_TABLE_USER_NAME;
+
+		$stmt = $this->dbh->prepare($string);
 
 		if(empty($username))
 		{
 			$username = $this->user->getUsername();
 		}
 
-		$stmt->bindParam(':username', $username);
+		$stmt->bindParam(':' . DB_TABLE_USER_NAME, $username);
 		$stmt->execute();
 
 		$result = $stmt->fetchAll();
@@ -46,14 +54,22 @@ class UserController implements IUserController
 	 */
 	private function tryToFindMatchingEmails(string $email = '') : int
 	{
-		$stmt = $this->dbh->prepare("SELECT email FROM user WHERE email = :email");
+		//
+		// SELECT email FROM user WHERE email = :email
+		//
+		$string = "SELECT " . 
+		DB_TABLE_USER_EMAIL . " FROM " . 
+		DB_TABLE_USER . " WHERE " . 
+		DB_TABLE_USER_EMAIL . " = :" . DB_TABLE_USER_EMAIL;
+
+		$stmt = $this->dbh->prepare($string);
 
 		if(empty($email))
 		{
 			$email = $this->user->getEmail();
 		}
 
-		$stmt->bindParam(':email', $email);
+		$stmt->bindParam(':' . DB_TABLE_USER_EMAIL, $email);
 		$stmt->execute();
 
 		$result = $stmt->fetchAll();
@@ -116,11 +132,24 @@ class UserController implements IUserController
 
 		$username = $this->user->getUsername();
 		$email = $this->user->getEmail();
-		$stmt = $this->dbh->prepare("INSERT INTO user (username, email, password) VALUES (:username, :email, :password)");
 
-		$stmt->bindParam(':username', $username);
-		$stmt->bindParam(':email', $email);
-		$stmt->bindParam(':password', $password);
+		//
+		// INSERT INTO user (username, email, password) VALUES (:username, :email, :password)
+		//
+		$string = "INSERT INTO " . 
+		DB_TABLE_USER . " (" . 
+		DB_TABLE_USER_NAME . ", " . 
+		DB_TABLE_USER_EMAIL . ", " . 
+		DB_TABLE_USER_PASSWORD . ") VALUES (:" . 
+		DB_TABLE_USER_NAME . ", :" . 
+		DB_TABLE_USER_EMAIL . ", :" . 
+		DB_TABLE_USER_PASSWORD . ")";
+		
+		$stmt = $this->dbh->prepare($string);
+
+		$stmt->bindParam(':' . DB_TABLE_USER_NAME, $username);
+		$stmt->bindParam(':' . DB_TABLE_USER_EMAIL, $email);
+		$stmt->bindParam(':' . DB_TABLE_USER_PASSWORD, $password);
 		
 		$result = $stmt->execute();
 
@@ -159,13 +188,25 @@ class UserController implements IUserController
 
 		if(!empty($password))
 		{
-			$stmt = $this->dbh->prepare("UPDATE user SET username = :username, email = :email, password = :password 
-			WHERE username = :current_username");
+			//
+			// UPDATE user SET username = :username, email = :email, password = :password WHERE username = :current_username
+			//
+			$string = "UPDATE " . 
+			DB_TABLE_USER . " SET " . 
+			DB_TABLE_USER_NAME . " = :" . 
+			DB_TABLE_USER_NAME . ", " . 
+			DB_TABLE_USER_EMAIL . " = :" . 
+			DB_TABLE_USER_EMAIL . ", " . 
+			DB_TABLE_USER_PASSWORD . " = :" . 
+			DB_TABLE_USER_PASSWORD . " WHERE " . 
+			DB_TABLE_USER_NAME . " = :current_username";
+
+			$stmt = $this->dbh->prepare($string);
 	
-			$stmt->bindParam(':username', $username);
+			$stmt->bindParam(':' . DB_TABLE_USER_NAME , $username);
 			$stmt->bindParam(':current_username', $currentUsername);
-			$stmt->bindParam(':email', $email);
-			$stmt->bindParam(':password', $password);
+			$stmt->bindParam(':' . DB_TABLE_USER_EMAIL, $email);
+			$stmt->bindParam(':' . DB_TABLE_USER_PASSWORD, $password);
 	
 			//
 			// Reflect all user account changes on $_SESSION variables.
@@ -180,12 +221,22 @@ class UserController implements IUserController
 			}
 		}
 
-		$stmt = $this->dbh->prepare("UPDATE user SET username = :username, email = :email 
-		WHERE username = :current_username");
+		//
+		// UPDATE user SET username = :username, email = :email WHERE username = :current_username
+		//
+		$string = "UPDATE " . 
+		DB_TABLE_USER . " SET " . 
+		DB_TABLE_USER_NAME . " = :" . 
+		DB_TABLE_USER_NAME . ", " . 
+		DB_TABLE_USER_EMAIL . " = :" . 
+		DB_TABLE_USER_EMAIL . " WHERE " . 
+		DB_TABLE_USER_NAME . " = :current_username";
 
-		$stmt->bindParam(':username', $username);
+		$stmt = $this->dbh->prepare($string);
+
+		$stmt->bindParam(':' . DB_TABLE_USER_NAME, $username);
 		$stmt->bindParam(':current_username', $currentUsername);
-		$stmt->bindParam(':email', $email);
+		$stmt->bindParam(':' . DB_TABLE_USER_EMAIL, $email);
 
 		//
 		// Reflect all user account changes on $_SESSION variables.
@@ -215,9 +266,17 @@ class UserController implements IUserController
 			return false;
 		}
 
-		$stmt = $this->dbh->prepare("DELETE FROM user WHERE username = :username");
+		//
+		// DELETE FROM user WHERE username = :username
+		//
+		$string = "DELETE FROM " . 
+		DB_TABLE_USER . " WHERE " . 
+		DB_TABLE_USER_NAME . " = :" . 
+		DB_TABLE_USER_NAME;
 
-		$stmt->bindParam(':username', $currentUsername);
+		$stmt = $this->dbh->prepare($string);
+
+		$stmt->bindParam(':' . DB_TABLE_USER_NAME, $currentUsername);
 
 		$result = $stmt->execute();
 		
@@ -233,6 +292,7 @@ class UserController implements IUserController
 	private function set(mixed $stmt) : array
 	{
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);
+		
 		$_SESSION['UserName'] = $result[0];
 		$_SESSION['Email'] = $result[1];
 		$_SESSION['Password'] = $result[2];
@@ -264,9 +324,18 @@ class UserController implements IUserController
 			}
 
 			$username = $this->user->getUsername();
-			$stmt = $this->dbh->prepare("SELECT password FROM user WHERE username = :username");
+			//
+			// SELECT password FROM user WHERE username = :username
+			//
+			$string = "SELECT " . 
+			DB_TABLE_USER_PASSWORD . " FROM " . 
+			DB_TABLE_USER . " WHERE " . 
+			DB_TABLE_USER_NAME . " = :" . 
+			DB_TABLE_USER_NAME;
 
-			$stmt->bindParam(':username', $username);
+			$stmt = $this->dbh->prepare($string);
+
+			$stmt->bindParam(':' . DB_TABLE_USER_NAME, $username);
 			$stmt->execute();
 
 			$result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -279,10 +348,17 @@ class UserController implements IUserController
 				return false;
 			}
 
-			$stmt = $this->dbh->prepare("SELECT username, email, password FROM user WHERE username = :username");
+			$string = "SELECT " . 
+			DB_TABLE_USER_NAME . ", " . 
+			DB_TABLE_USER_EMAIL . ", " . 
+			DB_TABLE_USER_PASSWORD . " FROM " . 
+			DB_TABLE_USER . " WHERE " . 
+			DB_TABLE_USER_NAME . " = :" . DB_TABLE_USER_NAME;
+
+			$stmt = $this->dbh->prepare($string);
 			$username = $this->user->getUsername();
 
-			$stmt->bindParam(':username', $username);
+			$stmt->bindParam(':' . DB_TABLE_USER_NAME, $username);
 			$stmt->execute();
 			$this->set($stmt);
 
@@ -294,10 +370,18 @@ class UserController implements IUserController
 		//
 		if($this->tryToFindMatchingEmails() === 1)
 		{
-			$stmt = $this->dbh->prepare("SELECT password FROM user WHERE email = :email");
+			//
+			// SELECT password FROM user WHERE email = :email
+			//
+			$string = "SELECT " . 
+			DB_TABLE_USER_PASSWORD . " FROM " . 
+			DB_TABLE_USER . " WHERE " . 
+			DB_TABLE_USER_EMAIL . " = :" . DB_TABLE_USER_EMAIL;
+
+			$stmt = $this->dbh->prepare($string);
 			$email = $this->user->getEmail();
 
-			$stmt->bindParam(':email', $email);
+			$stmt->bindParam(':' . DB_TABLE_USER_EMAIL, $email);
 			$stmt->execute();
 
 			$result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -310,9 +394,19 @@ class UserController implements IUserController
 				return false;
 			}
 
-			$stmt = $this->dbh->prepare("SELECT username, email, password FROM user WHERE email = :email");
+			//
+			// SELECT username, email, password FROM user WHERE email = :email
+			//
+			$string = "SELECT " . 
+			DB_TABLE_USER_NAME . ", " . 
+			DB_TABLE_USER_EMAIL . ", " . 
+			DB_TABLE_USER_PASSWORD . " FROM " . 
+			DB_TABLE_USER . " WHERE " . 
+			DB_TABLE_USER_EMAIL . " = :" . DB_TABLE_USER_EMAIL;
 
-			$stmt->bindParam(':email', $email);
+			$stmt = $this->dbh->prepare($string);
+
+			$stmt->bindParam(':' . DB_TABLE_USER_EMAIL, $email);
 			$stmt->execute();
 			$this->set($stmt);
 
