@@ -17,6 +17,14 @@ class BlogController implements IBlogController
 	 */
 	private function doCreate() : bool
 	{
+		//
+		// This will always be triggered in the event where user is not logged in.
+		//
+		if(!isset($_SESSION['CanCreateBlogPosts']) || !filter_var($_SESSION['CanCreateBlogPosts'], FILTER_VALIDATE_BOOL))
+		{
+			return false;
+		}
+
 		if(!$this->validate())
 		{
 			return false;
@@ -53,6 +61,11 @@ class BlogController implements IBlogController
 	 */
 	private function doRead(int $id) : array
 	{
+		if(!isset($_SESSION['CanReadBlogPosts']) && !filter_var($_SESSION['CanReadBlogPosts'], FILTER_VALIDATE_BOOL))
+		{
+			return NULL;
+		}
+
 		//
 		// SELECT * FROM post WHERE id = :id
 		//
@@ -79,6 +92,11 @@ class BlogController implements IBlogController
 	 */
 	private function doReadAll(int $from, int $to) : array
 	{
+		if(!isset($_SESSION['CanReadBlogPosts']) && !filter_var($_SESSION['CanReadBlogPosts'], FILTER_VALIDATE_BOOL))
+		{
+			return NULL;
+		}
+
 		//
 		// The following statement is incompatible with some of the SQL-based languages.
 		//
@@ -108,6 +126,11 @@ class BlogController implements IBlogController
 	 */
 	private function doUpdate(int $id) : bool
 	{
+		if(!isset($_SESSION['CanUpdateBlogPosts']) && !filter_var($_SESSION['CanUpdateBlogPosts'], FILTER_VALIDATE_BOOL))
+		{
+			return false;
+		}
+
 		if(!$this->validate())
 		{
 			return false;
@@ -150,6 +173,11 @@ class BlogController implements IBlogController
 	 */
 	private function doDelete(int $id) : bool
 	{
+		if(!isset($_SESSION['CanDeleteBlogPosts']) && !filter_var($_SESSION['CanDeleteBlogPosts'], FILTER_VALIDATE_BOOL))
+		{
+			return false;
+		}
+
 		//
 		// DELETE FROM post WHERE id = :id
 		//

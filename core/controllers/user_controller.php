@@ -312,10 +312,20 @@ class UserController implements IUserController
 	private function set(mixed $stmt) : array
 	{
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);
-		
-		$_SESSION['UserName'] = $result[0];
-		$_SESSION['Email'] = $result[1];
-		$_SESSION['Password'] = $result[2];
+
+		$_SESSION['UserName'] = $result[1];
+		$_SESSION['Email'] = $result[2];
+		$_SESSION['Password'] = $result[3];
+
+		$_SESSION['CanCreateBlogPosts'] = $result[4];
+		$_SESSION['CanReadBlogPosts'] = $result[5];
+		$_SESSION['CanUpdateBlogPosts'] = $result[6];
+		$_SESSION['CanDeleteBlogPosts'] = $result[7];
+
+		$_SESSION['CanCreateComments'] = $result[8];
+		$_SESSION['CanReadComments'] = $result[9];
+		$_SESSION['CanUpdateComments'] = $result[10];
+		$_SESSION['CanDeleteComments'] = $result[11];
 
 		return $_SESSION;
 	}
@@ -373,10 +383,7 @@ class UserController implements IUserController
 				return false;
 			}
 
-			$string = "SELECT " . 
-			DB_TABLE_USER_NAME . ", " . 
-			DB_TABLE_USER_EMAIL . ", " . 
-			DB_TABLE_USER_PASSWORD . " FROM " . 
+			$string = "SELECT * FROM " . 
 			DB_TABLE_USER . " WHERE " . 
 			DB_TABLE_USER_NAME . " = :" . DB_TABLE_USER_NAME;
 
@@ -422,10 +429,7 @@ class UserController implements IUserController
 			//
 			// SELECT username, email, password FROM user WHERE email = :email
 			//
-			$string = "SELECT " . 
-			DB_TABLE_USER_NAME . ", " . 
-			DB_TABLE_USER_EMAIL . ", " . 
-			DB_TABLE_USER_PASSWORD . " FROM " . 
+			$string = "SELECT * FROM " . 
 			DB_TABLE_USER . " WHERE " . 
 			DB_TABLE_USER_EMAIL . " = :" . DB_TABLE_USER_EMAIL;
 

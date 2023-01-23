@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 18, 2023 at 03:01 PM
+-- Generation Time: Jan 23, 2023 at 04:05 PM
 -- Server version: 10.5.18-MariaDB
 -- PHP Version: 8.1.13
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `comment` (
   `id` int(11) NOT NULL,
   `post` int(11) NOT NULL,
-  `author` varchar(24) NOT NULL,
+  `author` varchar(24) DEFAULT NULL,
   `content` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -43,7 +43,7 @@ CREATE TABLE `comment` (
 CREATE TABLE `post` (
   `id` int(11) NOT NULL,
   `title` varchar(32) NOT NULL,
-  `author` varchar(24) NOT NULL,
+  `author` varchar(24) DEFAULT NULL,
   `content` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -57,7 +57,15 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `username` varchar(24) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `can_create_blog_posts` tinyint(1) NOT NULL DEFAULT 1,
+  `can_read_blog_posts` tinyint(1) NOT NULL DEFAULT 1,
+  `can_update_blog_posts` tinyint(1) NOT NULL DEFAULT 1,
+  `can_delete_blog_posts` tinyint(1) NOT NULL DEFAULT 1,
+  `can_create_comments` tinyint(1) NOT NULL DEFAULT 1,
+  `can_read_comments` tinyint(1) NOT NULL DEFAULT 1,
+  `can_update_comments` tinyint(1) NOT NULL DEFAULT 1,
+  `can_delete_comments` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
@@ -117,13 +125,13 @@ ALTER TABLE `user`
 --
 ALTER TABLE `comment`
   ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`post`) REFERENCES `post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`author`) REFERENCES `user` (`username`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`author`) REFERENCES `user` (`username`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `post`
 --
 ALTER TABLE `post`
-  ADD CONSTRAINT `post_ibfk_1` FOREIGN KEY (`author`) REFERENCES `user` (`username`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `post_ibfk_1` FOREIGN KEY (`author`) REFERENCES `user` (`username`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
