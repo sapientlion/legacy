@@ -123,6 +123,11 @@ class UserController implements IUserController
 	 */
 	private function doCreate() : bool
 	{
+		if(isset($_SESSION['UserName']) || !empty($_SESSION['UserName']))
+		{
+			return false;
+		}
+
 		if(!$this->validate() || $this->tryToFindMatchingEntries() > 0)
 		{
 			return false;
@@ -170,6 +175,11 @@ class UserController implements IUserController
 	 */
 	private function doUpdate(string $currentUsername) : bool
 	{
+		if(!isset($_SESSION['UserName']) || empty($_SESSION['UserName']))
+		{
+			return false;
+		}
+
 		if(!$this->validate() || $this->tryToFindMatchingEmails() > 0)
 		{
 			return false;
@@ -266,6 +276,11 @@ class UserController implements IUserController
 	 */
 	private function doDelete(string $currentUsername) : bool
 	{
+		if(!isset($_SESSION['UserName']) || empty($_SESSION['UserName']))
+		{
+			return false;
+		}
+
 		if($this->tryToFindMatchingUserNames() !== 1)
 		{
 			return false;
@@ -313,6 +328,11 @@ class UserController implements IUserController
 	 */
 	private function doSignIn() : bool
 	{
+		if(isset($_SESSION['UserName']) || !empty($_SESSION['UserName']))
+		{
+			return false;
+		}
+
 		//
 		// Sign user in when user name is supplied via respective form input field.
 		//
