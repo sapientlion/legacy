@@ -63,7 +63,7 @@ class BlogController implements IBlogController
 	{
 		if(!isset($_SESSION['CanReadBlogPosts']) && !filter_var($_SESSION['CanReadBlogPosts'], FILTER_VALIDATE_BOOL))
 		{
-			return NULL;
+			return array();
 		}
 
 		//
@@ -94,7 +94,7 @@ class BlogController implements IBlogController
 	{
 		if(!isset($_SESSION['CanReadBlogPosts']) && !filter_var($_SESSION['CanReadBlogPosts'], FILTER_VALIDATE_BOOL))
 		{
-			return NULL;
+			return array();
 		}
 
 		//
