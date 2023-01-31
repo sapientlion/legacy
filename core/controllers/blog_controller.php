@@ -92,10 +92,10 @@ class BlogController implements IBlogController
 	 */
 	private function doReadAll(int $from, int $to) : array
 	{
-		if(!isset($_SESSION['CanReadBlogPosts']) && !filter_var($_SESSION['CanReadBlogPosts'], FILTER_VALIDATE_BOOL))
+		/*if(!isset($_SESSION['CanReadBlogPosts']) && !filter_var($_SESSION['CanReadBlogPosts'], FILTER_VALIDATE_BOOL))
 		{
 			return array();
-		}
+		}*/
 
 		//
 		// The following statement is incompatible with some of the SQL-based languages.

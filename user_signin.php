@@ -13,11 +13,16 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 <!DOCTYPE html>
 
 <html>
+<head>
+	<link rel="stylesheet" href="themes/flashback/native.css">
+	<link rel="stylesheet" href="themes/flashback/class.css">
+	<link rel="stylesheet" href="themes/flashback/id.css">
+</head>
+
 	<script src="core/js/user_validator.js"></script>
 	<body onload="userController.check()">
-		<header>
-			<a href="index.php">Home</a>
-
+	<header>
+		<header class="master" id="header-top">
 			<?php
 
 			$userController = new UserController();
@@ -26,6 +31,17 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 
 			?>
 		</header>
+
+		<header class="master" id="header-middle">
+			<h1>Legacy</h1>
+
+			<header id="header-bottom">
+				<nav>
+					<a href="index.php">Home</a>
+				</nav>
+			</header>
+		</header>
+	</header>
 
 		<?php
 
@@ -51,5 +67,17 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 		}
 
 		?>
+
+		<footer class="master">
+			<footer id="footer-top">
+				<h6>Copyright © 2021 - <?php print date('Y') ?> Legacy. All rights reserved.</h6>
+			</footer>
+
+			<footer id="footer-middle"></footer>
+
+			<footer id="footer-bottom">
+				<h6>Version <?php print SYSTEM_VERSION ?></h6>
+			</footer>
+		</footer>
     </body>
 </html>

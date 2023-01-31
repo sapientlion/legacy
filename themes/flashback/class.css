@@ -1,0 +1,49 @@
+.master
+{
+	background-color: chocolate;
+	border-color: maroon;
+	border-radius: 6px;
+	border-style: solid;
+	border-width: 4px;
+	margin: 4px;
+}
+
+.blog-post input
+{
+	background: none;
+	border: none;
+	border-bottom-color: maroon;
+	border-bottom-style: solid;
+	border-bottom-width: 4px;
+	display: flex;
+	flex: 1;
+	outline: none;
+	width: 100%;
+}
+
+.blog-post
+{
+	flex-direction: column;
+	justify-content: center;
+	padding: 4px;
+}
+
+.blog-post .hidden
+{
+	display: none;
+}
+
+.blog-post-row, .blog-post-controller
+{
+	display: flex;
+}
+
+.blog-post-controller
+{
+	justify-content: flex-end;
+}
+
+.hidden
+{
+	display: none;
+}

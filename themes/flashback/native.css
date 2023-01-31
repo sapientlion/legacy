@@ -1,0 +1,54 @@
+html, body
+{
+	color: black;
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+	width: 99vw;
+}
+
+a
+{
+	color: black;
+	text-decoration: none;
+}
+
+a:hover
+{
+	color: dimgray;
+}
+
+header a
+{
+	padding: 6px;
+}
+
+nav, footer
+{
+	display: flex;
+	flex: 1;
+	flex-direction: row;
+	justify-content: center;
+}
+
+button
+{
+	background-color: maroon;
+	border-color: maroon;
+	border-radius: 6px;
+	border-width: 4px; 
+	color: white;
+	cursor: pointer;
+	margin: 4px;
+	width: 96px;
+}
+
+button:hover
+{
+	background-color: brown;
+}
+
+footer
+{
+	flex-direction: column;
+}
