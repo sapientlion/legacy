@@ -17,37 +17,41 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 </head>
 
 <body>
-	<header><a href="index.php">Home</a> <?php
+	<header><a href="index.php">Home</a> 
+		<?php
+		
+			$userController = new UserController();
 
-							$userController = new UserController();
+			print $userController->genSiteHeader();
 
-							print $userController->genSiteHeader();
+		?>
+	</header>
+	
+	<?php
 
-							?></header><?php
-
-					if(isset($_SESSION['UserName']) && !empty($_SESSION['UserName'])) 
-					{
-							print '<form action="core/controllers/blog_controller.php?create" method="post">
-							<label for="title">Title:</label><br>
-							<input type="text" id="title" name="title"><br>
-							<div id="messagebox-title" class="messagebox"></div>
+		if(isset($_SESSION['UserName']) && !empty($_SESSION['UserName'])) 
+		{
+			print '<form action="core/controllers/blog_controller.php?create" method="post">
+			<label for="title">Title:</label><br>
+			<input type="text" id="title" name="title"><br>
+			<div id="messagebox-title" class="messagebox"></div>
 			
-							<label for="author">Author:</label><br>
-							<input type="text" id="author" name="author"><br>
-							<div id="messagebox-author" class="messagebox"></div>
+			<label for="author">Author:</label><br>
+			<input type="text" id="author" name="author"><br>
+			<div id="messagebox-author" class="messagebox"></div>
 			
-							<label for="content">Content:</label><br>
-							<input type="text" id="content" name="content">br>
-							<div id="messagebox-content" class="messagebox"></div>
+			<label for="content">Content:</label><br>
+			<input type="text" id="content" name="content">br>
+			<div id="messagebox-content" class="messagebox"></div>
 			
-							<input type="submit" value="Post" id="submission-button">
-							</form>';
-					}
-					else
-					{
+			<input type="submit" value="Post" id="submission-button">
+			</form>';
+		}
+		else
+		{
 							header('Location: ' . SITE_ROOT);
-					}
+		}
 
-					?>
+	?>
 </body>
 </html>

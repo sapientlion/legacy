@@ -17,21 +17,25 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 </head>
 
 <body>
-	<header><a href="index.php">Home</a> <?php
+	<header><a href="index.php">Home</a> 
+		<?php
 
-							$userController = new UserController();
+			$userController = new UserController();
 
-							print $userController->genSiteHeader();
+			print $userController->genSiteHeader();
 
-							?></header><?php
+		?>
+	</header>
 
-					if(isset($_POST['id']) && !empty($_POST['id']) ||
-					isset($_POST['title']) && !empty($_POST['title']) || 
-					isset($_POST['author']) && !empty($_POST['author']) ||
-					isset($_POST['content']) && !empty($_POST['content']) && $_POST['author'] === $_SESSION['UserName'])
-					{
-							print '<form action="core/controllers/blog_controller.php?update" method="post">
-							<input type="text" id="post-' . $_POST['id'] . '" name="id" value="' . $_POST['id'] . '" readonly hidden><br>
+	<?php
+
+		if(isset($_POST['id']) && !empty($_POST['id']) ||
+			isset($_POST['title']) && !empty($_POST['title']) || 
+			isset($_POST['author']) && !empty($_POST['author']) ||
+			isset($_POST['content']) && !empty($_POST['content']) && $_POST['author'] === $_SESSION['UserName'])
+		{
+				print '<form action="core/controllers/blog_controller.php?update" method="post">
+				<input type="text" id="post-' . $_POST['id'] . '" name="id" value="' . $_POST['id'] . '" readonly hidden><br>
 
 				<label for="title">Title:</label><br>
 				<input type="text" id="title" name="title"  value="' . $_POST['title'] .'"><br>
@@ -47,11 +51,11 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 
 				<input type="submit" value="Update" id="submission-button">
 					</form>';
-					}
-					else
-					{
-							header('Location: ' . SITE_ROOT);
-					}
+		}
+		else
+		{
+			header('Location: ' . SITE_ROOT);
+		}
 
 					?>
 </body>
