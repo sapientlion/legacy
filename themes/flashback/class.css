@@ -5,7 +5,18 @@
 	border-radius: 6px;
 	border-style: solid;
 	border-width: 4px;
+	color: black;
+	display: flex;
+	flex: 1;
 	margin: 4px;
+}
+
+.workspace
+{
+	align-items: center;
+	display: flex;
+	flex: 1;
+	height: 100vh;
 }
 
 .blog-post input

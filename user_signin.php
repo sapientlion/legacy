@@ -42,6 +42,8 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 			</header>
 		</header>
 	</header>
+
+	<div class="master workspace">
 	<?php
 
 	if (!isset($_SESSION['username']) || empty($_SESSION['username'])) 
@@ -57,7 +59,7 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 							oninput="userController.check()"><br>
 							<div id="messagebox-password" class="messagebox"></div>
 
-				<input type="submit" value="Sign in" id="submission-button">
+				<button type="submit" value="Sign in" id="submission-button">Sign in</button>
 					</form>';
 	} 
 	else 
@@ -66,6 +68,9 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 	}
 
 	?>
+
+	</div>
+
 	<footer class="master">
 		<footer id="footer-top">
 			<h6>Copyright © 2021 - <?php print date('Y') ?> Legacy. All rights reserved.</h6>

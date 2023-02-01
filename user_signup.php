@@ -2,7 +2,7 @@
 
 if(session_status() === PHP_SESSION_NONE)
 {
-		session_start();
+	session_start();
 }
 
 require_once(__DIR__ . '/config.php');
@@ -24,13 +24,15 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 
 <body onload="userController.check()">
 	<header>
-		<header class="master" id="header-top"><?php
+		<header class="master" id="header-top">
+			<?php
 
-								$userController = new UserController();
+				$userController = new UserController();
 
-								print $userController->genSiteHeader();
+				print $userController->genSiteHeader();
 
-								?></header>
+			?>
+		</header>
 
 		<header class="master" id="header-middle">
 			<h1>Legacy</h1>
@@ -40,6 +42,8 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 			</header>
 		</header>
 	</header>
+
+	<div class="master workspace">
 	
 	<?php
 
@@ -66,8 +70,8 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 			oninput="userController.check()"><br>
 			<div id="messagebox-confirmation-password" class="messagebox"></div>
 		
-			<input type="submit" value="Sign up" id="submission-button">
-			</form>';	
+			<button type="submit" value="Sign up" id="submission-button">Sign up</button>
+			</form>';
 		}
 		else
 		{
@@ -75,6 +79,8 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 		}
 
 	?>
+
+	</div>
 
 	<footer class="master">
 		<footer id="footer-top">
