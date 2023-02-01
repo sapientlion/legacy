@@ -45,6 +45,73 @@ class BlogControllerTest extends \Codeception\Test\Unit
 		$this->assertTrue($result);
 	}
 
+	public function testPostReading()
+	{
+		$blogController = new BlogController(
+			new BlogPost('Hello, World!', 'SapientLion', 'Hello, World!?')
+		);
+
+		$blogController->create();
+
+		//
+		// Failure: given ID has no match.
+		//
+		$result = $blogController->read(1111);
+
+		$this->assertIsArray($result);
+		$this->assertEmpty($result);
+
+		//
+		// Success.
+		//
+		$result = $blogController->read(1);
+
+		$this->assertNotEmpty($result);
+	}
+
+	public function testPostsReading()
+	{
+		$blogController = new BlogController(
+			new BlogPost('Hello, World!', 'SapientLion', 'Hello, World!?')
+		);
+
+		//
+		// Failure: unacceptable range has been given.
+		//
+		$result = $blogController->readAll(-11, 0);
+
+		$this->assertIsArray($result);
+		$this->assertEmpty($result);
+
+		//
+		// Failure: the list is empty.
+		//
+		$result = $blogController->readAll(1, 11);
+
+		$this->assertEmpty($result);
+
+		$blogController->create();
+
+		$blogController = new BlogController(
+			new BlogPost('Hello, World!', 'SapientLion', 'Stop it.')
+		);
+
+		$blogController->create();
+
+		$blogController = new BlogController(
+			new BlogPost('Hello, World!', 'SapientLion', 'Drop it.')
+		);
+
+		$blogController->create();
+
+		//
+		// Success.
+		//
+		$result = $blogController->readAll(1, 3);
+
+		$this->assertNotEmpty($result);
+	}
+
 	public function testPostUpdate()
 	{
 		$blogController = new BlogController(

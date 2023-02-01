@@ -80,6 +80,23 @@ class BlogController implements IBlogController
 		$stmt->execute();
 		$result = $stmt->fetch();
 
+		//
+		// Previous statement may cause a runtime exception (it will return FALSE on failure) because of given 
+		// non-existing blog post ID. Circumvent that by returning an empty array.
+		//
+		if(!$result)
+		{
+			return array();
+		}
+
+		//
+		// Sanitize output to prevent from potential bugs and XSS attacks.
+		//
+		foreach($result as $blogPostAttribute)
+		{
+			$blogPostAttribute = htmlspecialchars($blogPostAttribute);
+		}
+
 		return $result;
 	}
 	
@@ -92,13 +109,24 @@ class BlogController implements IBlogController
 	 */
 	private function doReadAll(int $from, int $to) : array
 	{
-		/*if(!isset($_SESSION['CanReadBlogPosts']) && !filter_var($_SESSION['CanReadBlogPosts'], FILTER_VALIDATE_BOOL))
+		//
+		// Negative integers are forbidden in this case (usually, the first DB entry has ID of 1).
+		//
+		if($from <= 0 || $to <= 0)
 		{
 			return array();
-		}*/
+		}
 
 		//
-		// The following statement is incompatible with some of the SQL-based languages.
+		// What's the point of running this method any further when you have a much easier solution for that?
+		//
+		if($from === $to)
+		{
+			return $this->doRead($from);
+		}
+
+		//
+		// Beware: the following statement is incompatible with some of the SQL-based languages.
 		//
 		// SELECT * FROM post WHERE id BETWEEN :from AND :to
 		//
@@ -113,6 +141,22 @@ class BlogController implements IBlogController
 		$stmt->execute();
 
 		$result = $stmt->fetchAll();
+
+		//
+		// Also return an empty array in case of a failure (empty list for example).
+		//
+		if(!$result)
+		{
+			return array();
+		}
+
+		foreach($result as $blogPost)
+		{
+			foreach($blogPost as $blogPostAttribute)
+			{
+				$blogPostAttribute = htmlspecialchars($blogPostAttribute);
+			}
+		}
 	
 		return $result;
 	}
