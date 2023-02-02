@@ -14,4 +14,5 @@ modules:
            populate: true # run populator before all tests
            cleanup: true # run populator before each test
            populator: 'mysql -u $user --password=$password -h $host $dbname < $dump'
-    step_decorators: ~
+
+step_decorators: ~
