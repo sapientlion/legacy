@@ -43,3 +43,4 @@ robo.phar
 .env
 .php-cs-fixer.cache
 .php-cs-fixer.php
+log.txt

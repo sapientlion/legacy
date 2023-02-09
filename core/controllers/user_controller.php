@@ -6,10 +6,11 @@ if(session_status() === PHP_SESSION_NONE)
 }
 
 require_once(__DIR__ . '/../../config.php');
+require_once(SITE_ROOT . '/core/controllers/system_controller.php');
 require_once(SITE_ROOT . '/core/interfaces/iuser_controller.php');
 require_once(SITE_ROOT . '/core/models/user.php');
 
-class UserController implements IUserController 
+class UserController extends SystemController implements IUserController 
 {
 	private PDO $dbh;
 	private User $user;
@@ -86,29 +87,57 @@ class UserController implements IUserController
 	private function validate() : bool
 	{
 		$username = $this->user->getUsername();
-		$username_len = strlen($username);
+		$usernameLength = strlen($username);
 
 		//
-		// Check user name string length.
+		// Check user name length.
 		//
-		if($username_len <= 0 || $username_len > DATA_USER_NAME_LENGTH)
+		if($usernameLength > DATA_USER_NAME_LENGTH)
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'validate', 'Given user name is too long');
+			}
+			
+			return false;
+		}
+
+		//
+		// Check user name format.
+		//
+		if(!preg_match('/^[\w-]+$/', $username))
+		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'validate', 'Given user name is in incorrect format');
+			}
+
 			return false;
 		}
 
 		$email = $this->user->getEmail();
-		$email_len = strlen($email);
+		$emailLength = strlen($email);
 
 		//
-		// Check email string length.
+		// Check email address length.
 		//
-		if($email_len <= 0 || $email_len > DATA_USER_EMAIL_LENGTH)
+		if($emailLength <= 0)
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'validate', 'Given email address is too short');
+			}
+
 			return false;
 		}
 
-		if(!preg_match('/^[\w-]+$/', $username))
+		if($emailLength > DATA_USER_EMAIL_LENGTH)
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'validate', 'Given email address is too long');
+			}
+
 			return false;
 		}
 
@@ -125,11 +154,21 @@ class UserController implements IUserController
 	{
 		if(isset($_SESSION['UserName']) || !empty($_SESSION['UserName']))
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'doCreate', 'You must be logged-out in order to use this feature');
+			}
+
 			return false;
 		}
 
 		if(!$this->validate() || $this->tryToFindMatchingEntries() > 0)
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'doCreate', 'Given data is invalid');
+			}
+
 			return false;
 		}
 
@@ -137,6 +176,11 @@ class UserController implements IUserController
 
 		if(empty($password))
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'doCreate', 'Unable to validate the password');
+			}
+
 			return false;
 		}
 
@@ -177,11 +221,21 @@ class UserController implements IUserController
 	{
 		if(!isset($_SESSION['UserName']) || empty($_SESSION['UserName']))
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'doUpdate', 'You must be logged-in in order to use this feature');
+			}
+
 			return false;
 		}
 
 		if(!$this->validate() || $this->tryToFindMatchingEmails() > 0)
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'doUpdate', 'Given data is invalid');
+			}
+
 			return false;
 		}
 
@@ -194,6 +248,11 @@ class UserController implements IUserController
 
 			if(empty($password))
 			{
+				if(SYSTEM_DEBUGGING)
+				{
+					$this->report('UserController', 'doUpdate', 'Unable to validate the password');
+				}
+
 				return false;
 			}
 		}
@@ -278,11 +337,21 @@ class UserController implements IUserController
 	{
 		if(!isset($_SESSION['UserName']) || empty($_SESSION['UserName']))
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'doDelete', 'You must be logged-in in order to use this feature');
+			}
+
 			return false;
 		}
 
 		if($this->tryToFindMatchingUserNames() !== 1)
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'doDelete', 'User account doesn`t exist');
+			}
+
 			return false;
 		}
 
@@ -340,6 +409,11 @@ class UserController implements IUserController
 	{
 		if(isset($_SESSION['UserName']) || !empty($_SESSION['UserName']))
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'doSignIn', 'You must be logged-in in order to access this feature');
+			}
+
 			return false;
 		}
 
@@ -355,6 +429,11 @@ class UserController implements IUserController
 			//
 			if(empty($this->validatePassword($password, $password)))
 			{
+				if(SYSTEM_DEBUGGING)
+				{
+					$this->report('UserController', 'doUpdate', 'Unable to validate the password');
+				}
+
 				return false;
 			}
 
@@ -380,6 +459,11 @@ class UserController implements IUserController
 			//
 			if(!password_verify($this->user->getPassword(), $result))
 			{
+				if(SYSTEM_DEBUGGING)
+				{
+					$this->report('UserController', 'doSignIn', 'Given password is incorrect');
+				}
+
 				return false;
 			}
 
@@ -423,6 +507,11 @@ class UserController implements IUserController
 			//
 			if($this->user->getPassword() !== $result)
 			{
+				if(SYSTEM_DEBUGGING)
+				{
+					$this->report('UserController', 'doSignIn', 'Given password is incorrect');
+				}
+
 				return false;
 			}
 

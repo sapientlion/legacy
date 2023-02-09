@@ -38,7 +38,8 @@ define('DATA_BLOG_POST_TITLE_LENGTH', 32);
 define('DATA_BLOG_POST_USER_LENGTH', 24);
 define('DATA_BLOG_POST_CONTENT_LENGTH', 65535);
 
+define('SYSTEM_DEBUGGING', 'true');
+define('SYSTEM_LOG_SIZE', 4096);
 define('SYSTEM_VERSION', 'N/a.');
-//define('SITE_DEBUG', true);
 
 ?>
