@@ -16,264 +16,6 @@ class UserControllerTest extends \Codeception\Test\Unit
 
     protected UnitTester $tester;
 
-	private function append(string $str, int $cycles = 0) : string
-	{
-		if(empty($str))
-		{
-			return $str;
-		}
-
-		if($cycles <= 0)
-		{
-			return $str .= $str;
-		}
-
-		for($index = 0; $index < $cycles; $index++)
-		{
-			$str .= $str;
-		}
-
-		return $str;
-	}
-
-	private function tryToCreateUserWithoutUserName(bool $mflag, string $username = '') : void
-	{
-		if($mflag && empty($usename))
-		{
-			return;
-		}
-
-		$userController = new UserController(
-			new User('', 'goodbye@world.org', '1234567890', '1234567890'));
-
-		$result = false;
-
-		if(!$mflag)
-		{
-			$_SESSION['UserName'] = $username;
-			$result = $userController->update($username);
-		}
-		else
-		{
-			$result = $userController->create();	
-		}
-
-		$this->assertNotTrue($result);
-	}
-
-	private function tryToCreateUserWithLongUserName(bool $mflag, string $username = '') : void
-	{
-		if($mflag && empty($usename))
-		{
-			return;
-		}
-
-		$username = $this->append($username, 11);
-
-		$userController = new UserController(
-			new User($username, 'goodbye@world.org', '1234567890', '1234567890'));
-
-		if(!$mflag)
-		{
-			$_SESSION['UserName'] = $username;
-			$result = $userController->update($username);
-		}
-		else
-		{
-			$result = $userController->create();	
-		}
-
-		$this->assertNotTrue($result);
-	}
-
-	private function tryToCreateUserWithEmptyEmail(bool $mflag, string $username = '') : void
-	{
-		if($mflag && empty($usename))
-		{
-			return;
-		}
-
-		$userController = new UserController(
-			new User('Albert', '', '1234567890', '1234567890'));
-
-		if(!$mflag)
-		{
-			$_SESSION['UserName'] = $username;
-			$result = $userController->update($username);
-		}
-		else
-		{
-			$result = $userController->create();	
-		}
-
-		$this->assertNotTrue($result);
-	}
-
-	private function tryToCreateUserWithoutAnyPasswords(bool $mflag, string $username = '') : void
-	{
-		if($mflag && empty($usename))
-		{
-			return;
-		}
-
-		$userController = new UserController(
-			new User('Albert', 'goodbye@world.org', '', ''));
-
-		if(!$mflag)
-		{
-			$_SESSION['UserName'] = $username;
-			$result = $userController->update($username);
-		}
-		else
-		{
-			$result = $userController->create();	
-		}
-
-		$this->assertNotTrue($result);
-	}
-
-	private function tryToCreateUserWithoutPassword(bool $mflag, string $username = '') : void
-	{
-		if($mflag && empty($usename))
-		{
-			return;
-		}
-
-		$userController = new UserController(
-			new User('Albert', 'goodbye@world.org', '', '1234567890'));
-
-		if(!$mflag)
-		{
-			$_SESSION['UserName'] = $username;
-			$result = $userController->update($username);
-		}
-		else
-		{
-			$result = $userController->create();	
-		}
-
-		$this->assertNotTrue($result);
-	}
-
-	private function tryToCreateUserWithoutConfirmationPassword(bool $mflag, string $username = '') : void
-	{
-		if($mflag && empty($usename))
-		{
-			return;
-		}
-
-		$userController = new UserController(
-			new User('Albert', 'goodbye@world.org', '1234567890', ''));
-
-		if(!$mflag)
-		{
-			$_SESSION['UserName'] = $username;
-			$result = $userController->update($username);
-		}
-		else
-		{
-			$result = $userController->create();	
-		}
-
-		$this->assertNotTrue($result);
-	}
-
-	private function tryToCreateUserWithMismatchedPasswords(bool $mflag, string $username = '') : void
-	{
-		if($mflag && empty($usename))
-		{
-			return;
-		}
-
-		$userController = new UserController(
-			new User('Albert', 'goodbye@world.org', '1234567890', '12345'));
-
-		if(!$mflag)
-		{
-			$_SESSION['UserName'] = $username;
-			$result = $userController->update($username);
-		}
-		else
-		{
-			$result = $userController->create();	
-		}
-
-		$this->assertNotTrue($result);
-	}
-
-	private function tryToCreateUserWithShortPassword(bool $mflag, string $username = '') : void
-	{
-		if($mflag && empty($usename))
-		{
-			return;
-		}
-
-		$userController = new UserController(
-			new User('Albert', 'goodbye@world.org', '123', '123'));
-
-		if(!$mflag)
-		{
-			$_SESSION['UserName'] = $username;
-			$result = $userController->update($username);
-		}
-		else
-		{
-			$result = $userController->create();	
-		}
-
-		$this->assertNotTrue($result);
-	}
-
-	private function tryToCreateUserWithLongPassword(bool $mflag, string $password, string $username = '') : void
-	{
-		if($mflag && empty($usename))
-		{
-			return;
-		}
-		
-		$password = $this->append($password, 11);
-
-		$userController = new UserController(
-			new User('Albert', 'goodbye@world.org', $password, $password));
-
-		if(!$mflag)
-		{
-			$_SESSION['UserName'] = $username;
-			$result = $userController->update($username);
-		}
-		else
-		{
-			$result = $userController->create();	
-		}
-
-		$this->assertNotTrue($result);
-	}
-
-	private function tryToCreateUsersWithIdenticalCredentials() : void
-	{
-		$username = 'Albert';
-		$email = 'goodbye@world.org';
-		$password = '1234567890';
-
-		//
-		// Create a new account first.
-		//
-		$userController = new UserController(
-			new User($username, $email, $password, $password));
-
-		$userController->create();
-
-		//
-		// Create another one with the same info.
-		//
-		$userController = new UserController(
-			new User($username, $email, $password, $password));
-
-		$result = $userController->create();
-
-		$this->assertNotTrue($result);
-	}
-
     protected function _before()
     {
     }
@@ -281,16 +23,128 @@ class UserControllerTest extends \Codeception\Test\Unit
     // tests
 	public function testUserCreation()
 	{
-		$this->tryToCreateUserWithoutUserName(TRUE);				// Failure: user name isn't provided.
-		$this->tryToCreateUserWithLongUserName('Albert');			// Failure: user name is too long to fit in DB.
-		$this->tryToCreateUserWithEmptyEmail(TRUE);					// Failure: email address isn't provided.
-		$this->tryToCreateUserWithoutAnyPasswords(TRUE);			// Failure: both passwords aren't provided.
-		$this->tryToCreateUserWithoutPassword(TRUE);				// Failure: password isn't provided.
-		$this->tryToCreateUserWithoutConfirmationPassword(TRUE);	// Failure: confirmation password isn't provided.
-		$this->tryToCreateUserWithMismatchedPasswords(TRUE);		// Failure: provided passwords are mismatched.
-		$this->tryToCreateUserWithShortPassword(TRUE);				// Failure: provided password is too short.
-		$this->tryToCreateUserWithLongPassword(TRUE, '1234567890');	// Failure: provided password is too long.
-		$this->tryToCreateUsersWithIdenticalCredentials();			// Failure: duplicate user accounts aren't allowed.
+		//
+		// Failure: user name is not provided.
+		//
+		$userController = new UserController(
+			new User('', 'hello11@world.org', '1234567890', '1234567890'));
+
+		$result = $userController->create();
+
+		$this->assertIsBool($result);
+		$this->assertNotTrue($result);
+
+		$username = 'Albert';
+
+		//
+		// Append the name to the variable until upper limit is reached.
+		//
+		for($index = 0; $index < 11; $index++)
+		{
+			$username .= $username;
+		}
+
+		//
+		// Failure: user name is longer than expected.
+		//
+		$userController = new UserController(
+			new User($username, 'hello11@world.org', '1234567890', '1234567890'));
+
+		$result = $userController->create();
+
+		$this->assertNotTrue($result);
+
+		//
+		// Failure: email is not provided.
+		//
+		$userController = new UserController(
+			new User('Albert', '', '1234567890', '1234567890'));
+
+		$result = $userController->create();
+
+		$this->assertNotTrue($result);
+
+		//
+		// Failure: both passwords are not provided.
+		//
+		$userController = new UserController(
+			new User('Albert', 'hello@world.org', '', ''));
+
+		$result = $userController->create();
+
+		$this->assertNotTrue($result);
+
+		//
+		// Failure: password is not provided.
+		//
+		$userController = new UserController(
+			new User('Albert', 'hello11@world.org', '', '1234567890'));
+
+		$result = $userController->create();
+
+		$this->assertNotTrue($result);
+
+		//
+		// Failure: confirmation password is not provided.
+		//
+		$userController = new UserController(
+			new User('Albert', 'hello11@world.org', '1234567890', ''));
+
+		$result = $userController->create();
+
+		$this->assertNotTrue($result);
+
+		//
+		// Failure: passwords are mismatched.
+		//
+		$userController = new UserController(
+			new User('Albert', 'hello11@world.org', '1234567890', '12345'));
+
+		$result = $userController->create();
+
+		$this->assertNotTrue($result);
+
+		//
+		// Failure: password is shorter than expected.
+		//
+		$userController = new UserController(
+			new User('Albert', 'hello11@world.org', '123', '123'));
+
+		$result = $userController->create();
+
+		$this->assertNotTrue($result);
+
+		//
+		// Failure: password is longer than expected.
+		//
+		$userController = new UserController(
+			new User('Albert', 'hello11@world.org', '12345678901234567890123456789012345678901234567890', 
+			'12345678901234567890123456789012345678901234567890'));
+
+		$result = $userController->create();
+
+		$this->assertNotTrue($result);
+
+		//
+		// Failure: user already exists.
+		//
+		//
+		// Create a new user account first.
+		//
+		$userController = new UserController(
+			new User('Albert', 'hello11@world.org', '1234567890', '1234567890'));
+
+		$userController->create();
+
+		//
+		// Try to create another one with the identical information.
+		//
+		$userController = new UserController(
+			new User('Albert', 'hello11@world.org', '1234567890', '1234567890'));
+
+		$result = $userController->create();
+
+		$this->assertNotTrue($result);
 
 		//
 		// Success.
@@ -304,21 +158,102 @@ class UserControllerTest extends \Codeception\Test\Unit
 
 	public function testUserUpdate()
 	{
+		//
+		// Failure: user name is not provided.
+		//
+		$userController = new UserController(
+			new User('', 'hello11@world.org', '1234567890', '1234567890'));
+
+		$result = $userController->update('Albert');
+
+		$this->assertIsBool($result);
+		$this->assertNotTrue($result);
+
 		$username = 'Albert';
 
-		$userController = new UserController(
-			new User($username, 'goodbye@world.org', '1234567890', '1234567890'));
-		$result = $userController->create();
+		//
+		// Append the name to the variable until upper limit is reached.
+		//
+		for($index = 0; $index < 11; $index++)
+		{
+			$username .= $username;
+		}
 
-		$this->tryToCreateUserWithoutUserName(FALSE, $username);				// Failure: user name isn't provided.
-		$this->tryToCreateUserWithLongUserName(FALSE, $username);				// Failure: user name is too long to fit in DB.
-		$this->tryToCreateUserWithEmptyEmail(FALSE, $username);					// Failure: email address isn't provided.
-		$this->tryToCreateUserWithoutAnyPasswords(FALSE, $username);			// Failure: both passwords aren't provided.
-		$this->tryToCreateUserWithoutPassword(FALSE. $username);				// Failure: password isn't provided.
-		$this->tryToCreateUserWithoutConfirmationPassword(FALSE, $username);	// Failure: confirmation password isn't provided.
-		$this->tryToCreateUserWithMismatchedPasswords(FALSE, $username);		// Failure: provided passwords are mismatched.
-		$this->tryToCreateUserWithShortPassword(FALSE, $username);				// Failure: provided password is too short.
-		$this->tryToCreateUserWithLongPassword(FALSE, '1234567890', $username);	// Failure: provided password is too long.
+		for($index = 0; $index < 11; $index++)
+		{
+			$username .= $username;
+		}
+
+		//
+		// Failure: user name is longer than expected.
+		//
+		$userController = new UserController(
+			new User($username, 'hello11@world.org', '1234567890', '1234567890'));
+
+		$result = $userController->update('Albert');
+
+		$this->assertNotTrue($result);
+
+		//
+		// Failure: email is not provided.
+		//
+		$userController = new UserController(
+			new User('Albert', '', '1234567890', '1234567890'));
+
+		$result = $userController->update('Albert');
+
+		$this->assertNotTrue($result);
+
+		//
+		// Failure: password is not provided.
+		//
+		$userController = new UserController(
+			new User('Albert', 'hello11@world.org', '', '1234567890'));
+
+		$result = $userController->update('Albert');
+
+		$this->assertNotTrue($result);
+
+		//
+		// Failure: confirmation password is not provided.
+		//
+		$userController = new UserController(
+			new User('Albert', 'hello11@world.org', '1234567890', ''));
+
+		$result = $userController->update('Albert');
+
+		$this->assertNotTrue($result);
+
+		//
+		// Failure: passwords are mismatched.
+		//
+		$userController = new UserController(
+			new User('Albert', 'hello11@world.org', '1234567890', '12345'));
+
+		$result = $userController->update('Albert');
+
+		$this->assertNotTrue($result);
+
+		//
+		// Failure: password is shorter than expected.
+		//
+		$userController = new UserController(
+			new User('Albert', 'hello11@world.org', '123', '123'));
+
+		$result = $userController->update('Albert');
+
+		$this->assertNotTrue($result);
+
+		//
+		// Failure: password is longer than expected.
+		//
+		$userController = new UserController(
+			new User('Albert', 'hello11@world.org', '12345678901234567890123456789012345678901234567890', 
+			'12345678901234567890123456789012345678901234567890'));
+
+		$result = $userController->update('Albert');
+
+		$this->assertNotTrue($result);
 
 		//
 		// Failure: user account already exists with the same email address.
@@ -331,27 +266,23 @@ class UserControllerTest extends \Codeception\Test\Unit
 
 		$this->assertNotTrue($result);*/
 
-		$_SESSION['UserName'] = 'SapientLion';
-
 		//
-		// Success: both passwords are provided.
+		// Success.
 		//
 		$userController = new UserController(
-			new User('LionTheSapient', 'hello@world.org', '0987654321', '0987654321'));
+			new User('LionTheSapient', 'hello@world.org'));
 
 		$result = $userController->update('SapientLion');
 		
 		$this->assertTrue($result);
 
-		$_SESSION['UserName'] = $username;
-
 		//
-		// Success: both passwords aren't provided.
+		// Success: both passwords are not provided.
 		//
 		$userController = new UserController(
-			new User('Cole', 'goodbye@world.org', '', ''));
+			new User('Albert', 'hello11@world.org', '', ''));
 
-		$result = $userController->update($username);
+		$result = $userController->update('Albert');
 
 		$this->assertTrue($result);
 	}
@@ -362,14 +293,12 @@ class UserControllerTest extends \Codeception\Test\Unit
 		// Failure: user doesn't exist in DB.
 		//
 		$userController = new UserController(
-			new User('Albert', 'goodbye@world.org'));
+			new User('Cole', 'hello@world.org'));
 
-		$result = $userController->delete('Albert');
+		$result = $userController->delete('Cole');
 
 		$this->assertIsBool($result);
 		$this->assertNotTrue($result);
-
-		$_SESSION['UserName'] = 'SapientLion';
 
 		//
 		// Success.
