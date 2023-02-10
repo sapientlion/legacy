@@ -17,7 +17,7 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 	<script src="core/js/user_validator.js" type="text/javascript">
 </script>
 
-	<title></title>
+	<title>Legacy | Update</title>
 </head>
 
 <body onload="userController.check()">

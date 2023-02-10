@@ -19,7 +19,7 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 	<script src="core/js/user_validator.js" type="text/javascript">
 	</script>
 
-	<title></title>
+	<title>Legacy | Signin</title>
 </head>
 
 <body onload="userController.check()">
@@ -79,7 +79,7 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 		<footer id="footer-middle"></footer>
 
 		<footer id="footer-bottom">
-			<h6>Version <?php print SYSTEM_VERSION ?></h6>
+			<h6><?php print SYSTEM_VERSION ?></h6>
 		</footer>
 	</footer>
 </body>
