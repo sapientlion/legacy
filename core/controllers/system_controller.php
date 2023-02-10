@@ -4,7 +4,7 @@ require_once(__DIR__ . '/../../config.php');
 
 class SystemController
 {
-	private string $fileName = 'log.txt';
+	private string $fileName = __DIR__ . '/log.txt';
 
 	public function clear() : int
 	{
@@ -26,7 +26,7 @@ class SystemController
 				return 0;
 			}
 	
-			fwrite($fd, "\n");
+			fwrite($fd, '');
 			fclose($fd);
 		}
 
