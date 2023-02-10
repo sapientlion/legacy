@@ -135,7 +135,6 @@ $_SESSION['RowTo'] = 10;
 
 			?>
 
-			<li style="list-style: none">list-style: none; display: inline"&gt;</li>
 		</ul>
 	</div>
 
