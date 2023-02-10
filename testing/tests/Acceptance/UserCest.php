@@ -50,10 +50,18 @@ class UserCest
 
 		$I->fillField('username', 'SapientLion');
 		$I->fillField('email', 'hello@world.org');
-		$I->fillField('password', new PasswordArgument('1234567890'));
-		$I->fillField('confirmation-password', new PasswordArgument('1234567890'));
+
+		$password = '1234567890';
+
+		$I->fillField(
+			'password', new PasswordArgument($password)
+		);
+		$I->fillField(
+			'confirmation-password', new PasswordArgument($password)
+		);
 
 		$I->click('Sign up', 'form');
+		$I->makeScreenshot('UserCestSignupResult');
 		$I->amOnPage('/index.php');
 
 		$this->signIn($I);
@@ -70,7 +78,7 @@ class UserCest
 		$I->fillField('password', new PasswordArgument('1234567890'));
 
 		$I->click('Sign in', 'form');
-		$I->makeScreenshot('UserCestSignInResult');
+		$I->makeScreenshot('UserCestSigninResult');
 		$I->amOnPage('/index.php');
 	}
 }
