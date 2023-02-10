@@ -815,19 +815,19 @@ class UserController extends SystemController implements IUserController
 		$userController = new UserController(new User(
 			$user[0],
 			$user[1],
-			$user[2]
-		));
+			$user[2])
+		);
 
 		if(isset($_GET['signup'])) 
 		{
 			$userController->create();
-			header('Location: ../../signIn.php');
+			header('Location: ../../user_signin.php');
 		}
 
 		if(isset($_GET['update'])) 
 		{
 			$userController->update($_SESSION['UserName']);
-			header('Location: ../../update.php');
+			header('Location: ../../user_update.php');
 		}
 
 		if(isset($_GET['delete'])) {
