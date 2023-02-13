@@ -6,6 +6,7 @@ namespace Tests\Unit;
 require_once(__DIR__ . '../../../../config.php');
 require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 require_once(SITE_ROOT . '/core/models/user.php');
+require_once(SITE_ROOT . '/core/settings/session.php');
 
 use Tests\Support\UnitTester;
 use UserController;
@@ -175,13 +176,13 @@ class UserControllerTest extends \Codeception\Test\Unit
 
 		$userController->create();
 
-		$_SESSION['UserName'] = 'Albert';
+		$_SESSION[SESSION_VAR_NAME_USER_NAME] = 'Albert';
 
 		$userController = new UserController(
 			new User('', 'goodbye@world.org', '1234567890', '1234567890')
 		);
 
-		$result = $userController->update($_SESSION['UserName']);
+		$result = $userController->update($_SESSION[SESSION_VAR_NAME_USER_NAME]);
 
 		$this->assertNotTrue($result);
 	}
@@ -201,13 +202,15 @@ class UserControllerTest extends \Codeception\Test\Unit
 			$username .= $username;
 		}
 
-		$_SESSION['UserName'] = 'Albert';
+		$_SESSION[SESSION_VAR_NAME_USER_NAME] = 'Albert';
 
 		$userController = new UserController(
 			new User($username, 'goodbye@world.org', '1234567890', '1234567890')
 		);
 
-		$result = $userController->update($_SESSION['UserName']);
+		$result = $userController->update(
+			$_SESSION[SESSION_VAR_NAME_USER_NAME]
+		);
 
 		$this->assertNotTrue($result);
 	}
@@ -220,13 +223,15 @@ class UserControllerTest extends \Codeception\Test\Unit
 
 		$userController->create();
 
-		$_SESSION['UserName'] = 'Albert';
+		$_SESSION[SESSION_VAR_NAME_USER_NAME] = 'Albert';
 
 		$userController = new UserController(
 			new User($_SESSION['UserName'], '', '1234567890', '1234567890')
 		);
 
-		$result = $userController->update($_SESSION['UserName']);
+		$result = $userController->update(
+			$_SESSION[SESSION_VAR_NAME_USER_NAME]
+		);
 
 		$this->assertNotTrue($result);
 	}
@@ -241,13 +246,15 @@ class UserControllerTest extends \Codeception\Test\Unit
 
 		$userController->create();
 
-		$_SESSION['UserName'] = 'Albert';
+		$_SESSION[SESSION_VAR_NAME_USER_NAME] = 'Albert';
 
 		$userController = new UserController(
-			new User($_SESSION['UserName'], 'goodbye@world.org', '', $password)
+			new User($_SESSION[SESSION_VAR_NAME_USER_NAME], 'goodbye@world.org', '', $password)
 		);
 
-		$result = $userController->update($_SESSION['UserName']);
+		$result = $userController->update(
+			$_SESSION[SESSION_VAR_NAME_USER_NAME]
+		);
 
 		$this->assertNotTrue($result);
 	}
@@ -262,10 +269,10 @@ class UserControllerTest extends \Codeception\Test\Unit
 
 		$userController->create();
 
-		$_SESSION['UserName'] = 'Albert';
+		$_SESSION[SESSION_VAR_NAME_USER_NAME] = 'Albert';
 
 		$userController = new UserController(
-			new User($_SESSION['UserName'], 'goodbye@world.org', $password, '')
+			new User($_SESSION[SESSION_VAR_NAME_USER_NAME], 'goodbye@world.org', $password, '')
 		);
 
 		$result = $userController->update('Albert');
@@ -283,13 +290,13 @@ class UserControllerTest extends \Codeception\Test\Unit
 
 		$userController->create();
 
-		$_SESSION['UserName'] = 'Albert';
+		$_SESSION[SESSION_VAR_NAME_USER_NAME] = 'Albert';
 
 		$userController = new UserController(
-			new User($_SESSION['UserName'], 'goodbye@world.org', $password, '12345')
+			new User($_SESSION[SESSION_VAR_NAME_USER_NAME], 'goodbye@world.org', $password, '12345')
 		);
 
-		$result = $userController->update($_SESSION['UserName']);
+		$result = $userController->update($_SESSION[SESSION_VAR_NAME_USER_NAME]);
 
 		$this->assertNotTrue($result);
 	}
@@ -299,19 +306,19 @@ class UserControllerTest extends \Codeception\Test\Unit
 		$password = '1234567890';
 
 		$userController = new UserController(
-			new User('Albert', 'hello11@world.org', $password, $password)
+			new User('Albert', 'goodbye@world.org', $password, $password)
 		);
 
 		$userController->create();
 
-		$_SESSION['UserName'] = 'Albert';
+		$_SESSION[SESSION_VAR_NAME_USER_NAME] = 'Albert';
 		$password = '123';
 
 		$userController = new UserController(
-			new User($_SESSION['UserName'], 'hello11@world.org', $password, $password)
+			new User($_SESSION[SESSION_VAR_NAME_USER_NAME], 'goodbye@world.org', $password, $password)
 		);
 
-		$result = $userController->update($_SESSION['UserName']);
+		$result = $userController->update($_SESSION[SESSION_VAR_NAME_USER_NAME]);
 
 		$this->assertNotTrue($result);
 	}
@@ -321,7 +328,7 @@ class UserControllerTest extends \Codeception\Test\Unit
 		$password = '1234567890';
 
 		$userController = new UserController(
-			new User('Albert', 'hello11@world.org', $password, $password)
+			new User('Albert', 'goodbye@world.org', $password, $password)
 		);
 
 		$userController->create();
@@ -331,13 +338,15 @@ class UserControllerTest extends \Codeception\Test\Unit
 			$password .= $password;
 		}
 
-		$_SESSION['UserName'] = 'Albert';
+		$_SESSION[SESSION_VAR_NAME_USER_NAME] = 'Albert';
 
 		$userController = new UserController(
-			new User($_SESSION['UserName'], 'hello11@world.org', $password, $password)
+			new User($_SESSION[SESSION_VAR_NAME_USER_NAME], 'goodbye@world.org', $password, $password)
 		);
 
-		$result = $userController->update($_SESSION['UserName']);
+		$result = $userController->update(
+			$_SESSION[SESSION_VAR_NAME_USER_NAME]
+		);
 
 		$this->assertNotTrue($result);
 	}
@@ -366,7 +375,7 @@ class UserControllerTest extends \Codeception\Test\Unit
 
 		$userController->create();
 
-		$_SESSION['UserName'] = 'SapientLion';
+		$_SESSION[SESSION_VAR_NAME_USER_NAME] = 'SapientLion';
 
 		//
 		// Success.
@@ -375,7 +384,9 @@ class UserControllerTest extends \Codeception\Test\Unit
 			new User('LionTheSapient', 'hello@world.org', '', '')
 		);
 
-		$result = $userController->update($_SESSION['UserName']);
+		$result = $userController->update(
+			$_SESSION[SESSION_VAR_NAME_USER_NAME]
+		);
 		
 		$this->assertTrue($result);
 
@@ -387,7 +398,7 @@ class UserControllerTest extends \Codeception\Test\Unit
 
 		$userController->create();
 
-		$_SESSION['UserName'] = 'Albert';
+		$_SESSION[SESSION_VAR_NAME_USER_NAME] = 'Albert';
 
 		//
 		// Success: both passwords are not provided.
@@ -396,20 +407,24 @@ class UserControllerTest extends \Codeception\Test\Unit
 			new User('Alfred', 'goodbye@world.org', '', '')
 		);
 
-		$result = $userController->update($_SESSION['UserName']);
+		$result = $userController->update(
+			$_SESSION[SESSION_VAR_NAME_USER_NAME]
+		);
 
 		$this->assertTrue($result);
 	}
 
 	public function testUserRemovalWithNonExistingUserName()
 	{
-		$_SESSION['UserName'] = 'Cole';
+		$_SESSION[SESSION_VAR_NAME_USER_NAME] = 'Cole';
 
 		$userController = new UserController(
-			new User($_SESSION['UserName'], 'hello@world.org')
+			new User($_SESSION[SESSION_VAR_NAME_USER_NAME], 'hello@world.org')
 		);
 
-		$result = $userController->delete($_SESSION['UserName']);
+		$result = $userController->delete(
+			$_SESSION[SESSION_VAR_NAME_USER_NAME]
+		);
 
 		$this->assertNotTrue($result);
 	}
@@ -427,9 +442,11 @@ class UserControllerTest extends \Codeception\Test\Unit
 
 		$userController->create();
 
-		$_SESSION['UserName'] = 'SapientLion';
+		$_SESSION[SESSION_VAR_NAME_USER_NAME] = 'SapientLion';
 
-		$result = $userController->delete($_SESSION['UserName']);
+		$result = $userController->delete(
+			$_SESSION[SESSION_VAR_NAME_USER_NAME]
+		);
 		
 		$this->assertTrue($result);
 	}
