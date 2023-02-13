@@ -2,7 +2,7 @@
 
 if(session_status() === PHP_SESSION_NONE)
 {
-		session_start();
+	session_start();
 }
 
 require_once(__DIR__ . '/config.php');
@@ -13,58 +13,55 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 
 <html>
 <head>
-
-	<script src="core/js/user_validator.js" type="text/javascript">
-</script>
-
+	<link rel="stylesheet" href="themes/flashback/native.css" type="text/css">
+	<link rel="stylesheet" href="themes/flashback/class.css" type="text/css">
+	<link rel="stylesheet" href="themes/flashback/id.css" type="text/css">
 	<title>Legacy | Update</title>
 </head>
 
-<body onload="userController.check()">
-	<header><a href="index.php">Home</a> 
-		<?php
+<body>
+	<header>
+		<header class="master" id="header-top">
+			<?php
 
-			$userController = new UserController();
+				$userController = new UserController();
 
-			print $userController->getHeader();
+				print(
+					$userController->getHeader()
+				);
 
-		?>
+			?>
+		</header>
+
+		<header class="master" id="header-middle">
+			<h1>Legacy</h1>
+
+			<header id="header-bottom">
+				<nav><a href="index.php">Home</a></nav>
+			</header>
+		</header>
 	</header>
 	
-	<?php
+	<div class="master workspace">
+		<?php
 
-		if(isset($_SESSION['UserName']) && !empty($_SESSION['UserName'])
-			&& isset($_SESSION['Email']) && !empty($_SESSION['Email']))
-		{
-			print '<form action="core/controllers/user_controller.php?update" method="post">
-			<label for="username">Username:</label><br>
-			input type="text" id="username" 
-			oninput="userController.check()" name="username" value=' . $_SESSION['UserName'] . '><br>
-			<div id="messagebox-username" class="messagebox"></div>
+			print(
+				$userController->getUpdateForm()
+			);
 
-			<label for="email">E-mail:</label><br>
-			input type="email" id="email" name="email" 
-			oninput="userController.check()" value=' . $_SESSION['Email'] . '><br>
-			<div id="messagebox-email" class="messagebox"></div>
+		?>
+	</div>
 
-			label for="password">Old Password:</label><br>
-			input type="password" id="password" name="password" 
-			oninput="userController.check()"><br>
-			<div id="messagebox-password" class="messagebox"></div>
+	<footer class="master">
+		<footer id="footer-top">
+			<h6>Copyright © 2021 - <?php print date('Y') ?> Legacy. All rights reserved.</h6>
+		</footer>
 
-			<label for="confirmation-password">New Password:</label><br>
-			input type="password" id="confirmation-password" name="confirmation-password" 
-			oninput="userController.check()"><br>
-			<div id="messagebox-confirmation-password" class="messagebox"></div>
+		<footer id="footer-middle"></footer>
 
-			input type="submit" value="Update" id="submission-button">
-			</form>';
-		}
-		else
-		{
-			header('Location: ' . SITE_ROOT);
-		}
-
-	?>
+		<footer id="footer-bottom">
+			<h6><?php print SYSTEM_VERSION ?></h6>
+		</footer>
+	</footer>
 </body>
 </html>

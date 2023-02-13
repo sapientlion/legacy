@@ -12,6 +12,7 @@ interface IUserController
 	public function signOut() : bool;
 	public function getHeader() : string;
 	public function getSignupForm() : string;
+	public function getUpdateForm() : string;
 	public function getSigninForm() : string;
 	public function run() : bool;
 }

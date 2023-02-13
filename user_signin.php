@@ -16,20 +16,19 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 	<link rel="stylesheet" href="themes/flashback/native.css" type="text/css">
 	<link rel="stylesheet" href="themes/flashback/class.css" type="text/css">
 	<link rel="stylesheet" href="themes/flashback/id.css" type="text/css">
-	<script src="core/js/user_validator.js" type="text/javascript">
-	</script>
-
 	<title>Legacy | Signin</title>
 </head>
 
-<body onload="userController.check()">
+<body>
 	<header>
 		<header class="master" id="header-top">
 			<?php
 
 				$userController = new UserController();
 												
-				print $userController->getHeader();
+				print(
+					$userController->getHeader()
+				);
 				
 			?>
 		</header>
