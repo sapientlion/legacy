@@ -9,6 +9,8 @@ require_once(__DIR__ . '/../../config.php');
 require_once(SITE_ROOT . '/core/controllers/system_controller.php');
 require_once(SITE_ROOT . '/core/interfaces/iuser_controller.php');
 require_once(SITE_ROOT . '/core/models/user.php');
+require_once(SITE_ROOT . '/core/settings/input.php');
+require_once(SITE_ROOT . '/core/settings/session.php');
 
 class UserController extends SystemController implements IUserController 
 {
@@ -777,6 +779,79 @@ class UserController extends SystemController implements IUserController
 			return '<a href="user_signup.php">Sign up</a>
 			<a href="user_signin.php">Sign in</a>';
 		}		
+	}
+	
+	/**
+	 * Get a user signup form.
+	 *
+	 * @return string Signup form on success and an empty string on failure.
+	 */
+	public function getSignupForm() : string
+	{
+		$form = '<form action="core/controllers/user_controller.php?signup" method="post">
+		<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
+		<input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . SIGNUP_USER_NAME_FIELD_NAME . '"><br>
+
+		<label for="' . SIGNUP_EMAIL_FIELD_NAME . '">E-mail:</label><br>
+		<input type="email" id="' . SIGNUP_EMAIL_FIELD_NAME . '" name="' . SIGNUP_EMAIL_FIELD_NAME . '"><br>
+		
+		<label for="' . SIGNUP_PASSWORD_FIELD_NAME . '">Password:</label><br>
+		<input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . SIGNUP_PASSWORD_FIELD_NAME . '"><br>
+	
+		<label for="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '">Confirm Password:</label><br>
+		<input type="password" id="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '" name="' . 
+		SIGNUP_CONF_PASSWORD_FIELD_NAME . '"><br>
+	
+		<button type="submit" value="Sign up" id="submission-button">Sign up</button>
+		</form>';
+
+		//
+		// Signed-in user is prohibited from creating a new account.
+		//
+		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) || empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		{
+			return $form;
+		}
+		
+		//
+		// Return to the home page.
+		//
+		header('Location: ' . SITE_ROOT);
+
+		return '';
+	}
+	
+	/**
+	 * Get a user signin form.
+	 *
+	 * @return string Signin form on success and an empty string on failure.
+	 */
+	public function getSigninForm() : string
+	{
+		$form = '<form action="core/controllers/user_controller.php?signin" method="post">
+		<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
+		<input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . SIGNUP_USER_NAME_FIELD_NAME . '"><br>
+
+		<label for="' . SIGNUP_PASSWORD_FIELD_NAME . '">Password:</label><br>
+		<input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . SIGNUP_PASSWORD_FIELD_NAME . '" ><br>
+
+		<button type="submit" value="Sign in" id="submission-button">Sign in</button>
+		</form>';
+
+		//
+		// Signed-in user is prohibited from signing in again (that doesn't make any sense).
+		//
+		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) || empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		{
+			return $form;
+		}
+
+		//
+		// Return to the home page.
+		//
+		header('Location: ' . SITE_ROOT);
+
+		return '';
 	}
 
 	/**

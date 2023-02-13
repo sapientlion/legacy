@@ -44,31 +44,13 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 	</header>
 
 	<div class="master workspace">
-	<?php
+		<?php
 
-	if (!isset($_SESSION['username']) || empty($_SESSION['username'])) 
-	{
-		print '<form action="core/controllers/user_controller.php?signin" method="post">
-				<label for="username">Username:</label><br>
-				<input type="text" id="username" 
-							oninput="userController.check()" name="username"><br>
-							<div id="messagebox-username" class="messagebox"></div>
+			print(
+				$userController->getSigninForm()
+			);
 
-				<label for="password">Password:</label><br>
-				<input type="password" id="password" name="password" 
-							oninput="userController.check()"><br>
-							<div id="messagebox-password" class="messagebox"></div>
-
-				<button type="submit" value="Sign in" id="submission-button">Sign in</button>
-					</form>';
-	} 
-	else 
-	{
-		header('Location: ' . SITE_ROOT);
-	}
-
-	?>
-
+		?>
 	</div>
 
 	<footer class="master">
