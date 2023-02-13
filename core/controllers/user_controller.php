@@ -156,7 +156,7 @@ class UserController extends SystemController implements IUserController
 	 */
 	private function doCreate() : bool
 	{
-		if(isset($_SESSION['UserName']) || !empty($_SESSION['UserName']))
+		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) || !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
 			if(SYSTEM_DEBUGGING)
 			{
@@ -223,7 +223,7 @@ class UserController extends SystemController implements IUserController
 	 */
 	private function doUpdate(string $currentUsername) : bool
 	{
-		if(!isset($_SESSION['UserName']) || empty($_SESSION['UserName']))
+		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) || empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
 			if(SYSTEM_DEBUGGING)
 			{
@@ -291,9 +291,9 @@ class UserController extends SystemController implements IUserController
 			//
 			if($stmt->execute())
 			{
-				$_SESSION['UserName'] = $username;
-				$_SESSION['Email'] = $email;
-				$_SESSION['Password'] = $password;
+				$_SESSION[SESSION_VAR_NAME_USER_NAME] = $username;
+				$_SESSION[SESSION_VAR_NAME_USER_EMAIL] = $email;
+				$_SESSION[SESSION_VAR_NAME_USER_PASSWORD] = $password;
 	
 				return true;
 			}
@@ -321,8 +321,8 @@ class UserController extends SystemController implements IUserController
 		//
 		if($stmt->execute())
 		{
-			$_SESSION['UserName'] = $username;
-			$_SESSION['Email'] = $email;
+			$_SESSION[SESSION_VAR_NAME_USER_NAME] = $username;
+			$_SESSION[SESSION_VAR_NAME_USER_EMAIL] = $email;
 
 			return true;
 		}
@@ -339,7 +339,7 @@ class UserController extends SystemController implements IUserController
 	 */
 	private function doDelete(string $currentUsername) : bool
 	{
-		if(!isset($_SESSION['UserName']) || empty($_SESSION['UserName']))
+		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) || empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
 			if(SYSTEM_DEBUGGING)
 			{
@@ -386,9 +386,9 @@ class UserController extends SystemController implements IUserController
 	{
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-		$_SESSION['UserName'] = $result[1];
-		$_SESSION['Email'] = $result[2];
-		$_SESSION['Password'] = $result[3];
+		$_SESSION[SESSION_VAR_NAME_USER_NAME] = $result[1];
+		$_SESSION[SESSION_VAR_NAME_USER_EMAIL] = $result[2];
+		$_SESSION[SESSION_VAR_NAME_USER_PASSWORD] = $result[3];
 
 		$_SESSION['CanCreateBlogPosts'] = $result[4];
 		$_SESSION['CanReadBlogPosts'] = $result[5];
@@ -411,7 +411,7 @@ class UserController extends SystemController implements IUserController
 	 */
 	private function doSignIn() : bool
 	{
-		if(isset($_SESSION['UserName']) || !empty($_SESSION['UserName']))
+		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) || !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
 			if(SYSTEM_DEBUGGING)
 			{
