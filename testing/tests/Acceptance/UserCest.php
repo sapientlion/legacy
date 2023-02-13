@@ -15,10 +15,14 @@ class UserCest
 		$I->click('Sign up');
 		$I->amOnPage('/user_signup.php');
 
-		$I->fillField('username', 'SapientLion');
-		$I->fillField('email', 'hello@world.org');
-		$I->fillField('password', new PasswordArgument('1234567890'));
-		$I->fillField('confirmation-password', new PasswordArgument('1234567890'));
+		$I->fillField('user-name', 'SapientLion');
+		$I->fillField('user-email', 'hello@world.org');
+		$I->fillField(
+			'user-password', new PasswordArgument('1234567890')
+		);
+		$I->fillField(
+			'user-conf-password', new PasswordArgument('1234567890')
+		);
 
 		$I->click('Sign up', 'form');
 		$I->amOnPage('/index.php');
@@ -29,8 +33,10 @@ class UserCest
 		$I->see('Sign in');
 		$I->click('Sign in');
 
-		$I->fillField('username', 'SapientLion');
-		$I->fillField('password', new PasswordArgument('1234567890'));
+		$I->fillField('user-name', 'SapientLion');
+		$I->fillField(
+			'user-password', new PasswordArgument('1234567890')
+		);
 
 		$I->click('Sign in', 'form');
 		$I->amOnPage('/index.php');
@@ -48,16 +54,16 @@ class UserCest
 		$I->click('Sign up');
 		$I->amOnPage('/user_signup.php');
 
-		$I->fillField('username', 'SapientLion');
-		$I->fillField('email', 'hello@world.org');
+		$I->fillField('user-name', 'SapientLion');
+		$I->fillField('user-email', 'hello@world.org');
 
 		$password = '1234567890';
 
 		$I->fillField(
-			'password', new PasswordArgument($password)
+			'user-password', new PasswordArgument($password)
 		);
 		$I->fillField(
-			'confirmation-password', new PasswordArgument($password)
+			'user-conf-password', new PasswordArgument($password)
 		);
 
 		$I->click('Sign up', 'form');
@@ -73,9 +79,12 @@ class UserCest
 
 		$I->see('Sign in');
 		$I->click('Sign in');
+		$I->amOnPage('/user_signin.php');
 
-		$I->fillField('username', 'SapientLion');
-		$I->fillField('password', new PasswordArgument('1234567890'));
+		$I->fillField('user-name', 'SapientLion');
+		$I->fillField(
+			'user-password', new PasswordArgument('1234567890')
+		);
 
 		$I->click('Sign in', 'form');
 		$I->makeScreenshot('UserCestSigninResult');
