@@ -9,7 +9,9 @@ require_once(__DIR__ . '/../../config.php');
 require_once(SITE_ROOT . '/core/controllers/system_controller.php');
 require_once(SITE_ROOT . '/core/interfaces/iuser_controller.php');
 require_once(SITE_ROOT . '/core/models/user.php');
+require_once(SITE_ROOT . '/core/settings/get.php');
 require_once(SITE_ROOT . '/core/settings/input.php');
+require_once(SITE_ROOT . '/core/settings/paths.php');
 require_once(SITE_ROOT . '/core/settings/session.php');
 
 class UserController extends SystemController implements IUserController 
@@ -745,17 +747,17 @@ class UserController extends SystemController implements IUserController
 	 */
 	public function signOut(string $username = '', string $email = '', string $password = '') : bool
 	{
-		if(empty($_SESSION['UserName']) && empty($_SESSION['Email']) && empty($_SESSION['Password']) || 
-		empty($username) && empty($email) && empty($password))
+		if(empty($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_EMAIL]) && 
+		empty($_SESSION[SESSION_VAR_NAME_USER_PASSWORD]) || empty($username) && empty($email) && empty($password))
 		{
 			header('Location: ' . SITE_ROOT);
 
 			return false;
 		}
 
-		$_SESSION['UserName'] = '';
-		$_SESSION['Email'] = '';
-		$_SESSION['Password'] = '';
+		$_SESSION[SESSION_VAR_NAME_USER_NAME] = '';
+		$_SESSION[SESSION_VAR_NAME_USER_EMAIL] = '';
+		$_SESSION[SESSION_VAR_NAME_USER_PASSWORD] = '';
 
 		header('Location: ' . SITE_ROOT);
 
@@ -771,12 +773,12 @@ class UserController extends SystemController implements IUserController
 	{
 		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
-			return '<a href="user_updater.php">' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '</a>
-			<a href="api/controllers/user_controller.php?signout">Sign out</a>';
+			return '<a href="' . SITE_ROOT . USER_UPDATE_PAGE_PATH . '">' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '</a>
+			<a href="' . USER_SIGNOUT_PATH . '">Sign out</a>';
 		}
 
-		return '<a href="user_signup.php">Sign up</a>
-		<a href="user_signin.php">Sign in</a>';
+		return '<a href="' . USER_SIGNUP_PAGE_PATH . '">Sign up</a>
+		<a href="' . USER_SIGNIN_PAGE_PATH . '">Sign in</a>';
 	}
 	
 	/**
@@ -786,7 +788,7 @@ class UserController extends SystemController implements IUserController
 	 */
 	public function getSignupForm() : string
 	{
-		$form = '<form action="core/controllers/user_controller.php?signup" method="post">
+		$form = '<form action="' . USER_SIGNUP_PATH . '" method="post">
 		<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
 		<input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . SIGNUP_USER_NAME_FIELD_NAME . '"><br>
 
@@ -826,7 +828,7 @@ class UserController extends SystemController implements IUserController
 	 */
 	public function getUpdateForm() : string
 	{
-		$form = '<form action="core/controllers/user_controller.php?update" method="post">
+		$form = '<form action="' . USER_UPDATE_PATH . '" method="post">
 		<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
 		input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . 
 		SIGNUP_USER_NAME_FIELD_NAME . '" value=' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '><br>
@@ -869,7 +871,7 @@ class UserController extends SystemController implements IUserController
 	 */
 	public function getSigninForm() : string
 	{
-		$form = '<form action="core/controllers/user_controller.php?signin" method="post">
+		$form = '<form action="' . USER_SIGNIN_PATH . '" method="post">
 		<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
 		<input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . SIGNUP_USER_NAME_FIELD_NAME . '"><br>
 
@@ -896,74 +898,77 @@ class UserController extends SystemController implements IUserController
 	}
 
 	/**
-	 * Run certain methods depending on given $_GET values.
+	 * Execute specific user requests.
 	 *
 	 * @return bool TRUE on success or FALSE on failure.
 	 */
 	public function run() : bool
 	{
-		$user = ['', '', ''];
+		$username = '';
+		$email = '';
+		$password = '';
 
-		//
-		// Prevent breakage by checking out whether $_POST and/or $_SESSION variables are set or not.
-		//
-		if(
-			isset($_POST['username']) ||
-			isset($_POST['email']) ||
-			isset($_POST['password'])
-		) 
+		if(isset($_POST[SIGNUP_USER_NAME_FIELD_NAME]) && !empty($_POST[SIGNUP_USER_NAME_FIELD_NAME]) || 
+		isset($_POST[SIGNUP_EMAIL_FIELD_NAME]) && !empty($_POST[SIGNUP_EMAIL_FIELD_NAME]) || 
+		isset($_POST[SIGNUP_PASSWORD_FIELD_NAME]) && !empty($_POST[SIGNUP_PASSWORD_FIELD_NAME]))
 		{
-			$user = [$_POST['username'], $_POST['email'], $_POST['password']];
+			$username = $_POST[SIGNUP_USER_NAME_FIELD_NAME];
+			$email = $_POST[SIGNUP_EMAIL_FIELD_NAME];
+			$password = $_POST[SIGNUP_PASSWORD_FIELD_NAME];
 		}
-		elseif (
-			isset($_SESSION['UserName']) && !empty($_SESSION['UserName']) ||
-			isset($_SESSION['Email']) && !empty($_SESSION['Email']) ||
-			isset($_SESSION['Password']) && !empty($_SESSION['Password'])
-		) 
+		elseif(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]) || 
+		isset($_SESSION[SESSION_VAR_NAME_USER_EMAIL]) && !empty($_SESSION[SESSION_VAR_NAME_USER_EMAIL]) || 
+		isset($_SESSION[SESSION_VAR_NAME_USER_PASSWORD]) && !empty($_SESSION[SESSION_VAR_NAME_USER_PASSWORD]))
 		{
-			$user = [$_SESSION['UserName'], $_SESSION['Email'], $_SESSION['Password']];
-		} 
-		else 
+			$username = $_SESSION[SESSION_VAR_NAME_USER_NAME];
+			$email = $_SESSION[SESSION_VAR_NAME_USER_EMAIL];
+			$password = $_SESSION[SESSION_VAR_NAME_USER_PASSWORD];
+		}
+		else
 		{
 			return false;
 		}
 
 		$userController = new UserController(new User(
-			$user[0],
-			$user[1],
-			$user[2])
+			$username,
+			$email,
+			$password)
 		);
 
-		if(isset($_GET['signup'])) 
+		if(isset($_GET[ACTION_NAME_USER_SIGNUP])) 
 		{
 			$userController->create();
-			header('Location: ../../user_signin.php');
+			header('Location: ' . USER_SIGNIN_PAGE_PATH);
 		}
 
-		if(isset($_GET['update'])) 
+		if(isset($_GET[ACTION_NAME_USER_UPDATE])) 
 		{
-			$userController->update($_SESSION['UserName']);
-			header('Location: ../../user_update.php');
+			$userController->update(
+				$_SESSION[SESSION_VAR_NAME_USER_NAME]
+			);
+			header('Location: ' . USER_UPDATE_PAGE_PATH);
 		}
 
-		if(isset($_GET['delete'])) {
-			$userController->delete($_SESSION['UserName']);
+		if(isset($_GET[ACTION_NAME_USER_REMOVAL])) {
+			$userController->delete(
+				$_SESSION[SESSION_VAR_NAME_USER_NAME]
+			);
 			$userController->signOut();
-			header('Location: ../../index.php');
+			header('Location: ' . SITE_ROOT);
 		}
 
-		if(isset($_GET['signIn'])) 
+		if(isset($_GET[ACTION_NAME_USER_SIGNIN])) 
 		{
 			$userController->signIn();
-			header('Location: ../../index.php');
+			header('Location: ' . SITE_ROOT);
 		}
 
-		if(isset($_GET['signOut'])) 
+		if(isset($_GET[ACTION_NAME_USER_SIGNOUT])) 
 		{
 			$userController = new UserController();
 
 			$userController->signOut();
-			header('Location: ../../index.php');
+			header('Location: ' . SITE_ROOT);
 		}
 
 		return true;
