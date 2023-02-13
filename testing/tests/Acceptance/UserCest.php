@@ -33,7 +33,7 @@ class UserCest
 		$I->see('Sign in');
 		$I->click('Sign in');
 
-		$I->fillField('user-name', 'SapientLion');
+		$I->fillField('user-email', 'SapientLion');
 		$I->fillField(
 			'user-password', new PasswordArgument('1234567890')
 		);
@@ -81,7 +81,7 @@ class UserCest
 		$I->click('Sign in');
 		$I->amOnPage('/user_signin.php');
 
-		$I->fillField('user-name', 'SapientLion');
+		$I->fillField('user-email', 'SapientLion');
 		$I->fillField(
 			'user-password', new PasswordArgument('1234567890')
 		);
