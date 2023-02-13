@@ -763,22 +763,20 @@ class UserController extends SystemController implements IUserController
 	}
 	
 	/**
-	 * Generate HTML header and fill it with appropriate child elements.
+	 * Get HTML header.
 	 *
-	 * @return string HTML header.
+	 * @return string HTML header with user data when signed-in and a default one without user data.
 	 */
-	public function genSiteHeader() : string
+	public function getHeader() : string
 	{
-		if(isset($_SESSION['UserName']) && !empty($_SESSION['UserName']))
+		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
-			return '<a href="user_updater.php">' . $_SESSION['UserName'] . '</a>
+			return '<a href="user_updater.php">' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '</a>
 			<a href="api/controllers/user_controller.php?signout">Sign out</a>';
 		}
-		else
-		{
-			return '<a href="user_signup.php">Sign up</a>
-			<a href="user_signin.php">Sign in</a>';
-		}		
+
+		return '<a href="user_signup.php">Sign up</a>
+		<a href="user_signin.php">Sign in</a>';
 	}
 	
 	/**

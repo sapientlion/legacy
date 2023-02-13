@@ -36,7 +36,7 @@ $_SESSION['RowTo'] = 10;
 
 				$userController = new UserController();
 
-				print $userController->genSiteHeader();
+				print $userController->getHeader();
 
 			?></header>
 

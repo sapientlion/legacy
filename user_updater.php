@@ -26,7 +26,7 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 
 			$userController = new UserController();
 
-			print $userController->genSiteHeader();
+			print $userController->getHeader();
 
 		?>
 	</header>

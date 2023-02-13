@@ -10,7 +10,9 @@ interface IUserController
 	public function validatePassword(string $password = '', string $confirmationPassword = '') : string;
 	public function signIn() : bool;
 	public function signOut() : bool;
-	public function genSiteHeader() : string;
+	public function getHeader() : string;
+	public function getSignupForm() : string;
+	public function getSigninForm() : string;
 	public function run() : bool;
 }
 
