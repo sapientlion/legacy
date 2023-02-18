@@ -54,7 +54,7 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 
 	<footer class="master">
 		<footer id="footer-top">
-			<h6>Copyright © 2021 - <?php print date('Y') ?> Legacy. All rights reserved.</h6>
+			<h6>Copyright © 2021 - <?php print(date('Y')) ?> Legacy. All rights reserved.</h6>
 		</footer>
 
 		<footer id="footer-middle"></footer>
