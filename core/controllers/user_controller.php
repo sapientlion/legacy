@@ -176,7 +176,10 @@ class UserController extends SystemController implements IUserController
 			return false;
 		}
 
-		$password = $this->validatePassword($this->user->getPassword(), $this->user->getConfirmationPassword());
+		$password = $this->validatePassword(
+			$this->user->getPassword(), 
+			$this->user->getConfirmationPassword()
+		);
 
 		if(empty($password))
 		{
@@ -910,11 +913,16 @@ class UserController extends SystemController implements IUserController
 
 		if(isset($_POST[SIGNUP_USER_NAME_FIELD_NAME]) && !empty($_POST[SIGNUP_USER_NAME_FIELD_NAME]) || 
 		isset($_POST[SIGNUP_EMAIL_FIELD_NAME]) && !empty($_POST[SIGNUP_EMAIL_FIELD_NAME]) || 
-		isset($_POST[SIGNUP_PASSWORD_FIELD_NAME]) && !empty($_POST[SIGNUP_PASSWORD_FIELD_NAME]))
+		isset($_POST[SIGNUP_PASSWORD_FIELD_NAME]) && !empty($_POST[SIGNUP_PASSWORD_FIELD_NAME] || 
+		isset($_POST[SIGNUP_CONF_PASSWORD_FIELD_NAME]) && !empty($_POST[SIGNUP_CONF_PASSWORD_FIELD_NAME])))
 		{
+			//
+			// Use the following attributes when signing up.
+			//
 			if(!isset($_GET[ACTION_NAME_USER_SIGNIN]))
 			{
 				$username = $_POST[SIGNUP_USER_NAME_FIELD_NAME];
+				$confirmationPassword = $_POST[SIGNUP_CONF_PASSWORD_FIELD_NAME];
 			}
 
 			$email = $_POST[SIGNUP_EMAIL_FIELD_NAME];
@@ -933,15 +941,33 @@ class UserController extends SystemController implements IUserController
 			return false;
 		}
 
-		$userController = new UserController(new User(
-			$username,
-			$email,
-			$password)
-		);
+		//
+		// Use the following for user sign-up.
+		//
+		if(isset($_GET[ACTION_NAME_USER_SIGNUP]))
+		{
+			$userController = new UserController(new User(
+				$username,
+				$email,
+				$password,
+				$confirmationPassword)
+			);
+		}
+		//
+		// And this one for sign-in.
+		//
+		else
+		{
+			$userController = new UserController(new User(
+				$username,
+				$email,
+				$password)
+			);
+		}
 
 		if(isset($_GET[ACTION_NAME_USER_SIGNUP])) 
 		{
-			$userController->create();
+			$userController->doCreate();
 			header('Location: ' . USER_SIGNIN_PAGE_PATH);
 		}
 
