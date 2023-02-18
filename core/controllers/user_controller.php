@@ -176,7 +176,10 @@ class UserController extends SystemController implements IUserController
 			return false;
 		}
 
-		$password = $this->validatePassword($this->user->getPassword(), $this->user->getConfirmationPassword());
+		$password = $this->validatePassword(
+			$this->user->getPassword(), 
+			$this->user->getConfirmationPassword()
+		);
 
 		if(empty($password))
 		{
@@ -771,14 +774,20 @@ class UserController extends SystemController implements IUserController
 	 */
 	public function getHeader() : string
 	{
+		$list = '';
+
 		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
-			return '<a href="' . SITE_ROOT . USER_UPDATE_PAGE_PATH . '">' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '</a>
+			$list = '<a href="' . SITE_ROOT . USER_UPDATE_PAGE_PATH . '">' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '</a>
 			<a href="' . USER_SIGNOUT_PATH . '">Sign out</a>';
+
+			return $list;
 		}
 
-		return '<a href="' . USER_SIGNUP_PAGE_PATH . '">Sign up</a>
+		$list = '<a href="' . USER_SIGNUP_PAGE_PATH . '">Sign up</a>
 		<a href="' . USER_SIGNIN_PAGE_PATH . '">Sign in</a>';
+
+		return $list;
 	}
 	
 	/**
