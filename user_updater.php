@@ -60,7 +60,7 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 		<footer id="footer-middle"></footer>
 
 		<footer id="footer-bottom">
-			<h6><?php print SYSTEM_VERSION ?></h6>
+			<h6><?php print(SYSTEM_VERSION) ?></h6>
 		</footer>
 	</footer>
 </body>
