@@ -156,7 +156,7 @@ class UserController extends SystemController implements IUserController
 	 */
 	private function doCreate() : bool
 	{
-		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) || !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
 			if(SYSTEM_DEBUGGING)
 			{
@@ -226,7 +226,7 @@ class UserController extends SystemController implements IUserController
 	 */
 	private function doUpdate(string $currentUsername) : bool
 	{
-		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) || empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
 			if(SYSTEM_DEBUGGING)
 			{
@@ -342,7 +342,7 @@ class UserController extends SystemController implements IUserController
 	 */
 	private function doDelete(string $currentUsername) : bool
 	{
-		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) || empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
 			if(SYSTEM_DEBUGGING)
 			{
@@ -389,11 +389,14 @@ class UserController extends SystemController implements IUserController
 	{
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-		$_SESSION[SESSION_VAR_NAME_USER_NAME] = $result[1];
-		$_SESSION[SESSION_VAR_NAME_USER_EMAIL] = $result[2];
-		$_SESSION[SESSION_VAR_NAME_USER_PASSWORD] = $result[3];
+		$_SESSION[SESSION_VAR_NAME_USER_NAME] = $result[DB_TABLE_USER_NAME];
+		$_SESSION[SESSION_VAR_NAME_USER_EMAIL] = $result[DB_TABLE_USER_EMAIL];
+		$_SESSION[SESSION_VAR_NAME_USER_PASSWORD] = $result[DB_TABLE_USER_PASSWORD];
 
-		$_SESSION['CanCreateBlogPosts'] = $result[4];
+		//
+		// TODO don't forget to reenable this when the time is right.
+		//
+		/*$_SESSION['CanCreateBlogPosts'] = $result[4];
 		$_SESSION['CanReadBlogPosts'] = $result[5];
 		$_SESSION['CanUpdateBlogPosts'] = $result[6];
 		$_SESSION['CanDeleteBlogPosts'] = $result[7];
@@ -401,7 +404,7 @@ class UserController extends SystemController implements IUserController
 		$_SESSION['CanCreateComments'] = $result[8];
 		$_SESSION['CanReadComments'] = $result[9];
 		$_SESSION['CanUpdateComments'] = $result[10];
-		$_SESSION['CanDeleteComments'] = $result[11];
+		$_SESSION['CanDeleteComments'] = $result[11];*/
 
 		return $_SESSION;
 	}
@@ -414,11 +417,11 @@ class UserController extends SystemController implements IUserController
 	 */
 	private function doSignIn() : bool
 	{
-		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) || !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
 			if(SYSTEM_DEBUGGING)
 			{
-				$this->report('UserController', 'doSignIn', 'You must be logged-in in order to access this feature');
+				$this->report('UserController', 'doSignIn', 'You must be logged-out in order to access this feature');
 			}
 
 			return false;
@@ -464,7 +467,7 @@ class UserController extends SystemController implements IUserController
 			//
 			// Given password might be different than the one saved in database.
 			//
-			if(!password_verify($this->user->getPassword(), $result))
+			if(!password_verify($this->user->getPassword(), $result[DB_TABLE_USER_PASSWORD]))
 			{
 				if(SYSTEM_DEBUGGING)
 				{
@@ -685,6 +688,8 @@ class UserController extends SystemController implements IUserController
 
 			if(empty($password))
 			{
+				$this->report('UserController', 'validatePassword', 'The password is missing');
+
 				return '';
 			}
 		}
@@ -698,6 +703,8 @@ class UserController extends SystemController implements IUserController
 
 			if(empty($confirmationPassword))
 			{
+				$this->report('UserController', 'validatePassword', 'The confirmation password is missing');
+
 				return '';
 			}
 		}
@@ -707,6 +714,8 @@ class UserController extends SystemController implements IUserController
 		//
 		if($password != $confirmationPassword)
 		{
+			$this->report('UserController', 'validatePassword', 'The passwords are mismatched');
+
 			return '';
 		}
 
@@ -715,6 +724,8 @@ class UserController extends SystemController implements IUserController
 		//
 		if(strlen($password) < DATA_USER_PASSWORD_MIN_LENGTH || strlen($password) > DATA_USER_PASSWORD_MAX_LENGTH)
 		{
+			$this->report('UserController', 'validatePassword', 'Given password has exceeded the length limit');
+
 			return '';
 		}
 
@@ -748,19 +759,26 @@ class UserController extends SystemController implements IUserController
 	 *
 	 * @return bool TRUE on success or FALSE on failure.
 	 */
-	public function signOut(string $username = '', string $email = '', string $password = '') : bool
+	public function signOut() : bool
 	{
-		if(empty($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_EMAIL]) && 
-		empty($_SESSION[SESSION_VAR_NAME_USER_PASSWORD]) || empty($username) && empty($email) && empty($password))
+		if(empty($_SESSION[SESSION_VAR_NAME_USER_NAME]) && 
+		empty($_SESSION[SESSION_VAR_NAME_USER_EMAIL]) && 
+		empty($_SESSION[SESSION_VAR_NAME_USER_PASSWORD]))
 		{
 			header('Location: ' . SITE_ROOT);
 
 			return false;
 		}
 
-		$_SESSION[SESSION_VAR_NAME_USER_NAME] = '';
-		$_SESSION[SESSION_VAR_NAME_USER_EMAIL] = '';
-		$_SESSION[SESSION_VAR_NAME_USER_PASSWORD] = '';
+		unset(
+			$_SESSION[SESSION_VAR_NAME_USER_NAME]
+		);
+		unset(
+			$_SESSION[SESSION_VAR_NAME_USER_EMAIL]
+		);
+		unset(
+			$_SESSION[SESSION_VAR_NAME_USER_PASSWORD]
+		);
 
 		header('Location: ' . SITE_ROOT);
 
@@ -774,14 +792,20 @@ class UserController extends SystemController implements IUserController
 	 */
 	public function getHeader() : string
 	{
+		$list = '';
+
 		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
-			return '<a href="' . SITE_ROOT . USER_UPDATE_PAGE_PATH . '">' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '</a>
+			$list = '<a href="' . USER_UPDATE_PAGE_PATH . '">' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '</a>
 			<a href="' . USER_SIGNOUT_PATH . '">Sign out</a>';
+
+			return $list;
 		}
 
-		return '<a href="' . USER_SIGNUP_PAGE_PATH . '">Sign up</a>
+		$list = '<a href="' . USER_SIGNUP_PAGE_PATH . '">Sign up</a>
 		<a href="' . USER_SIGNIN_PAGE_PATH . '">Sign in</a>';
+
+		return $list;
 	}
 	
 	/**
@@ -833,21 +857,21 @@ class UserController extends SystemController implements IUserController
 	{
 		$form = '<form action="' . USER_UPDATE_PATH . '" method="post">
 		<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
-		input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . 
+		<input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . 
 		SIGNUP_USER_NAME_FIELD_NAME . '" value=' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '><br>
 
 		<label for="' . SIGNUP_EMAIL_FIELD_NAME . '">E-mail:</label><br>
-		input type="email" id="' . SIGNUP_EMAIL_FIELD_NAME . '" name="' . 
+		<input type="email" id="' . SIGNUP_EMAIL_FIELD_NAME . '" name="' . 
 		SIGNUP_EMAIL_FIELD_NAME . '" value=' . $_SESSION[SESSION_VAR_NAME_USER_EMAIL] . '><br>
 
-		label for="' . SIGNUP_PASSWORD_FIELD_NAME . '">Old Password:</label><br>
-		input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . SIGNUP_PASSWORD_FIELD_NAME . '"><br>
+		<label for="' . SIGNUP_PASSWORD_FIELD_NAME . '">Old Password:</label><br>
+		<input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . SIGNUP_PASSWORD_FIELD_NAME . '"><br>
 
 		<label for="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '">New Password:</label><br>
-		input type="password" id="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '" name="' .
+		<input type="password" id="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '" name="' .
 		SIGNUP_CONF_PASSWORD_FIELD_NAME . '"><br>
 
-		input type="submit" value="Update" id="submission-button">
+		<button type="submit" value="Update" id="submission-button">Update</button>
 		</form>';
 
 		//
@@ -910,41 +934,123 @@ class UserController extends SystemController implements IUserController
 		$username = '';
 		$email = '';
 		$password = '';
+		$confirmationPassword = '';
 
-		if(isset($_POST[SIGNUP_USER_NAME_FIELD_NAME]) && !empty($_POST[SIGNUP_USER_NAME_FIELD_NAME]) || 
-		isset($_POST[SIGNUP_EMAIL_FIELD_NAME]) && !empty($_POST[SIGNUP_EMAIL_FIELD_NAME]) || 
-		isset($_POST[SIGNUP_PASSWORD_FIELD_NAME]) && !empty($_POST[SIGNUP_PASSWORD_FIELD_NAME] || 
-		isset($_POST[SIGNUP_CONF_PASSWORD_FIELD_NAME]) && !empty($_POST[SIGNUP_CONF_PASSWORD_FIELD_NAME])))
+		if(isset($_GET[ACTION_NAME_USER_SIGNUP]))
 		{
-			//
-			// Use the following attributes when signing up.
-			//
-			if(!isset($_GET[ACTION_NAME_USER_SIGNIN]))
+			if(isset($_POST[SIGNUP_USER_NAME_FIELD_NAME]) && !empty($_POST[SIGNUP_USER_NAME_FIELD_NAME]))
 			{
 				$username = $_POST[SIGNUP_USER_NAME_FIELD_NAME];
-				$confirmationPassword = $_POST[SIGNUP_CONF_PASSWORD_FIELD_NAME];
+			}
+			else
+			{
+				return false;
 			}
 
-			$email = $_POST[SIGNUP_EMAIL_FIELD_NAME];
-			$password = $_POST[SIGNUP_PASSWORD_FIELD_NAME];
-		}
-		elseif(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]) || 
-		isset($_SESSION[SESSION_VAR_NAME_USER_EMAIL]) && !empty($_SESSION[SESSION_VAR_NAME_USER_EMAIL]) || 
-		isset($_SESSION[SESSION_VAR_NAME_USER_PASSWORD]) && !empty($_SESSION[SESSION_VAR_NAME_USER_PASSWORD]))
-		{
-			$username = $_SESSION[SESSION_VAR_NAME_USER_NAME];
-			$email = $_SESSION[SESSION_VAR_NAME_USER_EMAIL];
-			$password = $_SESSION[SESSION_VAR_NAME_USER_PASSWORD];
-		}
-		else
-		{
-			return false;
+			if(isset($_POST[SIGNUP_EMAIL_FIELD_NAME]) && !empty($_POST[SIGNUP_EMAIL_FIELD_NAME]))
+			{
+				$email = $_POST[SIGNUP_EMAIL_FIELD_NAME];
+			}
+			else
+			{
+				return false;
+			}
+
+			if(isset($_POST[SIGNUP_PASSWORD_FIELD_NAME]) && !empty($_POST[SIGNUP_PASSWORD_FIELD_NAME]))
+			{
+				$password = $_POST[SIGNUP_PASSWORD_FIELD_NAME];
+			}
+			else
+			{
+				return false;
+			}
+
+			if(isset($_POST[SIGNUP_CONF_PASSWORD_FIELD_NAME]) && !empty($_POST[SIGNUP_CONF_PASSWORD_FIELD_NAME]))
+			{
+				$confirmationPassword = $_POST[SIGNUP_CONF_PASSWORD_FIELD_NAME];
+			}
+			else
+			{
+				return false;
+			}
 		}
 
-		//
-		// Use the following for user sign-up.
-		//
-		if(isset($_GET[ACTION_NAME_USER_SIGNUP]))
+		if(isset($_GET[ACTION_NAME_USER_UPDATE]))
+		{
+			if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+			{
+				$username = $_SESSION[SESSION_VAR_NAME_USER_NAME];
+			}
+			else
+			{
+				return false;
+			}
+
+			if(isset($_SESSION[SESSION_VAR_NAME_USER_EMAIL]))
+			{
+				$email = $_SESSION[SESSION_VAR_NAME_USER_EMAIL];
+			}
+			else
+			{
+				return false;
+			}
+
+			if(isset($_SESSION[SESSION_VAR_NAME_USER_PASSWORD]))
+			{
+				$password = $_SESSION[SESSION_VAR_NAME_USER_PASSWORD];
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		if(isset($_GET[ACTION_NAME_USER_REMOVAL]))
+		{
+			if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+			{
+				$username = $_SESSION[SESSION_VAR_NAME_USER_NAME];
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		if(isset($_GET[ACTION_NAME_USER_SIGNIN]))
+		{
+			if(isset($_POST[SIGNUP_USER_NAME_FIELD_NAME]) && !empty($_POST[SIGNUP_USER_NAME_FIELD_NAME]))
+			{
+				$username = $_POST[SIGNUP_USER_NAME_FIELD_NAME];
+			}
+			else
+			{
+				return false;
+			}
+
+			if(isset($_POST[SIGNUP_PASSWORD_FIELD_NAME]) && !empty($_POST[SIGNUP_PASSWORD_FIELD_NAME]))
+			{
+				$password = $_POST[SIGNUP_PASSWORD_FIELD_NAME];
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		if(isset($_GET[ACTION_NAME_USER_SIGNOUT]))
+		{
+			if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+			{
+				$username = $_SESSION[SESSION_VAR_NAME_USER_NAME];
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		if(isset($_GET[ACTION_NAME_USER_SIGNUP])) 
 		{
 			$userController = new UserController(new User(
 				$username,
@@ -952,45 +1058,50 @@ class UserController extends SystemController implements IUserController
 				$password,
 				$confirmationPassword)
 			);
+
+			$userController->create();
+			header('Location: ' . USER_SIGNIN_PAGE_PATH);
 		}
-		//
-		// And this one for sign-in.
-		//
-		else
+
+		if(isset($_GET[ACTION_NAME_USER_UPDATE])) 
+		{
+			$userController = new UserController(new User(
+				$username,
+				$email,
+				$password,
+				$confirmationPassword)
+			);
+
+			$userController->update(
+				$_SESSION[SESSION_VAR_NAME_USER_NAME]
+			);
+			header('Location: /user_updater.php');
+		}
+
+		if(isset($_GET[ACTION_NAME_USER_REMOVAL])) 
+		{
+			$userController = new UserController(new User(
+				$username,
+				$email)
+			);
+
+			$userController->delete(
+				$_SESSION[SESSION_VAR_NAME_USER_NAME]
+			);
+			$userController->signOut();
+			header('Location: /index.php');
+		}
+
+		if(isset($_GET[ACTION_NAME_USER_SIGNIN])) 
 		{
 			$userController = new UserController(new User(
 				$username,
 				$email,
 				$password)
 			);
-		}
 
-		if(isset($_GET[ACTION_NAME_USER_SIGNUP])) 
-		{
-			$userController->doCreate();
-			header('Location: ' . USER_SIGNIN_PAGE_PATH);
-		}
-
-		if(isset($_GET[ACTION_NAME_USER_UPDATE])) 
-		{
-			$userController->update(
-				$_SESSION[SESSION_VAR_NAME_USER_NAME]
-			);
-			header('Location: ' . USER_UPDATE_PAGE_PATH);
-		}
-
-		if(isset($_GET[ACTION_NAME_USER_REMOVAL])) {
-			$userController->delete(
-				$_SESSION[SESSION_VAR_NAME_USER_NAME]
-			);
-			$userController->signOut();
-			header('Location: ' . SITE_ROOT);
-		}
-
-		if(isset($_GET[ACTION_NAME_USER_SIGNIN])) 
-		{
 			$userController->signIn();
-			header('Location: ' . SITE_ROOT);
+			header('Location: /index.php');
 		}
 
 		if(isset($_GET[ACTION_NAME_USER_SIGNOUT])) 
@@ -998,7 +1109,7 @@ class UserController extends SystemController implements IUserController
 			$userController = new UserController();
 
 			$userController->signOut();
-			header('Location: ' . SITE_ROOT);
+			header('Location: /index.php');
 		}
 
 		return true;
