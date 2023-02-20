@@ -796,7 +796,7 @@ class UserController extends SystemController implements IUserController
 
 		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
-			$list = '<a href="' . SITE_ROOT . USER_UPDATE_PAGE_PATH . '">' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '</a>
+			$list = '<a href="' . USER_UPDATE_PAGE_PATH . '">' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '</a>
 			<a href="' . USER_SIGNOUT_PATH . '">Sign out</a>';
 
 			return $list;
@@ -857,21 +857,21 @@ class UserController extends SystemController implements IUserController
 	{
 		$form = '<form action="' . USER_UPDATE_PATH . '" method="post">
 		<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
-		input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . 
+		<input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . 
 		SIGNUP_USER_NAME_FIELD_NAME . '" value=' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '><br>
 
 		<label for="' . SIGNUP_EMAIL_FIELD_NAME . '">E-mail:</label><br>
-		input type="email" id="' . SIGNUP_EMAIL_FIELD_NAME . '" name="' . 
+		<input type="email" id="' . SIGNUP_EMAIL_FIELD_NAME . '" name="' . 
 		SIGNUP_EMAIL_FIELD_NAME . '" value=' . $_SESSION[SESSION_VAR_NAME_USER_EMAIL] . '><br>
 
-		label for="' . SIGNUP_PASSWORD_FIELD_NAME . '">Old Password:</label><br>
-		input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . SIGNUP_PASSWORD_FIELD_NAME . '"><br>
+		<label for="' . SIGNUP_PASSWORD_FIELD_NAME . '">Old Password:</label><br>
+		<input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . SIGNUP_PASSWORD_FIELD_NAME . '"><br>
 
 		<label for="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '">New Password:</label><br>
-		input type="password" id="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '" name="' .
+		<input type="password" id="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '" name="' .
 		SIGNUP_CONF_PASSWORD_FIELD_NAME . '"><br>
 
-		input type="submit" value="Update" id="submission-button">
+		<button type="submit" value="Update" id="submission-button">Update</button>
 		</form>';
 
 		//
@@ -1075,7 +1075,7 @@ class UserController extends SystemController implements IUserController
 			$userController->update(
 				$_SESSION[SESSION_VAR_NAME_USER_NAME]
 			);
-			header('Location: ' . USER_UPDATE_PAGE_PATH);
+			header('Location: /user_updater.php');
 		}
 
 		if(isset($_GET[ACTION_NAME_USER_REMOVAL])) 
@@ -1089,7 +1089,7 @@ class UserController extends SystemController implements IUserController
 				$_SESSION[SESSION_VAR_NAME_USER_NAME]
 			);
 			$userController->signOut();
-			header('Location: ' . SITE_ROOT);
+			header('Location: /index.php');
 		}
 
 		if(isset($_GET[ACTION_NAME_USER_SIGNIN])) 
@@ -1101,7 +1101,7 @@ class UserController extends SystemController implements IUserController
 			);
 
 			$userController->signIn();
-			header('Location: ' . SITE_ROOT);
+			header('Location: /index.php');
 		}
 
 		if(isset($_GET[ACTION_NAME_USER_SIGNOUT])) 
@@ -1109,7 +1109,7 @@ class UserController extends SystemController implements IUserController
 			$userController = new UserController();
 
 			$userController->signOut();
-			header('Location: ' . SITE_ROOT);
+			header('Location: /index.php');
 		}
 
 		return true;
