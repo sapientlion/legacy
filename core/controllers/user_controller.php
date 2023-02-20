@@ -156,7 +156,7 @@ class UserController extends SystemController implements IUserController
 	 */
 	private function doCreate() : bool
 	{
-		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) || !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
 			if(SYSTEM_DEBUGGING)
 			{
@@ -226,7 +226,7 @@ class UserController extends SystemController implements IUserController
 	 */
 	private function doUpdate(string $currentUsername) : bool
 	{
-		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) || empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
 			if(SYSTEM_DEBUGGING)
 			{
@@ -342,7 +342,7 @@ class UserController extends SystemController implements IUserController
 	 */
 	private function doDelete(string $currentUsername) : bool
 	{
-		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) || empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
 			if(SYSTEM_DEBUGGING)
 			{
@@ -417,11 +417,11 @@ class UserController extends SystemController implements IUserController
 	 */
 	private function doSignIn() : bool
 	{
-		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) || !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
 			if(SYSTEM_DEBUGGING)
 			{
-				$this->report('UserController', 'doSignIn', 'You must be logged-in in order to access this feature');
+				$this->report('UserController', 'doSignIn', 'You must be logged-out in order to access this feature');
 			}
 
 			return false;
@@ -770,9 +770,15 @@ class UserController extends SystemController implements IUserController
 			return false;
 		}
 
-		$_SESSION[SESSION_VAR_NAME_USER_NAME] = '';
-		$_SESSION[SESSION_VAR_NAME_USER_EMAIL] = '';
-		$_SESSION[SESSION_VAR_NAME_USER_PASSWORD] = '';
+		unset(
+			$_SESSION[SESSION_VAR_NAME_USER_NAME]
+		);
+		unset(
+			$_SESSION[SESSION_VAR_NAME_USER_EMAIL]
+		);
+		unset(
+			$_SESSION[SESSION_VAR_NAME_USER_PASSWORD]
+		);
 
 		header('Location: ' . SITE_ROOT);
 
