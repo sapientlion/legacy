@@ -759,10 +759,11 @@ class UserController extends SystemController implements IUserController
 	 *
 	 * @return bool TRUE on success or FALSE on failure.
 	 */
-	public function signOut(string $username = '', string $email = '', string $password = '') : bool
+	public function signOut() : bool
 	{
-		if(empty($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_EMAIL]) && 
-		empty($_SESSION[SESSION_VAR_NAME_USER_PASSWORD]) || empty($username) && empty($email) && empty($password))
+		if(empty($_SESSION[SESSION_VAR_NAME_USER_NAME]) && 
+		empty($_SESSION[SESSION_VAR_NAME_USER_EMAIL]) && 
+		empty($_SESSION[SESSION_VAR_NAME_USER_PASSWORD]))
 		{
 			header('Location: ' . SITE_ROOT);
 
