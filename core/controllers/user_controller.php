@@ -899,8 +899,8 @@ class UserController extends SystemController implements IUserController
 	public function getSigninForm() : string
 	{
 		$form = '<form action="' . USER_SIGNIN_PATH . '" method="post">
-		<label for="' . SIGNUP_EMAIL_FIELD_NAME . '">Username:</label><br>
-		<input type="text" id="' . SIGNUP_EMAIL_FIELD_NAME . '" name="' . SIGNUP_EMAIL_FIELD_NAME . '"><br>
+		<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
+		<input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . SIGNUP_USER_NAME_FIELD_NAME . '"><br>
 
 		<label for="' . SIGNUP_PASSWORD_FIELD_NAME . '">Password:</label><br>
 		<input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . SIGNUP_PASSWORD_FIELD_NAME . '" ><br>
