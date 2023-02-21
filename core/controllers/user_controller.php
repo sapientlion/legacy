@@ -980,7 +980,11 @@ class UserController extends SystemController implements IUserController
 		<input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . 
 		SIGNUP_PASSWORD_FIELD_NAME . '"><br>
 
-		<label for="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '">New Password:</label><br>
+		<label for="' . SIGNUP_NEW_PASSWORD_FIELD_NAME . '">New Password:</label><br>
+		<input type="password" id="' . SIGNUP_NEW_PASSWORD_FIELD_NAME . '" name="' . 
+		SIGNUP_NEW_PASSWORD_FIELD_NAME . '"><br>
+
+		<label for="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '">Confirm Password:</label><br>
 		<input type="password" id="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '" name="' .
 		SIGNUP_CONF_PASSWORD_FIELD_NAME . '"><br>
 
