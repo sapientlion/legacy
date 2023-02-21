@@ -4,7 +4,7 @@ interface IUserController
 {
 	public function create() : bool;
 	public function read() : bool;
-	public function update(string $currentUsername) : bool;
+	public function update(int $pFlag, string $currentUsername) : bool;
 	public function delete(string $currentUsername) : bool;
 	public function tryToFindMatchingEntries(string $username = '', string $email = '') : int;
 	public function validatePassword(string $password = '', string $confirmationPassword = '') : string;

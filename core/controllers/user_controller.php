@@ -216,15 +216,8 @@ class UserController extends SystemController implements IUserController
 
 		return $result;
 	}
-	
-	/**
-	 * Update preceding user account by supplying it with fresh data.
-	 *
-	 * @param  string $currentUsername user name that is currently used by a signed-in account.
-	 * @return bool TRUE on success or FALSE on failure.
-	 * @throws PDOException — On error if PDO::ERRMODE_EXCEPTION option is true.
-	 */
-	private function doUpdate(string $currentUsername) : bool
+
+	private function doUpdatePasswordless(string $currentUsername)
 	{
 		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
@@ -236,7 +229,145 @@ class UserController extends SystemController implements IUserController
 			return false;
 		}
 
-		if(!$this->validate() || $this->tryToFindMatchingEmails() > 0)
+		$userName = $_SESSION[SESSION_VAR_NAME_USER_NAME];
+		$userEmail = $_SESSION[SESSION_VAR_NAME_USER_EMAIL];
+		$uFlag = false;
+
+		if(SYSTEM_DEBUGGING)
+		{
+			$this->report('UserController', 'doUpdatePasswordless', $userName);
+		}
+
+		if(SYSTEM_DEBUGGING)
+		{
+			$this->report('UserController', 'doUpdatePasswordless', $this->user->getUsername());
+		}
+
+		//
+		// Check whether there is point of committing the changes or not.
+		//
+		if($userName !== $this->user->getUsername())
+		{
+			$uFlag = true;
+		}
+		
+		if($userEmail !== $this->user->getEmail())
+		{
+			$uFlag = true;
+		}
+
+		if(!$uFlag)
+		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'doUpdatePasswordless', 'No updates have been received');
+			}
+
+			return false;
+		}
+
+		if(!$this->validate())
+		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'doUpdatePasswordless', 'Given data is invalid');
+			}
+
+			return false;
+		}
+
+		//
+		// UPDATE user SET username = :username, email = :email, password = :password WHERE username = :current_username
+		//
+		$string = "UPDATE " . 
+		DB_TABLE_USER . " SET " . 
+		DB_TABLE_USER_NAME . " = :" . 
+		DB_TABLE_USER_NAME . ", " . 
+		DB_TABLE_USER_EMAIL . " = :" . 
+		DB_TABLE_USER_EMAIL . " WHERE " . 
+		DB_TABLE_USER_NAME . " = :current_username";
+
+		$stmt = $this->dbh->prepare($string);
+	
+		$stmt->bindParam(':' . DB_TABLE_USER_NAME , $this->user->getUsername());
+		$stmt->bindParam(':current_username', $currentUsername);
+		$stmt->bindParam(':' . DB_TABLE_USER_EMAIL, $this->user->getEmail());
+	
+		//
+		// Reflect all user account changes on $_SESSION variables.
+		//
+		if($stmt->execute())
+		{
+			$_SESSION[SESSION_VAR_NAME_USER_NAME] = $this->user->getUsername();
+			$_SESSION[SESSION_VAR_NAME_USER_EMAIL] = $this->user->getEmail();
+	
+			return true;
+		}
+
+		if(SYSTEM_DEBUGGING)
+		{
+			$this->report('UserController', 'doUpdatePasswordless', 'The system is fucked');
+		}
+
+		return false;
+	}
+
+	/**
+	 * Update preceding user account by supplying it with fresh data.
+	 *
+	 * @param  string $currentUsername user name that is currently used by a signed-in account.
+	 * @return bool TRUE on success or FALSE on failure.
+	 * @throws PDOException — On error if PDO::ERRMODE_EXCEPTION option is true.
+	 */
+	private function doUpdate(string $currentUsername)
+	{
+		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'doUpdate', 'You must be logged-in in order to use this feature');
+			}
+
+			return false;
+		}
+
+		$userName = $_SESSION[SESSION_VAR_NAME_USER_NAME];
+		$userEmail = $_SESSION[SESSION_VAR_NAME_USER_EMAIL];
+		$userPassword = $_SESSION[SESSION_VAR_NAME_USER_PASSWORD];
+		$updateFlag = false;
+
+		//
+		// Check whether there is point of committing the changes or not.
+		//
+		if($userName !== $this->user->getUsername() )
+		{
+			$updateFlag = true;
+		}
+		
+		if($userEmail !== $this->user->getEmail())
+		{
+			$updateFlag = true;
+		}
+		
+		if(
+			!password_verify(
+			$this->user->getPassword(), 
+			$userPassword))
+		{
+			$updateFlag = true;
+		}
+
+		if(!$updateFlag)
+		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('UserController', 'doUpdate', 'No updates have been received');
+			}
+
+			return false;
+		}
+
+		if(!$this->validate())
 		{
 			if(SYSTEM_DEBUGGING)
 			{
@@ -246,10 +377,10 @@ class UserController extends SystemController implements IUserController
 			return false;
 		}
 
-		$password = $this->user->getPassword();
-		$confirmationPassword = $this->user->getConfirmationPassword();
+		$userPassword = $this->user->getPassword();
+		$userConfPassword = $this->user->getConfirmationPassword();
 
-		if(!empty($password) || !empty($confirmationPassword))
+		if(!empty($userPassword) && !empty($userConfPassword))
 		{
 			$password = $this->validatePassword();
 
@@ -262,13 +393,7 @@ class UserController extends SystemController implements IUserController
 
 				return false;
 			}
-		}
 
-		$username = $this->user->getUsername();
-		$email = $this->user->getEmail();
-
-		if(!empty($password))
-		{
 			//
 			// UPDATE user SET username = :username, email = :email, password = :password WHERE username = :current_username
 			//
@@ -302,37 +427,9 @@ class UserController extends SystemController implements IUserController
 			}
 		}
 
-		//
-		// UPDATE user SET username = :username, email = :email WHERE username = :current_username
-		//
-		$string = "UPDATE " . 
-		DB_TABLE_USER . " SET " . 
-		DB_TABLE_USER_NAME . " = :" . 
-		DB_TABLE_USER_NAME . ", " . 
-		DB_TABLE_USER_EMAIL . " = :" . 
-		DB_TABLE_USER_EMAIL . " WHERE " . 
-		DB_TABLE_USER_NAME . " = :current_username";
-
-		$stmt = $this->dbh->prepare($string);
-
-		$stmt->bindParam(':' . DB_TABLE_USER_NAME, $username);
-		$stmt->bindParam(':current_username', $currentUsername);
-		$stmt->bindParam(':' . DB_TABLE_USER_EMAIL, $email);
-
-		//
-		// Reflect all user account changes on $_SESSION variables.
-		//
-		if($stmt->execute())
-		{
-			$_SESSION[SESSION_VAR_NAME_USER_NAME] = $username;
-			$_SESSION[SESSION_VAR_NAME_USER_EMAIL] = $email;
-
-			return true;
-		}
-
 		return false;
 	}
-	
+
 	/**
 	 * Remove user account from database.
 	 *
@@ -389,6 +486,7 @@ class UserController extends SystemController implements IUserController
 	{
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+		$_SESSION[SESSION_VAR_NAME_USER_ID] = $result[DB_TABLE_USER_ID];
 		$_SESSION[SESSION_VAR_NAME_USER_NAME] = $result[DB_TABLE_USER_NAME];
 		$_SESSION[SESSION_VAR_NAME_USER_EMAIL] = $result[DB_TABLE_USER_EMAIL];
 		$_SESSION[SESSION_VAR_NAME_USER_PASSWORD] = $result[DB_TABLE_USER_PASSWORD];
@@ -607,11 +705,25 @@ class UserController extends SystemController implements IUserController
 	 * @return bool TRUE on success or FALSE on failure.
 	 * @throws PDOException — On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	public function update(string $currentUsername) : bool
+	public function update(int $pFlag, string $currentUsername) : bool
 	{
 		try
 		{
-			$result = $this->doUpdate($currentUsername);
+			switch($pFlag)
+			{
+				case 1:
+				{
+					$result = $this->doUpdate($currentUsername);
+
+					break;
+				}
+				default:
+				{
+					$result = $this->doUpdatePasswordless($currentUsername);
+
+					break;
+				}
+			}
 
 			return $result;
 		}
@@ -865,7 +977,8 @@ class UserController extends SystemController implements IUserController
 		SIGNUP_EMAIL_FIELD_NAME . '" value=' . $_SESSION[SESSION_VAR_NAME_USER_EMAIL] . '><br>
 
 		<label for="' . SIGNUP_PASSWORD_FIELD_NAME . '">Old Password:</label><br>
-		<input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . SIGNUP_PASSWORD_FIELD_NAME . '"><br>
+		<input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . 
+		SIGNUP_PASSWORD_FIELD_NAME . '"><br>
 
 		<label for="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '">New Password:</label><br>
 		<input type="password" id="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '" name="' .
@@ -1065,16 +1178,34 @@ class UserController extends SystemController implements IUserController
 
 		if(isset($_GET[ACTION_NAME_USER_UPDATE])) 
 		{
-			$userController = new UserController(new User(
-				$username,
-				$email,
-				$password,
-				$confirmationPassword)
-			);
+			if(empty($_POST[SIGNUP_PASSWORD_FIELD_NAME]))
+			{
+				$userController = new UserController(new User(
+					$_POST[SIGNUP_USER_NAME_FIELD_NAME],
+					$_POST[SIGNUP_EMAIL_FIELD_NAME])
+				);
 
-			$userController->update(
-				$_SESSION[SESSION_VAR_NAME_USER_NAME]
-			);
+				$userController->update(
+					0,
+					$_SESSION[SESSION_VAR_NAME_USER_NAME]
+				);
+			}
+			else
+			{
+				$userController = new UserController(new User(
+					$_POST[SIGNUP_USER_NAME_FIELD_NAME],
+					$_POST[SIGNUP_EMAIL_FIELD_NAME],
+					$_POST[SIGNUP_PASSWORD_FIELD_NAME],
+					$_POST[SIGNUP_CONF_PASSWORD_FIELD_NAME])
+				);
+
+				$userController->update(
+					1,
+					$_SESSION[SESSION_VAR_NAME_USER_NAME]
+				);
+			}
+
+
 			header('Location: /user_updater.php');
 		}
 
