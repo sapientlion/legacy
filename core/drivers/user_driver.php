@@ -8,7 +8,7 @@ require_once(SITE_ROOT . '/core/settings/input.php');
 require_once(SITE_ROOT . '/core/settings/paths.php');
 require_once(SITE_ROOT . '/core/settings/session.php');
 
-class UserDriver
+class UserDriver implements IUserDriver
 {
 	private function checkCreateRequest() : bool
 	{
