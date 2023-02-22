@@ -3,6 +3,10 @@
 require_once(__DIR__ . '/../../config.php');
 require_once(SITE_ROOT . '/core/interfaces/iblog_controller.php');
 require_once(SITE_ROOT . '/core/models/blog_post.php');
+require_once(SITE_ROOT . '/core/settings/get.php');
+require_once(SITE_ROOT . '/core/settings/input.php');
+require_once(SITE_ROOT . '/core/settings/paths.php');
+require_once(SITE_ROOT . '/core/settings/session.php');
 
 class BlogController implements IBlogController
 {
@@ -464,6 +468,82 @@ class BlogController implements IBlogController
 
 			return 0;
 		}
+	}
+
+	public function getCreationForm() : string
+	{
+		$form = '<form action="' . BLOG_CREATION_PATH . '" method="post">
+		<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
+		<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . BLOG_POST_TITLE_FIELD_NAME . '"><br>
+		
+		<label for="' . BLOG_POST_AUTHOR_FIELD_NAME .  '">Author:</label><br>
+		<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . BLOG_POST_AUTHOR_FIELD_NAME . '"><br>
+		
+		<label for="' . BLOG_POST_CONTENT_FIELD_NAME . '">Content:</label><br>
+		<input type="text" id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '">br>
+		
+		<button type="submit" value="Post" id="submission-button">Post</button>
+		</form>';
+
+		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		{
+			return $form;
+		}
+
+		return '';
+	}
+
+	public function getViewForm(int $blogPostID) : string
+	{
+		$result = $this->read($blogPostID);
+
+		$result = $this->read($blogPostID);
+
+		$form = '<form action="' . BLOG_CREATION_PATH . '" method="post">
+		<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
+		<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . 
+		BLOG_POST_TITLE_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
+		
+		<label for="' . BLOG_POST_AUTHOR_FIELD_NAME .  '">Author:</label><br>
+		<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . 
+		BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
+		
+		<label for="' . BLOG_POST_CONTENT_FIELD_NAME . '">Content:</label><br>
+		<input type="text" id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . 
+		BLOG_POST_CONTENT_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_CONTENT] . '" readonly>br>
+		
+		<button type="submit" value="Post" id="submission-button">Update</button>
+		</form>';
+
+		return $form;
+	}
+
+	public function getUpdateForm(int $blogPostID) : string
+	{
+		$result = $this->read($blogPostID);
+
+		$form = '<form action="' . BLOG_CREATION_PATH . '" method="post">
+		<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
+		<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . 
+		BLOG_POST_TITLE_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_TITLE] . '"><br>
+		
+		<label for="' . BLOG_POST_AUTHOR_FIELD_NAME .  '">Author:</label><br>
+		<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . 
+		BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_USER] . '"><br>
+		
+		<label for="' . BLOG_POST_CONTENT_FIELD_NAME . '">Content:</label><br>
+		<input type="text" id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . 
+		BLOG_POST_CONTENT_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_CONTENT] . '">br>
+		
+		<button type="submit" value="Post" id="submission-button">Update</button>
+		</form>';
+
+		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		{
+			return $form;
+		}
+
+		return '';
 	}
 	
 	/**

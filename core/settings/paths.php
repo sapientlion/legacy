@@ -12,4 +12,8 @@ define('USER_SIGNUP_PAGE_PATH', '/user_signup.php');
 define('USER_UPDATE_PAGE_PATH', '/user_updater.php');
 define('USER_SIGNIN_PAGE_PATH', '/user_signin.php');
 
+define('BLOG_CREATION_PATH', '/core/drivers/blog_driver.php?' . ACTION_NAME_BLOG_POST_CREATION);
+define('BLOG_UPDATE_PATH', '/core/driver/blog_driver.php?' . ACTION_NAME_BLOG_POST_UPDATE);
+define('BLOG_REMOVAL_PATH', '/core/driver/blog_driver.php?' . ACTION_NAME_BLOG_POST_REMOVAL);
+
 ?>

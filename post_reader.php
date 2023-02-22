@@ -17,7 +17,7 @@ if (session_status() === PHP_SESSION_NONE)
 	<link rel="stylesheet" href="themes/flashback/native.css" type="text/css">
 	<link rel="stylesheet" href="themes/flashback/class.css" type="text/css">
 	<link rel="stylesheet" href="themes/flashback/id.css" type="text/css">
-	<title>Legacy | Post Update</title>
+	<title>Legacy | Home</title>
 </head>
 
 <body>
@@ -27,9 +27,12 @@ if (session_status() === PHP_SESSION_NONE)
 
 				$userController = new UserController();
 
-				print($userController->getHeader());
+				print(
+					$userController->getHeader()
+				);
 
-			?></header>
+			?>
+		</header>
 
 		<header class="master" id="header-middle">
 			<h1>Legacy</h1>
@@ -41,26 +44,18 @@ if (session_status() === PHP_SESSION_NONE)
 	</header>
 
 	<div class="master workspace">
-		<?php
-		
-		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+	<?php
+		$blogController = new BlogController();
+
+		if(isset($_GET[GET_VAR_NAME_BLOG_POST_ID]) && !empty($_GET[GET_VAR_NAME_BLOG_POST_ID]))
 		{
-			header('Location: /index.php');
+			print(
+				$blogController->getViewForm($_GET[GET_VAR_NAME_BLOG_POST_ID])
+			);
 		}
 		else
 		{
-			$blogController = new BlogController();
-
-			if(isset($_GET[GET_VAR_NAME_BLOG_POST_ID]) && !empty($_GET[GET_VAR_NAME_BLOG_POST_ID]))
-			{
-				print(
-					$blogController->getUpdateForm($_GET[GET_VAR_NAME_BLOG_POST_ID])
-				);
-			}
-			else
-			{
-				header('Location: /index.php');
-			}
+			header('Location: /index.php');
 		}
 
 		?>
