@@ -9,7 +9,12 @@ require_once(SITE_ROOT . '/core/settings/paths.php');
 require_once(SITE_ROOT . '/core/settings/session.php');
 
 class UserDriver implements IUserDriver
-{
+{	
+	/**
+	 * Check prerequisites for user account creation.
+	 *
+	 * @return bool TRUE on success and FALSE on failure.
+	 */
 	private function checkCreateRequest() : bool
 	{
 		if(!isset($_POST[SIGNUP_USER_NAME_FIELD_NAME]) && empty($_POST[SIGNUP_USER_NAME_FIELD_NAME]))
@@ -34,7 +39,12 @@ class UserDriver implements IUserDriver
 
 		return true;
 	}
-
+	
+	/**
+	 * Check prerequisites for user account update.
+	 *
+	 * @return bool TRUE on success and FALSE on failure.
+	 */
 	private function checkUpdateRequest() : bool
 	{
 		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
@@ -52,9 +62,18 @@ class UserDriver implements IUserDriver
 			return false;
 		}
 
+		//
+		// TODO add confirmation password check here.
+		//
+
 		return true;
 	}
-
+	
+	/**
+	 * Check prerequisites for user account termination.
+	 *
+	 * @return bool TRUE on success and FALSE on failure.
+	 */
 	private function checkDeleteRequest() : bool
 	{
 		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
@@ -64,7 +83,12 @@ class UserDriver implements IUserDriver
 
 		return true;
 	}
-
+	
+	/**
+	 * Check prerequisites for user account login.
+	 *
+	 * @return bool TRUE on success and FALSE on failure.
+	 */
 	private function checkEnterRequest() : bool
 	{
 		if(!isset($_POST[SIGNUP_USER_NAME_FIELD_NAME]) && empty($_POST[SIGNUP_USER_NAME_FIELD_NAME]))
@@ -79,7 +103,12 @@ class UserDriver implements IUserDriver
 
 		return true;
 	}
-
+	
+	/**
+	 * Check prerequisites for user account logout.
+	 *
+	 * @return bool TRUE on success and FALSE on failure.
+	 */
 	private function checkExitRequest() : bool
 	{
 		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
@@ -89,7 +118,13 @@ class UserDriver implements IUserDriver
 
 		return true;
 	}
-
+	
+	/**
+	 * Create a new user account.
+	 *
+	 * @param  array $userData list of user credentials to insert into database.
+	 * @return bool TRUE on success and FALSE on failure.
+	 */
 	private function create(array $userData) : bool
 	{
 		$userController = new UserController(new User(
@@ -103,11 +138,20 @@ class UserDriver implements IUserDriver
 
 		return $result;
 	}
-
+	
+	/**
+	 * Update preceding user account.
+	 *
+	 * @param  array $userData list of user credentials to insert into database.
+	 * @return bool TRUE on success and FALSE on failure.
+	 */
 	private function update(array $userData) : bool
 	{
 		$result = false;
 
+		//
+		// Update preceding user account without touching a password.
+		//
 		if(empty($userData[SIGNUP_PASSWORD_FIELD_NAME]))
 		{
 			$userController = new UserController(new User(
@@ -120,6 +164,9 @@ class UserDriver implements IUserDriver
 				$_SESSION[SESSION_VAR_NAME_USER_NAME]
 			);
 		}
+		//
+		// Same as above, but do change the user password.
+		//
 		else
 		{
 			$userController = new UserController(new User(
@@ -137,7 +184,13 @@ class UserDriver implements IUserDriver
 
 		return $result;
 	}
-
+	
+	/**
+	 * delete
+	 *
+	 * @param  array $userData list of user credentials to insert into database.
+	 * @return bool TRUE on success and FALSE on failure.
+	 */
 	private function delete(array $userData) : bool
 	{
 		$userController = new UserController(new User(
@@ -158,9 +211,18 @@ class UserDriver implements IUserDriver
 
 		return $result;
 	}
-
+	
+	/**
+	 * Log user in to the system.
+	 *
+	 * @param  array $userData list of user credentials to insert into database.
+	 * @return bool TRUE on success and FALSE on failure.
+	 */
 	private function enter(array $userData) : bool
 	{
+		//
+		// TODO add ability to log in with email address.
+		//
 		$userController = new UserController(new User(
 			$userData[SIGNUP_USER_NAME_FIELD_NAME],
 			$userData[SIGNUP_USER_NAME_FIELD_NAME],
@@ -171,7 +233,12 @@ class UserDriver implements IUserDriver
 
 		return $result;
 	}
-
+	
+	/**
+	 * Log user out of the system.
+	 *
+	 * @return bool TRUE on success and FALSE on failure.
+	 */
 	private function exit() : bool
 	{
 		$userController = new UserController();
@@ -180,7 +247,12 @@ class UserDriver implements IUserDriver
 
 		return $result;
 	}
-
+	
+	/**
+	 * Driver method. Activate specific system component requested by a user.
+	 *
+	 * @return bool TRUE on success and FALSE on failure.
+	 */
 	public function run() : bool
 	{
 		if(isset($_GET[ACTION_NAME_USER_SIGNUP]))
@@ -283,7 +355,7 @@ class UserDriver implements IUserDriver
 			return $result;
 		}
 
-		return true;
+		return false;
 	}
 }
 
