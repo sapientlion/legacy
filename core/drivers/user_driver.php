@@ -90,13 +90,99 @@ class UserDriver
 		return true;
 	}
 
+	private function create(array $userData) : bool
+	{
+		$userController = new UserController(new User(
+			$userData[SIGNUP_USER_NAME_FIELD_NAME],
+			$userData[SIGNUP_EMAIL_FIELD_NAME],
+			$userData[SIGNUP_PASSWORD_FIELD_NAME],
+			$userData[SIGNUP_CONF_PASSWORD_FIELD_NAME])
+		);
+
+		$result = $userController->create();
+
+		return $result;
+	}
+
+	private function update(array $userData) : bool
+	{
+		$result = false;
+
+		if(empty($userData[SIGNUP_PASSWORD_FIELD_NAME]))
+		{
+			$userController = new UserController(new User(
+				$userData[SIGNUP_USER_NAME_FIELD_NAME],
+				$userData[SIGNUP_EMAIL_FIELD_NAME])
+			);
+
+			$result = $userController->update(
+				0,
+				$_SESSION[SESSION_VAR_NAME_USER_NAME]
+			);
+		}
+		else
+		{
+			$userController = new UserController(new User(
+				$userData[SIGNUP_USER_NAME_FIELD_NAME],
+				$userData[SIGNUP_EMAIL_FIELD_NAME],
+				$userData[SIGNUP_PASSWORD_FIELD_NAME],
+				$userData[SIGNUP_CONF_PASSWORD_FIELD_NAME])
+			);
+
+			$result = $userController->update(
+				1,
+				$_SESSION[SESSION_VAR_NAME_USER_NAME]
+			);
+		}
+
+		return $result;
+	}
+
+	private function delete(array $userData) : bool
+	{
+		$userController = new UserController(new User(
+			$userData[SESSION_VAR_NAME_USER_NAME],
+			$userData[SESSION_VAR_NAME_USER_EMAIL])
+		);
+
+		$result = $userController->delete(
+			$_SESSION[SESSION_VAR_NAME_USER_NAME]
+		);
+
+		if(!$result)
+		{
+			return $result;
+		}
+
+		$result = $userController->signOut();
+
+		return $result;
+	}
+
+	private function enter(array $userData) : bool
+	{
+		$userController = new UserController(new User(
+			$userData[SIGNUP_USER_NAME_FIELD_NAME],
+			$userData[SIGNUP_USER_NAME_FIELD_NAME],
+			$userData[SIGNUP_PASSWORD_FIELD_NAME])
+		);
+
+		$result = $userController->signIn();
+
+		return $result;
+	}
+
+	private function exit() : bool
+	{
+		$userController = new UserController();
+
+		$result = $userController->signOut();
+
+		return $result;
+	}
+
 	public function run() : bool
 	{
-		$username = '';
-		$email = '';
-		$password = '';
-		$confirmationPassword = '';
-
 		if(isset($_GET[ACTION_NAME_USER_SIGNUP]))
 		{
 			if(!$this->checkCreateRequest())
@@ -104,10 +190,18 @@ class UserDriver
 				return false;
 			}
 
-			$username = $_POST[SIGNUP_USER_NAME_FIELD_NAME];
-			$email = $_POST[SIGNUP_EMAIL_FIELD_NAME];
-			$password = $_POST[SIGNUP_PASSWORD_FIELD_NAME];
-			$confirmationPassword = $_POST[SIGNUP_CONF_PASSWORD_FIELD_NAME];
+			$userData = [
+				SIGNUP_USER_NAME_FIELD_NAME => $_POST[SIGNUP_USER_NAME_FIELD_NAME],
+				SIGNUP_EMAIL_FIELD_NAME => $_POST[SIGNUP_EMAIL_FIELD_NAME],
+				SIGNUP_PASSWORD_FIELD_NAME => $_POST[SIGNUP_PASSWORD_FIELD_NAME],
+				SIGNUP_CONF_PASSWORD_FIELD_NAME => $_POST[SIGNUP_CONF_PASSWORD_FIELD_NAME]
+			];
+
+			$result = $this->create($userData);
+
+			header('Location: ' . USER_SIGNIN_PAGE_PATH);
+
+			return $result;
 		}
 
 		if(isset($_GET[ACTION_NAME_USER_UPDATE]))
@@ -117,9 +211,17 @@ class UserDriver
 				return false;
 			}
 
-			$username = $_SESSION[SESSION_VAR_NAME_USER_NAME];
-			$email = $_SESSION[SESSION_VAR_NAME_USER_EMAIL];
-			$password = $_SESSION[SESSION_VAR_NAME_USER_PASSWORD];
+			$userData = [
+				SIGNUP_USER_NAME_FIELD_NAME => $_POST[SIGNUP_USER_NAME_FIELD_NAME],
+				SIGNUP_EMAIL_FIELD_NAME => $_POST[SIGNUP_EMAIL_FIELD_NAME],
+				SIGNUP_PASSWORD_FIELD_NAME => $_POST[SIGNUP_PASSWORD_FIELD_NAME],
+			];
+
+			$result = $this->update($userData);
+			
+			header('Location: ' . USER_UPDATE_PAGE_PATH);
+
+			return $result;
 		}
 
 		if(isset($_GET[ACTION_NAME_USER_REMOVAL]))
@@ -129,7 +231,16 @@ class UserDriver
 				return false;
 			}
 
-			$username = $_SESSION[SESSION_VAR_NAME_USER_NAME];
+			$userData = [
+				SESSION_VAR_NAME_USER_NAME => $_SESSION[SESSION_VAR_NAME_USER_NAME],
+				SESSION_VAR_NAME_USER_EMAIL => $_SESSION[SESSION_VAR_NAME_USER_EMAIL]
+			];
+
+			$result = $this->delete($userData);
+
+			header('Location: ' . USER_SIGNIN_PAGE_PATH);
+
+			return $result;
 		}
 
 		if(isset($_GET[ACTION_NAME_USER_SIGNIN]))
@@ -139,8 +250,23 @@ class UserDriver
 				return false;
 			}
 
-			$username = $_POST[SIGNUP_USER_NAME_FIELD_NAME];
-			$password = $_POST[SIGNUP_PASSWORD_FIELD_NAME];
+			$userData = [
+				SIGNUP_USER_NAME_FIELD_NAME => $_POST[SIGNUP_USER_NAME_FIELD_NAME],
+				SIGNUP_PASSWORD_FIELD_NAME => $_POST[SIGNUP_PASSWORD_FIELD_NAME]
+			];
+
+			$result = $this->enter($userData);
+
+			if(!$result)
+			{
+				header('Location: ' . USER_SIGNIN_PAGE_PATH);
+
+				return $result;
+			}
+
+			header('Location: /index.php');
+
+			return $result;
 		}
 
 		if(isset($_GET[ACTION_NAME_USER_SIGNOUT]))
@@ -150,88 +276,11 @@ class UserDriver
 				return false;
 			}
 
-			$username = $_POST[SIGNUP_USER_NAME_FIELD_NAME];
-			$password = $_POST[SIGNUP_PASSWORD_FIELD_NAME];
-		}
+			$result = $this->exit();
 
-		if(isset($_GET[ACTION_NAME_USER_SIGNUP])) 
-		{
-			$userController = new UserController(new User(
-				$username,
-				$email,
-				$password,
-				$confirmationPassword)
-			);
-
-			$userController->create();
-			header('Location: ' . USER_SIGNIN_PAGE_PATH);
-		}
-
-		if(isset($_GET[ACTION_NAME_USER_UPDATE])) 
-		{
-			if(empty($_POST[SIGNUP_PASSWORD_FIELD_NAME]))
-			{
-				$userController = new UserController(new User(
-					$_POST[SIGNUP_USER_NAME_FIELD_NAME],
-					$_POST[SIGNUP_EMAIL_FIELD_NAME])
-				);
-
-				$userController->update(
-					0,
-					$_SESSION[SESSION_VAR_NAME_USER_NAME]
-				);
-			}
-			else
-			{
-				$userController = new UserController(new User(
-					$_POST[SIGNUP_USER_NAME_FIELD_NAME],
-					$_POST[SIGNUP_EMAIL_FIELD_NAME],
-					$_POST[SIGNUP_PASSWORD_FIELD_NAME],
-					$_POST[SIGNUP_CONF_PASSWORD_FIELD_NAME])
-				);
-
-				$userController->update(
-					1,
-					$_SESSION[SESSION_VAR_NAME_USER_NAME]
-				);
-			}
-
-
-			header('Location: /user_updater.php');
-		}
-
-		if(isset($_GET[ACTION_NAME_USER_REMOVAL])) 
-		{
-			$userController = new UserController(new User(
-				$username,
-				$email)
-			);
-
-			$userController->delete(
-				$_SESSION[SESSION_VAR_NAME_USER_NAME]
-			);
-			$userController->signOut();
 			header('Location: /index.php');
-		}
 
-		if(isset($_GET[ACTION_NAME_USER_SIGNIN])) 
-		{
-			$userController = new UserController(new User(
-				$username,
-				$email,
-				$password)
-			);
-
-			$userController->signIn();
-			header('Location: /index.php');
-		}
-
-		if(isset($_GET[ACTION_NAME_USER_SIGNOUT])) 
-		{
-			$userController = new UserController();
-
-			$userController->signOut();
-			header('Location: /index.php');
+			return $result;
 		}
 
 		return true;
