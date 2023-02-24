@@ -130,37 +130,16 @@ class BlogController extends SystemController implements IBlogController
 	 * @param  int $to ID to stop at.
 	 * @return array Of all known blog posts.
 	 */
-	private function doReadAll(int $from, int $to) : array
+	private function doReadAll() : array
 	{
-		//
-		// Negative integers are forbidden in this case (usually, the first DB entry has ID of 1).
-		//
-		if($from <= 0 || $to <= 0)
-		{
-			return array();
-		}
-
-		//
-		// What's the point of running this method any further when you have a much easier solution for that?
-		//
-		if($from === $to)
-		{
-			return $this->doRead($from);
-		}
-
-		//
-		// Beware: the following statement is incompatible with some of the SQL-based languages.
 		//
 		// SELECT * FROM post WHERE id BETWEEN :from AND :to
 		//
 		$string = "SELECT * FROM " . 
-		DB_TABLE_BLOG_POST . " WHERE " . 
-		DB_TABLE_BLOG_POST_ID . " BETWEEN :from AND :to";
+		DB_TABLE_BLOG_POST;
 		
 		$stmt = $this->dbh->prepare($string);
 
-		$stmt->bindParam(':from', $from);
-		$stmt->bindParam(':to', $to);
 		$stmt->execute();
 
 		$result = $stmt->fetchAll();
@@ -343,11 +322,11 @@ class BlogController extends SystemController implements IBlogController
 	 * @return array|null array of blog posts or null, if nothing was found or if there's a problem with the DB.
 	 * @throws PDOException On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	public function readAll(int $from, int $to) : array
+	public function readAll() : array
 	{
 		try
 		{
-			$result = $this->doReadAll($from, $to);
+			$result = $this->doReadAll();
 	
 			return $result;
 		}
@@ -530,6 +509,65 @@ class BlogController extends SystemController implements IBlogController
 		</form>';
 
 		return $form;
+	}
+
+	public function getViewForms(int $from = 0, int $to = 10) : array
+	{
+		$result = $this->readAll();
+		$totalPosts = count($result);
+
+		if($totalPosts > $to)
+		{
+			$result = array_slice($result, $to, $from * (-1));
+		}
+
+		if($totalPosts > 0)
+		{
+			if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+			{
+				foreach ($result as $post) 
+				{
+					$blogPost = '<form class="master blog-post" action="core/controllers/blog_controller.php" method="post">
+					<input class="hidden" type="text" id="' . BLOG_POST_ID_FIELD_NAME . '-' . $post[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_ID] . '" readonly><br>
+					
+					<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . BLOG_POST_TITLE_FIELD_NAME . '" value="Title: ' . $post[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
+					
+					<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . BLOG_POST_AUTHOR_FIELD_NAME . '" value="Author: ' . $post[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
+					
+					<input type="text" id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_CONTENT] . '" readonly><br>
+
+					<button type="submit" name="action" value="read">Read</button>
+					
+					</form>';
+					
+					print($blogPost);
+				}
+			}
+			else
+			{
+				foreach ($result as $post) 
+				{
+					$blogPost = '<form class="master blog-post" action="core/controllers/blog_controller.php" method="post">
+					<input class="hidden" type="text" id="' . BLOG_POST_ID_FIELD_NAME . '-' . $post[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_ID] . '" readonly><br>
+					
+					<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . BLOG_POST_TITLE_FIELD_NAME . '" value="Title: ' . $post[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
+					
+					<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . BLOG_POST_AUTHOR_FIELD_NAME . '" value="Author: ' . $post[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
+													
+					<input type="text" id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_CONTENT] . '" readonly><br>
+					
+					<button type="submit" name="action" value="read">Read</button>
+					<button type="submit" name="action" value="update">Update</button>
+					<button type="submit" name="action" value="delete">Delete</button>
+					
+					</form>';
+													
+					print($blogPost);
+				}
+			}
+		}
+
+		return $result;
 	}
 
 	public function getUpdateForm(int $blogPostID) : string
