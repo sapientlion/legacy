@@ -9,7 +9,6 @@ interface IBlogController
 	public function delete(int $id) : bool;
 	public function validate(?BlogPost $post = NULL) : bool;
 	public function getRowNum() : int;
-	public function run() : bool;
 }
 
 ?>

@@ -476,11 +476,8 @@ class BlogController implements IBlogController
 		<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
 		<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . BLOG_POST_TITLE_FIELD_NAME . '"><br>
 		
-		<label for="' . BLOG_POST_AUTHOR_FIELD_NAME .  '">Author:</label><br>
-		<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . BLOG_POST_AUTHOR_FIELD_NAME . '"><br>
-		
 		<label for="' . BLOG_POST_CONTENT_FIELD_NAME . '">Content:</label><br>
-		<input type="text" id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '">br>
+		<input type="text" id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '"><br>
 		
 		<button type="submit" value="Post" id="submission-button">Post</button>
 		</form>';
@@ -495,8 +492,6 @@ class BlogController implements IBlogController
 
 	public function getViewForm(int $blogPostID) : string
 	{
-		$result = $this->read($blogPostID);
-
 		$result = $this->read($blogPostID);
 
 		$form = '<form action="' . BLOG_CREATION_PATH . '" method="post">
@@ -527,10 +522,6 @@ class BlogController implements IBlogController
 		<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . 
 		BLOG_POST_TITLE_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_TITLE] . '"><br>
 		
-		<label for="' . BLOG_POST_AUTHOR_FIELD_NAME .  '">Author:</label><br>
-		<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . 
-		BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_USER] . '"><br>
-		
 		<label for="' . BLOG_POST_CONTENT_FIELD_NAME . '">Content:</label><br>
 		<input type="text" id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . 
 		BLOG_POST_CONTENT_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_CONTENT] . '">br>
@@ -545,54 +536,6 @@ class BlogController implements IBlogController
 
 		return '';
 	}
-	
-	/**
-	 * Run certain methods depending on given $_GET values.
-	 *
-	 * @return bool TRUE on success or FALSE on failure.
-	 */
-	public function run() : bool
-	{
-		$post = ['', '', '', ''];
-
-		if(isset($_POST['id']) &&
-		isset($_POST['title']) &&
-		isset($_POST['author']) &&
-		isset($_POST['content']))
-		{
-			$post = [$_POST['id'], $_POST['title'], $_POST['author'], $_POST['content']];
-		}
-		else
-		{
-			return false;
-		}
-
-		$blogController = new BlogController(
-			new BlogPost($post[1], $post[2], $post[3]));
-	
-		if(isset($_GET['create'])) 
-		{
-			$blogController->create();
-			header('Location: ../../index.php');
-		}
-	
-		if(isset($_GET['update'])) 
-		{
-			$blogController->update($post[0]);
-			header('Location: ../../update.php');
-		}
-	
-		if(isset($_GET['delete'])) 
-		{
-			$blogController->delete($post[0]);
-			header('Location: ../../index.php');
-		}
-	
-		return true;
-	}
 }
-
-$blogController = new BlogController();
-$blogController->run();
 
 ?>
