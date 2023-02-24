@@ -2,6 +2,7 @@
 
 require_once(__DIR__ . '../../../config.php');
 require_once(SITE_ROOT . '/core/controllers/user_controller.php');
+require_once(SITE_ROOT . '/core/interfaces/iuser_driver.php');
 require_once(SITE_ROOT . '/core/models/user.php');
 require_once(SITE_ROOT . '/core/settings/get.php');
 require_once(SITE_ROOT . '/core/settings/input.php');
