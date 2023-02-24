@@ -908,7 +908,8 @@ class UserController extends SystemController implements IUserController
 
 		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
-			$list = '<a href="' . USER_UPDATE_PAGE_PATH . '">' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '</a>
+			$list = '<a href="' . BLOG_CREATION_PAGE_PATH . '">Create Post</a>
+			<a href="' . USER_UPDATE_PAGE_PATH . '">' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '</a>
 			<a href="' . USER_SIGNOUT_PATH . '">Sign out</a>';
 
 			return $list;
