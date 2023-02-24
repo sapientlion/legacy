@@ -1,73 +1,69 @@
 html, body
 {
-	color: black;
-	height: 100vh;
+	height: calc(100vh * 4);
 	margin: 0;
 	padding: 0;
 	width: 99vw;
 }
 
-a
-{
-	color: black;
-	text-decoration: none;
-}
-
-a:hover
-{
-	color: dimgray;
-}
-
-header a
-{
-	padding: 6px;
-}
-
-nav, footer
+body, header, form, footer
 {
 	display: flex;
-	flex: 1;
-	flex-direction: row;
-	justify-content: center;
+}
+
+body
+{
+	flex-direction: column;
+}
+
+header
+{
+	flex-direction: column;
+	height: 15%;
+	justify-content: space-evenly;
+}
+
+a
+{
+	color: orange;
+	outline: none;
+	text-decoration: none;
+	padding: 4px;
 }
 
 button
 {
 	background-color: maroon;
+	border: none;
 	border-color: maroon;
-	border-radius: 6px;
-	border-width: 4px; 
+	border-radius: 8px;
+	border-style: solid;
+	border-width: 4px;
+	box-shadow: 4px 4px black;
 	color: white;
-	cursor: pointer;
 	height: 32px;
-	margin: 4px;
-	width: 96px;
+	width: 128px;
 }
 
 button:hover
 {
 	background-color: brown;
+	cursor: pointer;
 }
 
 form
 {
 	align-items: center;
-	display: flex;
-	flex: 1;
 	flex-direction: column;
+	justify-content: space-evenly;
 }
 
 form input
 {
-	height: 24px;
-	margin: 4px;
+	border-radius: 8px;
+	margin: 16px;
 	padding: 8px;
 	width: 256px;
-}
-
-form label
-{
-	margin: 4px;
 }
 
 footer

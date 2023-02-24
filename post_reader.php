@@ -36,10 +36,10 @@ if (session_status() === PHP_SESSION_NONE)
 
 		<header class="master" id="header-middle">
 			<h1>Legacy</h1>
+		</header>
 
-			<header id="header-bottom">
+		<header class="master" id="header-bottom">
 				<nav><a href="index.php">Home</a></nav>
-			</header>
 		</header>
 	</header>
 

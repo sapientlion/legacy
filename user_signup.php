@@ -35,10 +35,10 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 
 		<header class="master" id="header-middle">
 			<h1>Legacy</h1>
+		</header>
 
-			<header id="header-bottom">
+		<header class="master" id="header-bottom">
 				<nav><a href="index.php">Home</a></nav>
-			</header>
 		</header>
 	</header>
 

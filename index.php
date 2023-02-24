@@ -27,23 +27,24 @@ if (session_status() === PHP_SESSION_NONE)
 
 				$userController = new UserController();
 
-				print $userController->getHeader();
+				print($userController->getHeader());
 
-			?></header>
+			?>
+		</header>
 
 		<header class="master" id="header-middle">
 			<h1>Legacy</h1>
+		</header>
 
-			<header id="header-bottom">
+		<header class="master" id="header-bottom">
 				<nav><a href="index.php">Home</a></nav>
-			</header>
 		</header>
 	</header>
 
-	<div class="master workspace">
-		<ul id="blog-post-list">
+	<div class="workspace">
+		<ul id="blog-posts">
 			<?php
-
+			
 				$blogController = new BlogController(
 					new BlogPost('', '', '')
 				);
