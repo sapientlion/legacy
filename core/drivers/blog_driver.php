@@ -2,6 +2,10 @@
 
 require_once(__DIR__ . '../../../config.php');
 require_once(SITE_ROOT . '/core/interfaces/iblog_driver.php');
+require_once(SITE_ROOT . '/core/settings/get.php');
+require_once(SITE_ROOT . '/core/settings/input.php');
+require_once(SITE_ROOT . '/core/settings/paths.php');
+require_once(SITE_ROOT . '/core/settings/session.php');
 
 class BlogDriver implements IBlogDriver
 {
