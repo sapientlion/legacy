@@ -173,16 +173,6 @@ class BlogDriver extends SystemController implements IBlogDriver
 		{
 			if(!$this->checkCreateRequest())
 			{
-				if(SYSTEM_DEBUGGING)
-				{
-					$this->report('BlogDriver', 'run', 'It`s fucked');
-				}
-
-				if(SYSTEM_DEBUGGING)
-				{
-					$this->report('BlogDriver', 'run', $_SESSION[SESSION_VAR_NAME_USER_NAME]);
-				}
-
 				return false;
 			}
 
