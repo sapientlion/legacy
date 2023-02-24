@@ -1,16 +1,23 @@
 <?php
 
+if(session_status() === PHP_SESSION_NONE) 
+{
+	session_start();
+}
+
 require_once(__DIR__ . '../../../config.php');
+require_once(SITE_ROOT . '/core/controllers/blog_controller.php');
+require_once(SITE_ROOT . '/core/controllers/system_controller.php');
 require_once(SITE_ROOT . '/core/interfaces/iblog_driver.php');
 require_once(SITE_ROOT . '/core/settings/get.php');
 require_once(SITE_ROOT . '/core/settings/input.php');
 require_once(SITE_ROOT . '/core/settings/paths.php');
 require_once(SITE_ROOT . '/core/settings/session.php');
 
-class BlogDriver implements IBlogDriver
+class BlogDriver extends SystemController implements IBlogDriver
 {
 	/**
-	 * Check prerequisites for user account creation.
+	 * Check prerequisites for blog post creation.
 	 *
 	 * @return bool TRUE on success and FALSE on failure.
 	 */
@@ -18,16 +25,31 @@ class BlogDriver implements IBlogDriver
 	{
 		if(!isset($_POST[BLOG_POST_TITLE_FIELD_NAME]) && empty($_POST[BLOG_POST_TITLE_FIELD_NAME]))
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('BlogDriver', 'checkCreateRequest', 'Title name is not provided');
+			}
+
 			return false;
 		}
 
 		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('BlogDriver', 'checkCreateRequest', 'User name is not provided');
+			}
+
 			return false;
 		}
 
 		if(!isset($_POST[BLOG_POST_CONTENT_FIELD_NAME]) && empty($_POST[BLOG_POST_CONTENT_FIELD_NAME]))
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('BlogDriver', 'checkCreateRequest', 'Content is not provided');
+			}
+
 			return false;
 		}
 
@@ -35,7 +57,7 @@ class BlogDriver implements IBlogDriver
 	}
 	
 	/**
-	 * Check prerequisites for user account update.
+	 * Check prerequisites for blog post update.
 	 *
 	 * @return bool TRUE on success and FALSE on failure.
 	 */
@@ -65,7 +87,7 @@ class BlogDriver implements IBlogDriver
 	}
 	
 	/**
-	 * Check prerequisites for user account termination.
+	 * Check prerequisites for blog post removal.
 	 *
 	 * @return bool TRUE on success and FALSE on failure.
 	 */
@@ -80,9 +102,9 @@ class BlogDriver implements IBlogDriver
 	}
 	
 	/**
-	 * Create a new user account.
+	 * Create a new blog post.
 	 *
-	 * @param  array $postData list of user credentials to insert into database.
+	 * @param  array $postData list of blog post information to insert into database.
 	 * @return bool TRUE on success and FALSE on failure.
 	 */
 	private function create(array $postData) : bool
@@ -99,9 +121,9 @@ class BlogDriver implements IBlogDriver
 	}
 	
 	/**
-	 * Update preceding user account.
+	 * Update preceding blog post.
 	 *
-	 * @param  array $postData list of user credentials to insert into database.
+	 * @param  array $postData list of blog post data to insert into database.
 	 * @return bool TRUE on success and FALSE on failure.
 	 */
 	private function update(array $postData) : bool
@@ -120,9 +142,9 @@ class BlogDriver implements IBlogDriver
 	}
 	
 	/**
-	 * delete
+	 * Delete a blog post from database.
 	 *
-	 * @param  array $postData list of user credentials to insert into database.
+	 * @param  array $postData list of blog post data to insert into database.
 	 * @return bool TRUE on success and FALSE on failure.
 	 */
 	private function delete(array $postData) : bool
@@ -151,12 +173,22 @@ class BlogDriver implements IBlogDriver
 		{
 			if(!$this->checkCreateRequest())
 			{
+				if(SYSTEM_DEBUGGING)
+				{
+					$this->report('BlogDriver', 'run', 'It`s fucked');
+				}
+
+				if(SYSTEM_DEBUGGING)
+				{
+					$this->report('BlogDriver', 'run', $_SESSION[SESSION_VAR_NAME_USER_NAME]);
+				}
+
 				return false;
 			}
 
 			$postData = [
 				BLOG_POST_TITLE_FIELD_NAME => $_POST[BLOG_POST_TITLE_FIELD_NAME],
-				BLOG_POST_AUTHOR_FIELD_NAME => $_POST[BLOG_POST_AUTHOR_FIELD_NAME],
+				BLOG_POST_AUTHOR_FIELD_NAME => $_SESSION[SESSION_VAR_NAME_USER_NAME],
 				BLOG_POST_CONTENT_FIELD_NAME => $_POST[BLOG_POST_CONTENT_FIELD_NAME],
 			];
 

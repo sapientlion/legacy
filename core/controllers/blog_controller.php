@@ -1,6 +1,12 @@
 <?php
 
+if(session_status() === PHP_SESSION_NONE) 
+{
+	session_start();
+}
+
 require_once(__DIR__ . '/../../config.php');
+require_once(SITE_ROOT . '/core/controllers/system_controller.php');
 require_once(SITE_ROOT . '/core/interfaces/iblog_controller.php');
 require_once(SITE_ROOT . '/core/models/blog_post.php');
 require_once(SITE_ROOT . '/core/settings/get.php');
@@ -8,7 +14,7 @@ require_once(SITE_ROOT . '/core/settings/input.php');
 require_once(SITE_ROOT . '/core/settings/paths.php');
 require_once(SITE_ROOT . '/core/settings/session.php');
 
-class BlogController implements IBlogController
+class BlogController extends SystemController implements IBlogController
 {
 	private PDO $dbh;
 	private BlogPost $post;
@@ -24,13 +30,23 @@ class BlogController implements IBlogController
 		//
 		// This will always be triggered in the event where user is not logged in.
 		//
-		if(!isset($_SESSION['CanCreateBlogPosts']) || !filter_var($_SESSION['CanCreateBlogPosts'], FILTER_VALIDATE_BOOL))
+		if(!isset($_SESSION[SESSION_VAR_NAME_USER_CAN_CREATE_POSTS]) && empty($_SESSION[SESSION_VAR_NAME_USER_CAN_CREATE_POSTS]))
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('BlogController', 'doCreate', 'You must be logged-in in order to access this feature');
+			}
+
 			return false;
 		}
 
 		if(!$this->validate())
 		{
+			if(SYSTEM_DEBUGGING)
+			{
+				$this->report('BlogController', 'doCreate', 'Unable to validate given data');
+			}
+
 			return false;
 		}
 
@@ -65,10 +81,13 @@ class BlogController implements IBlogController
 	 */
 	private function doRead(int $id) : array
 	{
-		if(!isset($_SESSION['CanReadBlogPosts']) && !filter_var($_SESSION['CanReadBlogPosts'], FILTER_VALIDATE_BOOL))
+		//
+		// TODO i don't think that this should exist. Re-imagine this part or remove completely.
+		//
+		/*if(!isset($_SESSION[SESSION_VAR_NAME_USER_CAN_UPDATE_POSTS]) && empty($_SESSION[SESSION_VAR_NAME_USER_CAN_UPDATE_POSTS]))
 		{
 			return array();
-		}
+		}*/
 
 		//
 		// SELECT * FROM post WHERE id = :id
@@ -174,7 +193,7 @@ class BlogController implements IBlogController
 	 */
 	private function doUpdate(int $id) : bool
 	{
-		if(!isset($_SESSION['CanUpdateBlogPosts']) && !filter_var($_SESSION['CanUpdateBlogPosts'], FILTER_VALIDATE_BOOL))
+		if(!isset($_SESSION[SESSION_VAR_NAME_USER_CAN_UPDATE_POSTS]) && empty($_SESSION[SESSION_VAR_NAME_USER_CAN_UPDATE_POSTS]))
 		{
 			return false;
 		}
@@ -221,7 +240,7 @@ class BlogController implements IBlogController
 	 */
 	private function doDelete(int $id) : bool
 	{
-		if(!isset($_SESSION['CanDeleteBlogPosts']) && !filter_var($_SESSION['CanDeleteBlogPosts'], FILTER_VALIDATE_BOOL))
+		if(!isset($_SESSION[SESSION_VAR_NAME_USER_CAN_DELETE_POSTS]) && empty($_SESSION[SESSION_VAR_NAME_USER_CAN_DELETE_POSTS]))
 		{
 			return false;
 		}

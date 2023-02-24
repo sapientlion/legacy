@@ -490,19 +490,9 @@ class UserController extends SystemController implements IUserController
 		$_SESSION[SESSION_VAR_NAME_USER_NAME] = $result[DB_TABLE_USER_NAME];
 		$_SESSION[SESSION_VAR_NAME_USER_EMAIL] = $result[DB_TABLE_USER_EMAIL];
 		$_SESSION[SESSION_VAR_NAME_USER_PASSWORD] = $result[DB_TABLE_USER_PASSWORD];
-
-		//
-		// TODO don't forget to reenable this when the time is right.
-		//
-		/*$_SESSION['CanCreateBlogPosts'] = $result[4];
-		$_SESSION['CanReadBlogPosts'] = $result[5];
-		$_SESSION['CanUpdateBlogPosts'] = $result[6];
-		$_SESSION['CanDeleteBlogPosts'] = $result[7];
-
-		$_SESSION['CanCreateComments'] = $result[8];
-		$_SESSION['CanReadComments'] = $result[9];
-		$_SESSION['CanUpdateComments'] = $result[10];
-		$_SESSION['CanDeleteComments'] = $result[11];*/
+		$_SESSION[SESSION_VAR_NAME_USER_CAN_CREATE_POSTS] = $result[DB_TABLE_USER_CAN_CREATE_POSTS];
+		$_SESSION[SESSION_VAR_NAME_USER_CAN_UPDATE_POSTS] = $result[DB_TABLE_USER_CAN_UPDATE_POSTS];
+		$_SESSION[SESSION_VAR_NAME_USER_CAN_DELETE_POSTS] = $result[DB_TABLE_USER_CAN_DELETE_POSTS];
 
 		return $_SESSION;
 	}
