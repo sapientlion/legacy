@@ -64,11 +64,13 @@ if (session_status() === PHP_SESSION_NONE)
 			?>
 		</ul>
 
-		<?php
+		<ol class="master" id="page-selector">
+			<?php
 
-			$blogController->getPageSelector();
+				$blogController->getPageSelector();
 
-		?>
+			?>
+		</ol>
 	</div>
 
 	<footer class="master">

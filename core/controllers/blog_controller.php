@@ -583,33 +583,26 @@ class BlogController extends SystemController implements IBlogController
 			return 0;
 		}
 
-		$totalPages = 0;
+		//
+		// Get total number of pages required for storing the blog posts.
+		//
+		$totalPages = (int)($totalPosts / 5);
 
 		//
-		// Get total number of pages.
+		// Add another page when remainder is greater than zero. Example: $totalPosts = 6, $postsPerPage = 5.
+		// $totalPosts / $postsPerPage = 1.2 = $totalPages. $totalPages is equal to 2 pages.
 		//
-		if($totalPosts % 5 !== 1)
+		if($totalPosts % 5 > 0)
 		{
-			$totalPages = (int)($totalPosts / 5);
+			$totalPages++;
 		}
-		else
-		{
-			$totalPages = (int)($totalPosts / 5) + 1;
-		}
 
 		//
-		// Page selector.
+		// Page selector itself.
 		//
-		$page = 0;
-
-		//
-		// Add more pages until the limit is reached.
-		//
-		while($page !== $totalPages)
+		for($page = 1; $page <= $totalPages; $page++)
 		{
-			print('<a href="index.php?from=' . $from + ($page * 5) . '">' .  $page + 1 . '</a>');
-			
-			$page++;
+			print('<a href="index.php?from=' . $from + (($page - 1) * 5) . '">' .  $page . '</a>');
 		}
 
 		return $totalPages;
