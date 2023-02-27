@@ -511,14 +511,14 @@ class BlogController extends SystemController implements IBlogController
 		return $form;
 	}
 
-	public function getViewForms(int $from = 0, int $to = 10) : array
+	public function getViewForms(int $from = 0) : array
 	{
 		$result = $this->readAll();
 		$totalPosts = count($result);
 
-		if($totalPosts > $to)
+		if($totalPosts > 5)
 		{
-			$result = array_slice($result, $to, $from * (-1));
+			$result = array_slice($result, $from, 5);
 		}
 
 		if($totalPosts > 0)
@@ -568,6 +568,51 @@ class BlogController extends SystemController implements IBlogController
 		}
 
 		return $result;
+	}
+
+	public function getPageSelector(int $from = 0) : int
+	{
+		//
+		// TODO optimize this part, if possible.
+		//
+		$result = $this->readAll();
+		$totalPosts = count($result);
+
+		if($totalPosts <= 5)
+		{
+			return 0;
+		}
+
+		$totalPages = 0;
+
+		//
+		// Get total number of pages.
+		//
+		if($totalPosts % 5 !== 1)
+		{
+			$totalPages = (int)($totalPosts / 5);
+		}
+		else
+		{
+			$totalPages = (int)($totalPosts / 5) + 1;
+		}
+
+		//
+		// Page selector.
+		//
+		$page = 0;
+
+		//
+		// Add more pages until the limit is reached.
+		//
+		while($page !== $totalPages)
+		{
+			print('<a href="index.php?from=' . $from + ($page * 5) . '">' .  $page + 1 . '</a>');
+			
+			$page++;
+		}
+
+		return $totalPages;
 	}
 
 	public function getUpdateForm(int $blogPostID) : string

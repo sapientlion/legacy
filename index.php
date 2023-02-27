@@ -48,10 +48,26 @@ if (session_status() === PHP_SESSION_NONE)
 					new BlogPost('', '', '')
 				);
 
-				$result = $blogController->getViewForms();
+				$result = array();
 
+				if(isset($_GET['from']) && !empty($_GET['from']))
+				{
+					$result = $blogController->getViewForms($_GET['from']);
+				}
+				else
+				{
+					$result = $blogController->getViewForms();
+				}
+
+				
 			?>
 		</ul>
+
+		<?php
+
+			$blogController->getPageSelector();
+
+		?>
 	</div>
 
 	<footer class="master">
