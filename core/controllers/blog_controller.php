@@ -536,7 +536,9 @@ class BlogController extends SystemController implements IBlogController
 					
 					<input type="text" id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_CONTENT] . '" readonly><br>
 
-					<button type="submit" name="action" value="read">Read</button>
+					<div class="blog-post-controller">
+						<button type="submit" name="action" value="read">Read</button>
+					</div>
 					
 					</form>';
 					
@@ -556,9 +558,11 @@ class BlogController extends SystemController implements IBlogController
 													
 					<input type="text" id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_CONTENT] . '" readonly><br>
 					
-					<button type="submit" name="action" value="read">Read</button>
-					<button type="submit" name="action" value="update">Update</button>
-					<button type="submit" name="action" value="delete">Delete</button>
+					<div class="blog-post-controller">
+						<button type="submit" name="action" value="read">Read</button>
+						<button type="submit" name="action" value="update">Update</button>
+						<button type="submit" name="action" value="delete">Delete</button>
+					</div>
 					
 					</form>';
 													

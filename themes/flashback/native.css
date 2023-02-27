@@ -42,6 +42,7 @@ button
 	box-shadow: 4px 4px black;
 	color: white;
 	height: 32px;
+	margin: 4px;
 	width: 128px;
 }
 
