@@ -31,6 +31,11 @@ a
 	padding: 4px;
 }
 
+a:hover
+{
+	color: white;
+}
+
 button
 {
 	background-color: maroon;

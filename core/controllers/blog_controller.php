@@ -570,6 +570,12 @@ class BlogController extends SystemController implements IBlogController
 				}
 			}
 		}
+		else
+		{
+			$blogPost = '<form class="master blog-post"></form>';
+
+			print($blogPost);
+		}
 
 		return $result;
 	}
