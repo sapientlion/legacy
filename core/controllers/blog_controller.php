@@ -601,6 +601,8 @@ class BlogController extends SystemController implements IBlogController
 			$totalPages++;
 		}
 
+		print('<ol class="master" id="page-selector">');
+
 		//
 		// Page selector itself.
 		//
@@ -608,6 +610,8 @@ class BlogController extends SystemController implements IBlogController
 		{
 			print('<a href="index.php?from=' . $from + (($page - 1) * 5) . '">' .  $page . '</a>');
 		}
+
+		print('</ol>');
 
 		return $totalPages;
 	}
