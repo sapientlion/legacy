@@ -250,55 +250,6 @@ class CommentController implements ICommentController
 			return false;
 		}
 	}
-	
-	/**
-	 * Run certain methods depending on given $_GET values.
-	 *
-	 * @return bool TRUE on success or FALSE on failure.
-	 */
-	public function run() : bool
-	{
-		$comment = ['', '', '', ''];
-
-		if(isset($_POST['id']) &&
-		isset($_POST['comment']) &&
-		isset($_POST['author']) &&
-		isset($_POST['content']))
-		{
-			$comment = [$_POST['id'], $_POST['comment'], $_POST['author'], $_POST['content']];
-		}
-		else
-		{
-			return false;
-		}
-
-		$blogController = new CommentController(
-			new Comment($_POST['id'], $_POST['author'], $_POST['content'])
-		);
-	
-		if(isset($_GET['create'])) 
-		{
-			$blogController->create();
-			header('Location: ../../index.php');
-		}
-	
-		if(isset($_GET['update'])) 
-		{
-			$blogController->update($comment[0]);
-			header('Location: ../../update.php');
-		}
-	
-		if(isset($_GET['delete'])) 
-		{
-			$blogController->delete($comment[0]);
-			header('Location: ../../index.php');
-		}
-	
-		return true;
-	}
 }
-
-$blogController = new CommentController();
-$blogController->run();
 
 ?>
