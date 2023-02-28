@@ -45,12 +45,14 @@ if (session_status() === PHP_SESSION_NONE)
 
 	<div class="master workspace">
 	<?php
-		$blogController = new BlogController();
+		$blogController = new BlogController(
+			new BlogPost('', '', '')
+		);
 
-		if(isset($_GET[GET_VAR_NAME_BLOG_POST_ID]) && !empty($_GET[GET_VAR_NAME_BLOG_POST_ID]))
+		if(isset($_POST[BLOG_POST_ID_FIELD_NAME]) && !empty($_POST[BLOG_POST_ID_FIELD_NAME]))
 		{
 			print(
-				$blogController->getViewForm($_GET[GET_VAR_NAME_BLOG_POST_ID])
+				$blogController->getViewForm($_POST[BLOG_POST_ID_FIELD_NAME])
 			);
 		}
 		else

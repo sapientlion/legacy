@@ -72,6 +72,13 @@ form input
 	width: 256px;
 }
 
+form textarea
+{
+	border-radius: 8px;
+	margin: 16px;
+	padding: 8px;
+}
+
 footer
 {
 	flex-direction: column;

@@ -55,6 +55,16 @@ class BlogDriver extends SystemController implements IBlogDriver
 
 		return true;
 	}
+
+	private function checkReadRequest() : bool
+	{
+		if(!isset($_POST[BLOG_POST_ID_FIELD_NAME]) && empty($_POST[BLOG_POST_ID_FIELD_NAME]))
+		{
+			return false;
+		}
+
+		return true;
+	}
 	
 	/**
 	 * Check prerequisites for blog post update.
@@ -119,6 +129,21 @@ class BlogDriver extends SystemController implements IBlogDriver
 
 		return $result;
 	}
+
+	private function read(array $postData) : array
+	{
+		$blogPostController = new BlogController(new BlogPost(
+			'',
+			'',
+			'')
+		);
+
+		$result = $blogPostController->read(
+			$postData[BLOG_POST_ID_FIELD_NAME]
+		);
+
+		return $result;
+	}
 	
 	/**
 	 * Update preceding blog post.
@@ -150,9 +175,9 @@ class BlogDriver extends SystemController implements IBlogDriver
 	private function delete(array $postData) : bool
 	{
 		$blogPostController = new BlogController(new BlogPost(
-			$postData[BLOG_POST_TITLE_FIELD_NAME],
-			$postData[BLOG_POST_AUTHOR_FIELD_NAME],
-			$postData[BLOG_POST_CONTENT_FIELD_NAME])
+			'',
+			'',
+			'')
 		);
 
 		$result = $blogPostController->delete(
@@ -169,7 +194,7 @@ class BlogDriver extends SystemController implements IBlogDriver
 	 */
 	public function run() : bool
 	{
-		if(isset($_GET[ACTION_NAME_BLOG_POST_CREATION]))
+		if(isset($_POST[BLOG_POST_SUBMIT_BUTTON_NAME]) && $_POST[BLOG_POST_SUBMIT_BUTTON_NAME] === ACTION_NAME_BLOG_POST_CREATION)
 		{
 			if(!$this->checkCreateRequest())
 			{
@@ -184,15 +209,32 @@ class BlogDriver extends SystemController implements IBlogDriver
 
 			$result = $this->create($postData);
 
-			//
-			// TODO redirect to the blog post reader page instead.
-			//
 			header('Location: /index.php');
 
 			return $result;
 		}
 
-		if(isset($_GET[ACTION_NAME_BLOG_POST_UPDATE]))
+		if(isset($_POST[BLOG_POST_SUBMIT_BUTTON_NAME]) && $_POST[BLOG_POST_SUBMIT_BUTTON_NAME] === ACTION_NAME_BLOG_POST_VIEW)
+		{
+			if(!$this->checkReadRequest())
+			{
+				return false;
+			}
+
+			$postData = [
+				BLOG_POST_ID_FIELD_NAME => $_POST[BLOG_POST_ID_FIELD_NAME]
+			];
+
+			$result = $this->read($postData);
+
+			header(
+				'Location: ' . BLOG_VIEW_PAGE_PATH . '?post=' . $result[DB_TABLE_BLOG_POST_ID]
+			);
+
+			return $result;
+		}
+
+		if(isset($_POST[BLOG_POST_SUBMIT_BUTTON_NAME]) && $_POST[BLOG_POST_SUBMIT_BUTTON_NAME] === ACTION_NAME_BLOG_POST_UPDATE)
 		{
 			if(!$this->checkUpdateRequest())
 			{
@@ -208,15 +250,14 @@ class BlogDriver extends SystemController implements IBlogDriver
 
 			$result = $this->update($postData);
 
-			//
-			// TODO redirect to the blog post reader page instead.
-			//
-			header('Location: /index.php');
+			header(
+				'Location: ' . BLOG_VIEW_PAGE_PATH . '?post=' . $result[DB_TABLE_BLOG_POST_ID]
+			);
 
 			return $result;
 		}
 
-		if(isset($_GET[ACTION_NAME_BLOG_POST_REMOVAL]))
+		if(isset($_POST[BLOG_POST_SUBMIT_BUTTON_NAME]) && $_POST[BLOG_POST_SUBMIT_BUTTON_NAME] === ACTION_NAME_BLOG_POST_REMOVAL)
 		{
 			if(!$this->checkDeleteRequest())
 			{

@@ -12,10 +12,13 @@ define('USER_SIGNUP_PAGE_PATH', '/user_signup.php');
 define('USER_UPDATE_PAGE_PATH', '/user_updater.php');
 define('USER_SIGNIN_PAGE_PATH', '/user_signin.php');
 
-define('BLOG_CREATION_PATH', '/core/drivers/blog_driver.php?' . ACTION_NAME_BLOG_POST_CREATION);
-define('BLOG_UPDATE_PATH', '/core/driver/blog_driver.php?' . ACTION_NAME_BLOG_POST_UPDATE . '&' . GET_VAR_NAME_BLOG_POST_ID . '=');
-define('BLOG_REMOVAL_PATH', '/core/driver/blog_driver.php?' . ACTION_NAME_BLOG_POST_REMOVAL . '&' . GET_VAR_NAME_BLOG_POST_ID) . '=';
+define('BLOG_ACTION_PATH', '/core/drivers/blog_driver.php');
+define('BLOG_CREATION_PATH', '/core/drivers/blog_driver.php');
+define('BLOG_VIEW_PATH', '/core/drivers/blog_driver.php');
+define('BLOG_UPDATE_PATH', '/core/drivers/blog_driver.php');
+define('BLOG_REMOVAL_PATH', '/core/drivers/blog_driver.php');
 define('BLOG_CREATION_PAGE_PATH', '/post_creator.php');
-define('BLOG_UPDATE_PAGE_PATH', '/post_update.php');
+define('BLOG_VIEW_PAGE_PATH', '/post_reader.php');
+define('BLOG_UPDATE_PAGE_PATH', '/post_updater.php');
 
 ?>

@@ -475,9 +475,12 @@ class BlogController extends SystemController implements IBlogController
 		<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . BLOG_POST_TITLE_FIELD_NAME . '"><br>
 		
 		<label for="' . BLOG_POST_CONTENT_FIELD_NAME . '">Content:</label><br>
-		<input type="text" id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '"><br>
+		<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '" rows="25" cols="150"></textarea><br>
 		
-		<button type="submit" value="Post" id="submission-button">Post</button>
+		<div class="blog-post-controller">
+			<button type="submit" formaction="' . BLOG_CREATION_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_CREATION . '">Post</button>
+		</div>
+
 		</form>';
 
 		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
@@ -492,7 +495,7 @@ class BlogController extends SystemController implements IBlogController
 	{
 		$result = $this->read($blogPostID);
 
-		$form = '<form action="' . BLOG_CREATION_PATH . '" method="post">
+		$form = '<form class="blog-post" method="post">
 		<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
 		<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . 
 		BLOG_POST_TITLE_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
@@ -502,10 +505,14 @@ class BlogController extends SystemController implements IBlogController
 		BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
 		
 		<label for="' . BLOG_POST_CONTENT_FIELD_NAME . '">Content:</label><br>
-		<input type="text" id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . 
-		BLOG_POST_CONTENT_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_CONTENT] . '" readonly>br>
+		<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . 
+		BLOG_POST_CONTENT_FIELD_NAME . '" rows="4" cols="150" readonly>' . $result[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
 		
-		<button type="submit" value="Post" id="submission-button">Update</button>
+		<div class="blog-post-controller">
+			<button type="submit" formaction="' . BLOG_UPDATE_PAGE_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_UPDATE . '">Edit</button>
+			<button type="submit" formaction="' . BLOG_REMOVAL_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_REMOVAL . '">Delete</button>
+		</div>
+
 		</form>';
 
 		return $form;
@@ -527,17 +534,17 @@ class BlogController extends SystemController implements IBlogController
 			{
 				foreach ($result as $post) 
 				{
-					$blogPost = '<form class="master blog-post" action="core/controllers/blog_controller.php" method="post">
+					$blogPost = '<form class="master blog-post" action="" method="post">
 					<input class="hidden" type="text" id="' . BLOG_POST_ID_FIELD_NAME . '-' . $post[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_ID] . '" readonly><br>
 					
 					<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . BLOG_POST_TITLE_FIELD_NAME . '" value="Title: ' . $post[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
 					
 					<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . BLOG_POST_AUTHOR_FIELD_NAME . '" value="Author: ' . $post[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
 					
-					<input type="text" id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_CONTENT] . '" readonly><br>
+					<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '" rows="5" cols="150" readonly>' . $post[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
 
 					<div class="blog-post-controller">
-						<button type="submit" name="action" value="read">Read</button>
+						<button type="submit" formaction="' . BLOG_VIEW_PAGE_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_VIEW . '">View</button>
 					</div>
 					
 					</form>';
@@ -549,19 +556,21 @@ class BlogController extends SystemController implements IBlogController
 			{
 				foreach ($result as $post) 
 				{
-					$blogPost = '<form class="master blog-post" action="core/controllers/blog_controller.php" method="post">
+					$blogPost = '<form class="master blog-post" method="post">
 					<input class="hidden" type="text" id="' . BLOG_POST_ID_FIELD_NAME . '-' . $post[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_ID] . '" readonly><br>
 					
-					<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . BLOG_POST_TITLE_FIELD_NAME . '" value="Title: ' . $post[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
+					<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . BLOG_POST_TITLE_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
 					
-					<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . BLOG_POST_AUTHOR_FIELD_NAME . '" value="Author: ' . $post[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
+					<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
 													
-					<input type="text" id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_CONTENT] . '" readonly><br>
+					<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '" rows="5" cols="150" readonly>' . $post[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
 					
 					<div class="blog-post-controller">
-						<button type="submit" name="action" value="read">Read</button>
-						<button type="submit" name="action" value="update">Update</button>
-						<button type="submit" name="action" value="delete">Delete</button>
+						<button type="submit" formaction="' . BLOG_VIEW_PAGE_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_VIEW . '">View</button>
+
+						<button type="submit" formaction="' . BLOG_UPDATE_PAGE_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_UPDATE . '">Edit</button>
+
+						<button type="submit" formaction="' . BLOG_REMOVAL_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_REMOVAL . '">Delete</button>
 					</div>
 					
 					</form>';
@@ -627,15 +636,22 @@ class BlogController extends SystemController implements IBlogController
 		$result = $this->read($blogPostID);
 
 		$form = '<form action="' . BLOG_CREATION_PATH . '" method="post">
+
+		<input class="hidden" type="text" id="' . BLOG_POST_ID_FIELD_NAME . '-' . $result[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_ID_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_ID] . '" readonly><br>
+		<input class="hidden" type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '-' . $result[DB_TABLE_BLOG_POST_USER] . '" name="' . BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
+
 		<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
 		<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . 
 		BLOG_POST_TITLE_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_TITLE] . '"><br>
 		
 		<label for="' . BLOG_POST_CONTENT_FIELD_NAME . '">Content:</label><br>
-		<input type="text" id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . 
-		BLOG_POST_CONTENT_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_CONTENT] . '">br>
+		<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . 
+		BLOG_POST_CONTENT_FIELD_NAME . '" rows="25" cols="150">' . $result[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
 		
-		<button type="submit" value="Post" id="submission-button">Update</button>
+		<div class="blog-post-controller">
+			<button type="submit" formaction="' . BLOG_UPDATE_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_UPDATE . '">Update</button>
+		</div>
+
 		</form>';
 
 		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
