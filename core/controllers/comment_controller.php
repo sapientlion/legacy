@@ -38,6 +38,39 @@ class CommentController implements ICommentController
 
 		return $result;
 	}
+
+	private function doReadAll() : array
+	{
+		//
+		// SELECT * FROM post WHERE id BETWEEN :from AND :to
+		//
+		$string = "SELECT * FROM " . 
+		DB_TABLE_COMMENT;
+		
+		$stmt = $this->dbh->prepare($string);
+
+		$stmt->execute();
+
+		$result = $stmt->fetchAll();
+
+		//
+		// Also return an empty array in case of a failure (empty list for example).
+		//
+		if(!$result)
+		{
+			return array();
+		}
+
+		foreach($result as $comment)
+		{
+			foreach($comment as $commentAttribute)
+			{
+				$commentAttribute = htmlspecialchars($commentAttribute);
+			}
+		}
+	
+		return $result;
+	}
 	
 	/**
 	 * Update preceding blog comment with new data.
@@ -220,27 +253,19 @@ class CommentController implements ICommentController
 	 * @return array|null array of blog posts or null, if nothing was found or if there's a problem with the DB.
 	 * @throws PDOException On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	public function readAll(int $from, int $to) : array
+	public function readAll() : array
 	{
 		try
 		{
-			//
-			// The following statement is incompatible with some of the SQL-based languages.
-			//
-			$stmt = $this->dbh->prepare("SELECT * FROM comment WHERE id BETWEEN :from AND :to");
+			$result = $this->doReadAll();
 
-			$stmt->bindParam(':from', $from);
-			$stmt->bindParam(':to', $to);
-			$stmt->execute();
-			$result = $stmt->fetchAll();
-	
 			return $result;
 		}
 		catch(PDOException $e)
 		{
 			print 'Error!: ' . $e->getMessage() . '<br/>';
 
-			return null;
+			return false;
 		}
 	}
 	
