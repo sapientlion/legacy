@@ -544,7 +544,7 @@ class BlogController extends SystemController implements IBlogController
 					<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '" rows="5" cols="150" readonly>' . $post[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
 
 					<div class="blog-post-controller">
-						<button type="submit" formaction="' . BLOG_VIEW_PAGE_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_VIEW . '">View</button>
+						<button type="submit" formaction="' . BLOG_VIEW_PAGE_PATH . $post[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_VIEW . '">View</button>
 					</div>
 					
 					</form>';
@@ -566,7 +566,7 @@ class BlogController extends SystemController implements IBlogController
 					<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '" rows="5" cols="150" readonly>' . $post[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
 					
 					<div class="blog-post-controller">
-						<button type="submit" formaction="' . BLOG_VIEW_PAGE_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_VIEW . '">View</button>
+						<button type="submit" formaction="' . BLOG_VIEW_PAGE_PATH . $post[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_VIEW . '">View</button>
 
 						<button type="submit" formaction="' . BLOG_UPDATE_PAGE_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_UPDATE . '">Edit</button>
 

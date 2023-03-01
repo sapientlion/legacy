@@ -14,7 +14,7 @@ define('USER_SIGNIN_PAGE_PATH', '/user_signin.php');
 
 define('BLOG_ACTION_PATH', '/core/drivers/blog_driver.php');
 define('BLOG_CREATION_PATH', '/core/drivers/blog_driver.php');
-define('BLOG_VIEW_PATH', '/core/drivers/blog_driver.php');
+define('BLOG_VIEW_PATH', '/core/drivers/blog_driver.php?post=');
 define('BLOG_UPDATE_PATH', '/core/drivers/blog_driver.php');
 define('BLOG_REMOVAL_PATH', '/core/drivers/blog_driver.php');
 define('BLOG_CREATION_PAGE_PATH', '/post_creator.php');

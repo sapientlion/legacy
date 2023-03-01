@@ -12,4 +12,9 @@ define('ACTION_NAME_BLOG_POST_VIEW', 'read');
 define('ACTION_NAME_BLOG_POST_UPDATE', 'update');
 define('ACTION_NAME_BLOG_POST_REMOVAL', 'delete');
 
+define('ACTION_NAME_COMMENT_CREATION', 'create');
+define('ACTION_NAME_COMMENT_VIEW', 'read');
+define('ACTION_NAME_COMMENT_UPDATE', 'update');
+define('ACTION_NAME_COMMENT_REMOVAL', 'delete');
+
 ?>
