@@ -323,11 +323,10 @@ class CommentController implements ICommentController
 		<input class="hidden" type="text" id="' . COMMENT_POST_ID_FIELD_NAME . '-' . $postID . '" name="' . COMMENT_POST_ID_FIELD_NAME . '" value="' . $postID . '" readonly><br>
 		<input class="hidden" type="text" id="' . COMMENT_AUTHOR_FIELD_NAME . '" name="' . COMMENT_AUTHOR_FIELD_NAME . '" value="' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '" readonly><br>
 
-		<label for="' . COMMENT_CONTENT_FIELD_NAME . '">Content:</label><br>
-		<textarea id="' . COMMENT_CONTENT_FIELD_NAME . '" name="' . COMMENT_CONTENT_FIELD_NAME . '" rows="25" cols="150"></textarea><br>
+		<textarea id="' . COMMENT_CONTENT_FIELD_NAME . '" name="' . COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150"></textarea><br>
 		
 		<div class="blog-post-controller">
-			<button type="submit" formaction="' . COMMENT_ACTION_PATH . '" name="' . COMMENT_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_COMMENT_CREATION . '">Post</button>
+			<button type="submit" formaction="' . COMMENT_ACTION_PATH . '" name="' . COMMENT_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_COMMENT_CREATION . '">Comment</button>
 		</div>
 
 		</form>';
@@ -356,13 +355,13 @@ class CommentController implements ICommentController
 			{
 				foreach ($result as $post) 
 				{
-					$comment = '<form class="master blog-post" action="" method="post">
+					$comment = '<form class="master comment" action="" method="post">
 					<input class="hidden" type="text" id="' . COMMENT_ID_FIELD_NAME . '-' . $post[DB_TABLE_COMMENT_ID] . '" name="' . COMMENT_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_ID] . '" readonly><br>
 					<input class="hidden" type="text" id="' . COMMENT_POST_ID_FIELD_NAME . '-' . $post[DB_TABLE_COMMENT_POST_ID] . '" name="' . COMMENT_POST_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_POST_ID] . '" readonly><br>
 					
 					<input type="text" id="' . COMMENT_AUTHOR_FIELD_NAME . '" name="' . COMMENT_AUTHOR_FIELD_NAME . '" value="Title: ' . $post[DB_TABLE_COMMENT_AUTHOR] . '" readonly><br>
 					
-					<textarea id="' . COMMENT_CONTENT_FIELD_NAME . '" name="' . COMMENT_CONTENT_FIELD_NAME . '" rows="5" cols="150" readonly>' . $post[DB_TABLE_COMMENT_CONTENT] . '</textarea><br>
+					<textarea id="' . COMMENT_CONTENT_FIELD_NAME . '" name="' . COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150" readonly>' . $post[DB_TABLE_COMMENT_CONTENT] . '</textarea><br>
 					
 					</form>';
 					
@@ -373,20 +372,20 @@ class CommentController implements ICommentController
 			{
 				foreach ($result as $post) 
 				{
-					$comment = '<form class="master blog-post" method="post">
+					$comment = '<form class="master comment" method="post">
 					<input class="hidden" type="text" id="' . COMMENT_ID_FIELD_NAME . '-' . $post[DB_TABLE_COMMENT_ID] . '" name="' . COMMENT_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_ID] . '" readonly><br>
 					<input class="hidden" type="text" id="' . COMMENT_POST_ID_FIELD_NAME . '-' . $post[DB_TABLE_COMMENT_POST_ID] . '" name="' . COMMENT_POST_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_POST_ID] . '" readonly><br>
 					
-					<input type="text" id="' . COMMENT_AUTHOR_FIELD_NAME . '" name="' . COMMENT_AUTHOR_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_AUTHOR] . '" readonly><br>
-													
-					<textarea id="' . COMMENT_CONTENT_FIELD_NAME . '" name="' . COMMENT_CONTENT_FIELD_NAME . '" rows="5" cols="150" readonly>' . $post[DB_TABLE_COMMENT_CONTENT] . '</textarea><br>
+					<textarea id="' . COMMENT_CONTENT_FIELD_NAME . '" name="' . COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150" readonly>' . $post[DB_TABLE_COMMENT_CONTENT] . '</textarea><br>
+
+					<div class="comment-right">
+						<input type="text" id="' . COMMENT_AUTHOR_FIELD_NAME . '" name="' . COMMENT_AUTHOR_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_AUTHOR] . '" readonly><br>
 					
-					<div class="blog-post-controller">
 						<button type="submit" formaction="' . COMMENT_ACTION_PATH . '" name="' . COMMENT_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_COMMENT_UPDATE . '">Update</button>
 
 						<button type="submit" formaction="' . COMMENT_ACTION_PATH . '" name="' . COMMENT_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_COMMENT_REMOVAL . '">Delete</button>
 					</div>
-					
+
 					</form>';
 													
 					print($comment);

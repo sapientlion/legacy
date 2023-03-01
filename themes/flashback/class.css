@@ -8,32 +8,107 @@
 	margin: 4px;
 }
 
-.workspace, .blog-post
+.workspace
 {
 	display: flex;
 }
 
 .workspace
 {
-	flex-direction: column;
-	height: 100%;
-	justify-content: space-evenly;
-}
-
-.blog-post
-{
-	align-items: center;
 	flex: 1;
 	flex-direction: column;
 	justify-content: space-evenly;
 }
 
-.blog-post input
+.blog-post
+{
+	background-color: chocolate;
+	display: grid;
+}
+
+.blog-post textarea
+{
+	background-color: brown;
+	border: none;
+}
+
+.blog-post-top, .blog-post-middle, .blog-post-bottom
+{
+	align-items: center;
+	display: flex;
+	justify-content: space-evenly;
+}
+
+.blog-post-top
+{
+	flex-direction: column;
+	grid-column: 1;
+	grid-row: 1;
+}
+
+.blog-post-middle
+{
+	grid-column: 1;
+	grid-row: 2;
+}
+
+.blog-post-bottom
+{
+	grid-column: 1;
+	grid-row: 3;
+}
+
+.comment
+{
+	background-color: brown;
+	display: grid;
+	flex: 0.2;
+	grid-template-columns: 1fr;
+}
+
+.comment textarea
 {
 	background-color: chocolate;
 	border: none;
-	border-bottom: 4px solid maroon;
+	cursor: default;
+	grid-column: 1;
+	grid-row: 1;
+}
+
+.comment-right
+{
+	align-items: center;
+	display: flex;
+	grid-column: 2;
+	grid-row: 1;
+	height: 100%;
+	justify-content: space-evenly;
+}
+
+.comment input
+{
+	background-color: inherit;
+	border: none;
+}
+
+.comment input, .comment textarea
+{
 	outline: none;
+}
+
+.comment-right
+{
+	align-items: center;
+	background-color: maroon;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+}
+
+.comment-right input
+{
+	color: white;
+	text-align: center;
 }
 
 .hidden

@@ -65,23 +65,6 @@ if (session_status() === PHP_SESSION_NONE)
 					$_POST[BLOG_POST_ID_FIELD_NAME]
 					)
 			);
-
-			print(
-				$commentController->getCreationForm(
-					$_POST[BLOG_POST_ID_FIELD_NAME]
-					)
-			);
-
-			if(isset($_GET['from']) && !empty($_GET['from']))
-			{
-				$result = $commentController->getViewForms(
-					$_GET['from']
-				);
-			}
-			else
-			{
-				$result = $commentController->getViewForms();
-			}
 		}
 		else
 		{
@@ -89,13 +72,47 @@ if (session_status() === PHP_SESSION_NONE)
 		}
 
 		?>
+	</div>
+
+	<div class="master" id="comment-creator">
+		<?php
+
+			if(isset($_POST[BLOG_POST_ID_FIELD_NAME]) && !empty($_POST[BLOG_POST_ID_FIELD_NAME]))
+			{
+				
+				print(
+					$commentController->getCreationForm(
+						$_POST[BLOG_POST_ID_FIELD_NAME]
+						)
+				);
+			}
+			
+		?>
+	</div>
 
 		<?php
 
-			$commentController->getPageSelector();
+		if(isset($_POST[BLOG_POST_ID_FIELD_NAME]) && !empty($_POST[BLOG_POST_ID_FIELD_NAME]))
+		{
+			if(isset($_GET['from']) && !empty($_GET['from']))
+			{
+				$result = $commentController->getViewForms(
+						$_GET['from']
+				);
+			}
+			else
+			{
+					$result = $commentController->getViewForms();
+			}
+		}
 
-		?>
-	</div>
+	?>
+
+	<?php
+
+		$commentController->getPageSelector();
+
+	?>
 
 	<footer class="master">
 		<footer id="footer-top">

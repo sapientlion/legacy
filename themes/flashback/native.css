@@ -9,6 +9,7 @@ html, body
 body, header, form, footer
 {
 	display: flex;
+	flex: 1;
 }
 
 body
@@ -18,8 +19,8 @@ body
 
 header
 {
+	flex: 0.2;
 	flex-direction: column;
-	height: 15%;
 	justify-content: space-evenly;
 }
 
@@ -79,7 +80,14 @@ form textarea
 	padding: 8px;
 }
 
+textarea
+{
+	outline: none;
+	resize: none;
+}
+
 footer
 {
+	flex: 0.1;
 	flex-direction: column;
 }

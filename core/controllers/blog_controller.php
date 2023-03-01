@@ -496,19 +496,22 @@ class BlogController extends SystemController implements IBlogController
 		$result = $this->read($blogPostID);
 
 		$form = '<form class="blog-post" method="post">
-		<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
-		<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . 
-		BLOG_POST_TITLE_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
+		<div class="blog-post-top">
+			<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
+			<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . 
+			BLOG_POST_TITLE_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
 		
-		<label for="' . BLOG_POST_AUTHOR_FIELD_NAME .  '">Author:</label><br>
-		<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . 
-		BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
+			<label for="' . BLOG_POST_AUTHOR_FIELD_NAME .  '">Author:</label><br>
+			<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . 
+			BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
+		</div>
+
+		<div class="blog-post-middle">
+			<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . 
+			BLOG_POST_CONTENT_FIELD_NAME . '" rows="25" cols="190" readonly>' . $result[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
+		</div>
 		
-		<label for="' . BLOG_POST_CONTENT_FIELD_NAME . '">Content:</label><br>
-		<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . 
-		BLOG_POST_CONTENT_FIELD_NAME . '" rows="4" cols="150" readonly>' . $result[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
-		
-		<div class="blog-post-controller">
+		<div class="blog-post-bottom">
 			<button type="submit" formaction="' . BLOG_UPDATE_PAGE_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_UPDATE . '">Edit</button>
 			<button type="submit" formaction="' . BLOG_REMOVAL_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_REMOVAL . '">Delete</button>
 		</div>
