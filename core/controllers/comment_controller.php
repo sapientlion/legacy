@@ -17,11 +17,22 @@ class CommentController implements ICommentController
 	 */
 	private function doCreate() : bool
 	{
-		$stmt = $this->dbh->prepare("INSERT INTO comment (post, author, content) VALUES (:post, :author, :content)");
+		//
+		// INSERT INTO comment (post, author, content) VALUES (:post, :author, :content)
+		//
+		$query = "INSERT INTO " . DB_TABLE_COMMENT . " (" . 
+		DB_TABLE_COMMENT_POST_ID . ", " . 
+		DB_TABLE_COMMENT_AUTHOR . ", " . 
+		DB_TABLE_COMMENT_CONTENT . ") VALUES (:" . 
+		DB_TABLE_COMMENT_POST_ID . ", :" . 
+		DB_TABLE_COMMENT_AUTHOR . ", :" . 
+		DB_TABLE_COMMENT_CONTENT . ")";
 
-		$stmt->bindParam(':post', $this->comment->postID);
-		$stmt->bindParam(':author', $this->comment->author);
-		$stmt->bindParam(':content', $this->comment->content);
+		$stmt = $this->dbh->prepare($query);
+
+		$stmt->bindParam(':' . DB_TABLE_COMMENT_POST_ID, $this->comment->postID);
+		$stmt->bindParam(':' . DB_TABLE_COMMENT_AUTHOR, $this->comment->author);
+		$stmt->bindParam(':' . DB_TABLE_COMMENT_CONTENT, $this->comment->content);
 
 		$result = $stmt->execute();
 
@@ -37,16 +48,30 @@ class CommentController implements ICommentController
 	 */
 	private function doUpdate(int $id) : bool
 	{
-		$title = $this->comment->postID;
+		$post = $this->comment->postID;
 		$author = $this->comment->author;
 		$content = $this->comment->content;
 
-		$stmt = $this->dbh->prepare("UPDATE comment SET post = :post, author = :author, content = :content WHERE id = :id");
+		//
+		// UPDATE comment SET post = :post, author = :author, content = :content WHERE id = :id
+		//
+		$query = "UPDATE " . 
+		DB_TABLE_COMMENT . " SET " . 
+		DB_TABLE_COMMENT_POST_ID . " = :" . 
+		DB_TABLE_COMMENT_POST_ID . ", " . 
+		DB_TABLE_COMMENT_AUTHOR . " = :" . 
+		DB_TABLE_COMMENT_AUTHOR . ", " . 
+		DB_TABLE_COMMENT_CONTENT . " = :" . 
+		DB_TABLE_COMMENT_CONTENT . " WHERE " . 
+		DB_TABLE_COMMENT_ID . " = :" . 
+		DB_TABLE_COMMENT_ID;
 
-		$stmt->bindParam(':post', $title);
-		$stmt->bindParam(':author', $author);
-		$stmt->bindParam(':content', $content);
-		$stmt->bindParam(':id', $id);
+		$stmt = $this->dbh->prepare($query);
+
+		$stmt->bindParam(':' . DB_TABLE_COMMENT_POST_ID, $post);
+		$stmt->bindParam(':' . DB_TABLE_COMMENT_AUTHOR, $author);
+		$stmt->bindParam(':' . DB_TABLE_COMMENT_CONTENT, $content);
+		$stmt->bindParam(':' . DB_TABLE_COMMENT_ID, $id);
 
 		$result = $stmt->execute();
 
@@ -62,9 +87,16 @@ class CommentController implements ICommentController
 	 */
 	private function doDelete(int $id) : bool
 	{
-		$stmt = $this->dbh->prepare("DELETE FROM comment WHERE id = :id");
+		//
+		// DELETE FROM comment WHERE id = :id
+		//
+		$query = "DELETE FROM " . 
+		DB_TABLE_COMMENT . " WHERE " . 
+		DB_TABLE_COMMENT_ID . " = :" . DB_TABLE_COMMENT_ID;
 
-		$stmt->bindParam(':id', $id);
+		$stmt = $this->dbh->prepare($query);
+
+		$stmt->bindParam(':' . DB_TABLE_COMMENT_ID, $id);
 
 		$result = $stmt->execute();
 
@@ -132,9 +164,16 @@ class CommentController implements ICommentController
 	{
 		try
 		{
-			$stmt = $this->dbh->prepare("SELECT * FROM comment WHERE id = :id");
+			//
+			// SELECT * FROM comment WHERE id = :id
+			//
+			$query = "SELECT * FROM " . 
+			DB_TABLE_COMMENT . " WHERE " . 
+			DB_TABLE_COMMENT_ID . " = :" . DB_TABLE_COMMENT_ID;
 
-			$stmt->bindParam(':id', $id);
+			$stmt = $this->dbh->prepare($query);
+
+			$stmt->bindParam(':' . DB_TABLE_COMMENT_ID, $id);
 			$stmt->execute();
 			$result = $stmt->fetch();
 	

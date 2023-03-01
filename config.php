@@ -24,6 +24,11 @@ define('DB_TABLE_BLOG_POST_ID', 'id');
 define('DB_TABLE_BLOG_POST_TITLE', 'title');
 define('DB_TABLE_BLOG_POST_USER', 'author');
 define('DB_TABLE_BLOG_POST_CONTENT', 'content');
+define('DB_TABLE_COMMENT', 'comment');
+define('DB_TABLE_COMMENT_ID', 'id');
+define('DB_TABLE_COMMENT_POST_ID', 'post');
+define('DB_TABLE_COMMENT_AUTHOR', 'author');
+define('DB_TABLE_COMMENT_CONTENT', 'content');
 
 //
 // Path to the root of the system.
