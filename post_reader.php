@@ -1,8 +1,9 @@
 <?php
 
 require_once(__DIR__ . '/config.php');
-require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 require_once(SITE_ROOT . '/core/controllers/blog_controller.php');
+require_once(SITE_ROOT . '/core/controllers/comment_controller.php');
+require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 
 if (session_status() === PHP_SESSION_NONE) 
 {
@@ -49,16 +50,49 @@ if (session_status() === PHP_SESSION_NONE)
 			new BlogPost('', '', '')
 		);
 
+		$commentController = new CommentController(
+			new Comment(
+				(int)($_GET[GET_VAR_NAME_BLOG_POST]),
+				'',
+				''
+				)
+		);
+
 		if(isset($_POST[BLOG_POST_ID_FIELD_NAME]) && !empty($_POST[BLOG_POST_ID_FIELD_NAME]))
 		{
 			print(
-				$blogController->getViewForm($_POST[BLOG_POST_ID_FIELD_NAME])
+				$blogController->getViewForm(
+					$_POST[BLOG_POST_ID_FIELD_NAME]
+					)
 			);
+
+			print(
+				$commentController->getCreationForm(
+					$_POST[BLOG_POST_ID_FIELD_NAME]
+					)
+			);
+
+			if(isset($_GET['from']) && !empty($_GET['from']))
+			{
+				$result = $commentController->getViewForms(
+					$_GET['from']
+				);
+			}
+			else
+			{
+				$result = $commentController->getViewForms();
+			}
 		}
 		else
 		{
 			header('Location: /index.php');
 		}
+
+		?>
+
+		<?php
+
+			$commentController->getPageSelector();
 
 		?>
 	</div>

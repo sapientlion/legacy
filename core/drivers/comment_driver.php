@@ -23,7 +23,7 @@ class CommentDriver extends SystemController implements ICommentDriver
 	 */
 	private function checkCreateRequest() : bool
 	{
-		if(!isset($_GET[GET_VAR_NAME_BLOG_POST_ID]) && empty($_GET[GET_VAR_NAME_BLOG_POST_ID]))
+		if(!isset($_POST[COMMENT_POST_ID_FIELD_NAME]) && empty($_POST[COMMENT_POST_ID_FIELD_NAME]))
 		{
 			return false;
 		}
@@ -90,9 +90,11 @@ class CommentDriver extends SystemController implements ICommentDriver
 	private function create(array $commentData) : bool
 	{
 		$blogPostController = new CommentController(
-			new Comment($commentData[COMMENT_POST_ID_FIELD_NAME],
-			$commentData[COMMENT_AUTHOR_FIELD_NAME],
-			$commentData[COMMENT_CONTENT_FIELD_NAME])
+			new Comment(
+				(int)($commentData[COMMENT_POST_ID_FIELD_NAME]),
+				$commentData[COMMENT_AUTHOR_FIELD_NAME],
+				$commentData[COMMENT_CONTENT_FIELD_NAME]
+				)
 		);
 
 		$result = $blogPostController->create();
@@ -109,10 +111,12 @@ class CommentDriver extends SystemController implements ICommentDriver
 	private function update(array $commentData) : bool
 	{
 		$blogPostController = new CommentController(
-			new Comment($commentData[COMMENT_POST_ID_FIELD_NAME],
-			$commentData[COMMENT_AUTHOR_FIELD_NAME],
-			$commentData[COMMENT_CONTENT_FIELD_NAME],
-			$commentData[COMMENT_ID_FIELD_NAME])
+			new Comment(
+				(int)($commentData[COMMENT_POST_ID_FIELD_NAME]),
+				$commentData[COMMENT_AUTHOR_FIELD_NAME],
+				$commentData[COMMENT_CONTENT_FIELD_NAME],
+				(int)($commentData[COMMENT_ID_FIELD_NAME])
+				)
 		);
 
 		$result = $blogPostController->update(
@@ -131,7 +135,7 @@ class CommentDriver extends SystemController implements ICommentDriver
 	private function delete(array $commentData) : bool
 	{
 		$blogPostController = new CommentController(
-			new Comment('',
+			new Comment(-1,
 			'',
 			'')
 		);
@@ -158,7 +162,7 @@ class CommentDriver extends SystemController implements ICommentDriver
 			}
 
 			$commentData = [
-				COMMENT_POST_ID_FIELD_NAME => $_GET[GET_VAR_NAME_BLOG_POST_ID],
+				COMMENT_POST_ID_FIELD_NAME => $_POST[COMMENT_POST_ID_FIELD_NAME],
 				COMMENT_AUTHOR_FIELD_NAME => $_SESSION[SESSION_VAR_NAME_USER_NAME],
 				COMMENT_CONTENT_FIELD_NAME => $_POST[COMMENT_CONTENT_FIELD_NAME],
 			];
@@ -166,7 +170,7 @@ class CommentDriver extends SystemController implements ICommentDriver
 			$result = $this->create($commentData);
 
 			header(
-				'Location: ' . BLOG_VIEW_PAGE_PATH . '?post=' . $_GET[GET_VAR_NAME_BLOG_POST_ID]
+				'Location: ' . BLOG_VIEW_PAGE_PATH . '?post=' . $_GET[GET_VAR_NAME_BLOG_POST]
 			);
 
 			return $result;
@@ -189,7 +193,7 @@ class CommentDriver extends SystemController implements ICommentDriver
 			$result = $this->update($commentData);
 
 			header(
-				'Location: ' . BLOG_VIEW_PAGE_PATH . '?post=' . $_GET[GET_VAR_NAME_BLOG_POST_ID]
+				'Location: ' . BLOG_VIEW_PAGE_PATH . '?post=' . $_GET[GET_VAR_NAME_BLOG_POST]
 			);
 
 			return $result;
@@ -209,7 +213,7 @@ class CommentDriver extends SystemController implements ICommentDriver
 			$result = $this->delete($commentData);
 
 			header(
-				'Location: ' . BLOG_VIEW_PAGE_PATH . '?post=' . $_GET[GET_VAR_NAME_BLOG_POST_ID]
+				'Location: ' . BLOG_VIEW_PAGE_PATH . '?post=' . $_GET[GET_VAR_NAME_BLOG_POST]
 			);
 
 			return $result;

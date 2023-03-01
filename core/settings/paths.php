@@ -21,4 +21,6 @@ define('BLOG_CREATION_PAGE_PATH', '/post_creator.php');
 define('BLOG_VIEW_PAGE_PATH', '/post_reader.php');
 define('BLOG_UPDATE_PAGE_PATH', '/post_updater.php');
 
+define('COMMENT_ACTION_PATH', '/core/drivers/comment_driver.php');
+
 ?>
