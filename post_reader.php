@@ -74,23 +74,21 @@ if (session_status() === PHP_SESSION_NONE)
 		?>
 	</div>
 
-	<div class="master" id="comment-creator">
-		<?php
+	<?php
 
-			if(isset($_POST[BLOG_POST_ID_FIELD_NAME]) && !empty($_POST[BLOG_POST_ID_FIELD_NAME]))
-			{
-				
-				print(
-					$commentController->getCreationForm(
-						$_POST[BLOG_POST_ID_FIELD_NAME]
-						)
-				);
-			}
+		if(isset($_POST[BLOG_POST_ID_FIELD_NAME]) && !empty($_POST[BLOG_POST_ID_FIELD_NAME]))
+		{
 			
-		?>
-	</div>
+			print(
+				$commentController->getCreationForm(
+					$_POST[BLOG_POST_ID_FIELD_NAME]
+					)
+			);
+		}
+			
+	?>
 
-		<?php
+	<?php
 
 		if(isset($_POST[BLOG_POST_ID_FIELD_NAME]) && !empty($_POST[BLOG_POST_ID_FIELD_NAME]))
 		{
