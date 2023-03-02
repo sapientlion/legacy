@@ -919,20 +919,28 @@ class UserController extends SystemController implements IUserController
 	public function getSignupForm() : string
 	{
 		$form = '<form action="' . USER_SIGNUP_PATH . '" method="post">
-		<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
-		<input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . SIGNUP_USER_NAME_FIELD_NAME . '"><br>
+			<div class="user-form-labels">
+				<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
+				<label for="' . SIGNUP_EMAIL_FIELD_NAME . '">E-mail:</label><br>
+				<label for="' . SIGNUP_PASSWORD_FIELD_NAME . '">New Password:</label><br>
+				<label for="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '">Confirm Password:</label><br>
+			</div>
 
-		<label for="' . SIGNUP_EMAIL_FIELD_NAME . '">E-mail:</label><br>
-		<input type="email" id="' . SIGNUP_EMAIL_FIELD_NAME . '" name="' . SIGNUP_EMAIL_FIELD_NAME . '"><br>
+			<div class="user-form-fields">
+				<input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . SIGNUP_USER_NAME_FIELD_NAME . '"><br>
+
+				<input type="email" id="' . SIGNUP_EMAIL_FIELD_NAME . '" name="' . SIGNUP_EMAIL_FIELD_NAME . '"><br>
 		
-		<label for="' . SIGNUP_PASSWORD_FIELD_NAME . '">Password:</label><br>
-		<input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . SIGNUP_PASSWORD_FIELD_NAME . '"><br>
+				<input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . SIGNUP_PASSWORD_FIELD_NAME . '"><br>
 	
-		<label for="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '">Confirm Password:</label><br>
-		<input type="password" id="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '" name="' . 
-		SIGNUP_CONF_PASSWORD_FIELD_NAME . '"><br>
-	
-		<button type="submit" value="Sign up" id="submission-button">Sign up</button>
+				<input type="password" id="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '" name="' . 
+				SIGNUP_CONF_PASSWORD_FIELD_NAME . '"><br>
+			</div>
+		
+			<div class="user-form-controller">
+				<button type="submit" value="Sign up" id="submission-button">Sign up</button>
+			</div>
+		
 		</form>';
 
 		//
@@ -959,27 +967,30 @@ class UserController extends SystemController implements IUserController
 	public function getUpdateForm() : string
 	{
 		$form = '<form action="' . USER_UPDATE_PATH . '" method="post">
-		<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
-		<input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . 
-		SIGNUP_USER_NAME_FIELD_NAME . '" value=' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '><br>
+			<div class="user-form-labels">
+				<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
+				<label for="' . SIGNUP_EMAIL_FIELD_NAME . '">E-mail:</label><br>
+				<label for="' . SIGNUP_PASSWORD_FIELD_NAME . '">New Password:</label><br>
+				<label for="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '">Confirm Password:</label><br>
+			</div>
+		
+			<div class="user-form-fields">
+				<input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . 
+				SIGNUP_USER_NAME_FIELD_NAME . '" value=' . $_SESSION[SESSION_VAR_NAME_USER_NAME] . '><br>
 
-		<label for="' . SIGNUP_EMAIL_FIELD_NAME . '">E-mail:</label><br>
-		<input type="email" id="' . SIGNUP_EMAIL_FIELD_NAME . '" name="' . 
-		SIGNUP_EMAIL_FIELD_NAME . '" value=' . $_SESSION[SESSION_VAR_NAME_USER_EMAIL] . '><br>
+				<input type="email" id="' . SIGNUP_EMAIL_FIELD_NAME . '" name="' . 
+				SIGNUP_EMAIL_FIELD_NAME . '" value=' . $_SESSION[SESSION_VAR_NAME_USER_EMAIL] . '><br>
 
-		<label for="' . SIGNUP_PASSWORD_FIELD_NAME . '">Old Password:</label><br>
-		<input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . 
-		SIGNUP_PASSWORD_FIELD_NAME . '"><br>
+				<input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . 
+				SIGNUP_PASSWORD_FIELD_NAME . '"><br>
 
-		<label for="' . SIGNUP_NEW_PASSWORD_FIELD_NAME . '">New Password:</label><br>
-		<input type="password" id="' . SIGNUP_NEW_PASSWORD_FIELD_NAME . '" name="' . 
-		SIGNUP_NEW_PASSWORD_FIELD_NAME . '"><br>
+				<input type="password" id="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '" name="' .
+				SIGNUP_CONF_PASSWORD_FIELD_NAME . '"><br>
+			</div>
 
-		<label for="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '">Confirm Password:</label><br>
-		<input type="password" id="' . SIGNUP_CONF_PASSWORD_FIELD_NAME . '" name="' .
-		SIGNUP_CONF_PASSWORD_FIELD_NAME . '"><br>
-
-		<button type="submit" value="Update" id="submission-button">Update</button>
+			<div class="user-form-controller">
+				<button type="submit" value="Update" id="submission-button">Update</button>	
+			</div>
 		</form>';
 
 		//
@@ -1034,13 +1045,19 @@ class UserController extends SystemController implements IUserController
 	public function getSigninForm() : string
 	{
 		$form = '<form action="' . USER_SIGNIN_PATH . '" method="post">
-		<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
-		<input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . SIGNUP_USER_NAME_FIELD_NAME . '"><br>
+			<div class="user-form-labels">
+				<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
+				<label for="' . SIGNUP_PASSWORD_FIELD_NAME . '">Password:</label><br>
+			</div>
 
-		<label for="' . SIGNUP_PASSWORD_FIELD_NAME . '">Password:</label><br>
-		<input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . SIGNUP_PASSWORD_FIELD_NAME . '" ><br>
+			<div class="user-form-fields">
+				<input type="text" id="' . SIGNUP_USER_NAME_FIELD_NAME . '" name="' . SIGNUP_USER_NAME_FIELD_NAME . '"><br>
+				<input type="password" id="' . SIGNUP_PASSWORD_FIELD_NAME . '" name="' . SIGNUP_PASSWORD_FIELD_NAME . '" ><br>
+			</div>
 
-		<button type="submit" value="Sign in" id="submission-button">Sign in</button>
+			<div class="user-form-controller">
+				<button type="submit" value="Sign in" id="submission-button">Sign in</button>
+			<div class="user-form-controller">
 		</form>';
 
 		//

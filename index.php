@@ -41,7 +41,7 @@ if (session_status() === PHP_SESSION_NONE)
 		</header>
 	</header>
 
-	<div class="workspace">
+	<div class="master workspace">
 		<ul id="blog-posts">
 			<?php
 			

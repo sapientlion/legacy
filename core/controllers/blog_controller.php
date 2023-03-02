@@ -582,7 +582,7 @@ class BlogController extends SystemController implements IBlogController
 			{
 				foreach ($result as $post) 
 				{
-					$blogPost = '<form class="master blog-post" method="post">
+					$blogPost = '<form class="blog-post" method="post">
 					<input class="hidden" type="text" id="' . BLOG_POST_ID_FIELD_NAME . '-' . $post[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_ID] . '" readonly><br>
 					
 					<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . BLOG_POST_TITLE_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>

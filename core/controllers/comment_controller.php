@@ -333,10 +333,7 @@ class CommentController implements ICommentController
 
 			<textarea id="' . COMMENT_CONTENT_FIELD_NAME . '" name="' . COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150"></textarea><br>
 		
-			<div class="blog-post-controller">
-				<button type="submit" formaction="' . COMMENT_ACTION_PATH . '" name="' . COMMENT_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_COMMENT_CREATION . '">Comment</button>
-			</div>
-
+			<button type="submit" formaction="' . COMMENT_ACTION_PATH . '" name="' . COMMENT_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_COMMENT_CREATION . '">Comment</button>
 		</div>
 
 		</form>';
@@ -365,7 +362,9 @@ class CommentController implements ICommentController
 
 					<input class="hidden" type="text" id="' . COMMENT_POST_ID_FIELD_NAME . '-' . $post[DB_TABLE_COMMENT_POST_ID] . '" name="' . COMMENT_POST_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_POST_ID] . '" readonly><br>
 					
-					<textarea id="' . COMMENT_CONTENT_FIELD_NAME . '" name="' . COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150" readonly>' . $post[DB_TABLE_COMMENT_CONTENT] . '</textarea><br>
+					<div class="comment-left">
+						<textarea id="' . COMMENT_CONTENT_FIELD_NAME . '" name="' . COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150" readonly>' . $post[DB_TABLE_COMMENT_CONTENT] . '</textarea><br>
+					</div>
 
 					<div class="comment-right">
 						<input type="text" id="' . COMMENT_AUTHOR_FIELD_NAME . '" name="' . COMMENT_AUTHOR_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_AUTHOR] . '" readonly><br>
@@ -384,8 +383,10 @@ class CommentController implements ICommentController
 					<input class="hidden" type="text" id="' . COMMENT_ID_FIELD_NAME . '-' . $post[DB_TABLE_COMMENT_ID] . '" name="' . COMMENT_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_ID] . '" readonly><br>
 					<input class="hidden" type="text" id="' . COMMENT_POST_ID_FIELD_NAME . '-' . $post[DB_TABLE_COMMENT_POST_ID] . '" name="' . COMMENT_POST_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_POST_ID] . '" readonly><br>
 					
-					<textarea id="' . COMMENT_CONTENT_FIELD_NAME . '" name="' . COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150" readonly>' . $post[DB_TABLE_COMMENT_CONTENT] . '</textarea><br>
-
+					<div class="comment-left">
+						<textarea id="' . COMMENT_CONTENT_FIELD_NAME . '" name="' . COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150" readonly>' . $post[DB_TABLE_COMMENT_CONTENT] . '</textarea><br>
+					</div>
+					
 					<div class="comment-right">
 						<input type="text" id="' . COMMENT_AUTHOR_FIELD_NAME . '" name="' . COMMENT_AUTHOR_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_AUTHOR] . '" readonly><br>
 					
