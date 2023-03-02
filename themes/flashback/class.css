@@ -9,6 +9,14 @@
 	margin: 4px;
 }
 
+.search-bar
+{
+	flex-direction: row;
+	gap: 16px;
+	justify-content: center;
+	padding: 8px;
+}
+
 .workspace
 {
 	align-items: center;

@@ -41,6 +41,17 @@ if (session_status() === PHP_SESSION_NONE)
 		</header>
 	</header>
 
+	<form class="master search-bar">
+		<input type="text" id="search-bar-input" name="search-bar-input"><br>
+
+		<select id="search-bar-filter" name="search-bar-filter">
+			<option value="title">by title</option>
+			<option value="author">by author</option>
+		</select>
+
+		<button type="submit" value="search" id="submission-button">Search</button>	
+	</form>
+
 	<div class="master workspace">
 		<ul id="blog-posts">
 			<?php

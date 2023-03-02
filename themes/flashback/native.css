@@ -21,7 +21,7 @@ a:hover
 	color: orange;
 }
 
-button
+button, select
 {
 	background-color: maroon;
 	border: none;
@@ -31,10 +31,11 @@ button
 	cursor: pointer;
 	font-size: large;
 	height: 32px;
+	text-align: center;
 	width: 128px;
 }
 
-button:hover
+button:active, select:active
 {
 	background-color: orange;
 	box-shadow: none;
@@ -49,6 +50,14 @@ form
 input
 {
 	padding: 8px;
+}
+
+select
+{
+	background-color: maroon;
+	border: none;
+	cursor: pointer;
+	width: 128px;
 }
 
 ul, ol
