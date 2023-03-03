@@ -62,14 +62,15 @@ if (session_status() === PHP_SESSION_NONE)
 					'',
 					'',
 					'',
+					$_POST[BLOG_POST_ID_FIELD_NAME]
 				)
 			);
 
-			print(
-				$blogFrontend->getPost(
-					$_POST[BLOG_POST_ID_FIELD_NAME]
-					)
+			$result = $blogFrontend->getPost(
+				$_POST[BLOG_POST_ID_FIELD_NAME]
 			);
+
+			print($result);
 		}
 		else
 		{

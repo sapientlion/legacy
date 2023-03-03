@@ -49,9 +49,9 @@ class BlogFrontend extends BlogController
 	 * @param  int $blogPostID ID number of a desired blog post.
 	 * @return string typical blog post filled with data.
 	 */
-	public function getPost(int $blogPostID) : string
+	public function getPost() : string
 	{
-		$result = $this->read($blogPostID);
+		$result = $this->read($this->post->id);
 
 		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
@@ -185,9 +185,9 @@ class BlogFrontend extends BlogController
 	 * @param  int $blogPostID ID number of a desired blog post.
 	 * @return string an editor with some data which can be freely edited by user on success and an empty string on failure.
 	 */
-	public function getEditor(int $blogPostID) : string
+	public function getEditor() : string
 	{
-		$result = $this->read($blogPostID);
+		$result = $this->read($this->post->id);
 
 		$form = '<form action="' . BLOG_CREATION_PATH . '" method="post">
 

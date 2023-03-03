@@ -54,11 +54,20 @@ if (session_status() === PHP_SESSION_NONE)
 		{
 			if(isset($_POST[BLOG_POST_ID_FIELD_NAME]) && !empty($_POST[BLOG_POST_ID_FIELD_NAME]))
 			{
-				$blogFrontend = new BlogFrontend();
+				$blogFrontend = new BlogFrontend(
+					new BlogPost(
+						'',
+						'',
+						'',
+						$_POST[BLOG_POST_ID_FIELD_NAME]
+					)
+				);
 
-				$blogFrontend->getEditor(
+				$result = $blogFrontend->getEditor(
 					$_POST[BLOG_POST_ID_FIELD_NAME]
 				);
+
+				print($result);
 			}
 			else
 			{
