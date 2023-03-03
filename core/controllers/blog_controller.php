@@ -115,10 +115,12 @@ class BlogController extends SystemController implements IBlogController
 		//
 		// Sanitize output to prevent from potential bugs and XSS attacks.
 		//
-		foreach($result as $blogPostAttribute)
+		foreach($result as &$blogPostAttribute)
 		{
 			$blogPostAttribute = htmlspecialchars($blogPostAttribute);
 		}
+
+		unset($blogPostAttribute);
 
 		return $result;
 	}
@@ -152,13 +154,16 @@ class BlogController extends SystemController implements IBlogController
 			return array();
 		}
 
-		foreach($result as $blogPost)
+		foreach($result as &$blogPost)
 		{
-			foreach($blogPost as $blogPostAttribute)
+			foreach($blogPost as &$blogPostAttribute)
 			{
 				$blogPostAttribute = htmlspecialchars($blogPostAttribute);
 			}
 		}
+
+		unset($blogPostAttribute);
+		unset($blogPost);
 	
 		return $result;
 	}
