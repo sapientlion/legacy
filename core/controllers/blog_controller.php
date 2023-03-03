@@ -468,7 +468,7 @@ class BlogController extends SystemController implements IBlogController
 		}
 	}
 
-	public function getCreationForm() : string
+	/*public function getCreationForm() : string
 	{
 		$form = '<form action="' . BLOG_CREATION_PATH . '" method="post">
 		<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
@@ -489,9 +489,9 @@ class BlogController extends SystemController implements IBlogController
 		}
 
 		return '';
-	}
+	}*/
 
-	public function getViewForm(int $blogPostID) : string
+	/*public function getViewForm(int $blogPostID) : string
 	{
 		$result = $this->read($blogPostID);
 
@@ -542,9 +542,9 @@ class BlogController extends SystemController implements IBlogController
 		</form>';
 
 		return $form;
-	}
+	}*/
 
-	public function getViewForms(int $from = 0) : array
+	/*public function getViewForms(int $from = 0) : array
 	{
 		$result = $this->readAll();
 		$totalPosts = count($result);
@@ -613,9 +613,9 @@ class BlogController extends SystemController implements IBlogController
 		}
 
 		return $result;
-	}
+	}*/
 
-	public function getPageSelector(int $from = 0) : int
+	/*public function getPageSelector(int $from = 0) : int
 	{
 		//
 		// TODO optimize this part, if possible.
@@ -655,7 +655,7 @@ class BlogController extends SystemController implements IBlogController
 		print('</ol>');
 
 		return $totalPages;
-	}
+	}*/
 
 	public function getUpdateForm(int $blogPostID) : string
 	{

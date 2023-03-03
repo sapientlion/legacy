@@ -2,7 +2,7 @@
 
 require_once(__DIR__ . '/config.php');
 require_once(SITE_ROOT . '/core/frontends/user_frontend.php');
-require_once(SITE_ROOT . '/core/controllers/blog_controller.php');
+require_once(SITE_ROOT . '/core/frontends/blog_frontend.php');
 require_once(SITE_ROOT . '/core/settings/session.php');
 
 if (session_status() === PHP_SESSION_NONE) 
@@ -53,11 +53,9 @@ if (session_status() === PHP_SESSION_NONE)
 		}
 		else
 		{
-			$blogController = new BlogController();
+			$blogFrontend = new BlogFrontend();
 
-			print(
-				$blogController->getCreationForm()
-			);
+			$blogFrontend->getCreator();
 		}
 
 		?>

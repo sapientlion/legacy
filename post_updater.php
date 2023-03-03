@@ -2,7 +2,7 @@
 
 require_once(__DIR__ . '/config.php');
 require_once(SITE_ROOT . '/core/frontends/user_frontend.php');
-require_once(SITE_ROOT . '/core/controllers/blog_controller.php');
+require_once(SITE_ROOT . '/core/frontends/blog_frontend.php');
 
 if (session_status() === PHP_SESSION_NONE) 
 {
@@ -52,16 +52,12 @@ if (session_status() === PHP_SESSION_NONE)
 		}
 		else
 		{
-			$blogController = new BlogController(
-				new BlogPost('', '', '')
-			);
-
 			if(isset($_POST[BLOG_POST_ID_FIELD_NAME]) && !empty($_POST[BLOG_POST_ID_FIELD_NAME]))
 			{
-				print(
-					$blogController->getUpdateForm(
-						$_POST[BLOG_POST_ID_FIELD_NAME]
-						)
+				$blogFrontend = new BlogFrontend();
+
+				$blogFrontend->getEditor(
+					$_POST[BLOG_POST_ID_FIELD_NAME]
 				);
 			}
 			else

@@ -2,8 +2,7 @@
 
 require_once(__DIR__ . '/config.php');
 require_once(SITE_ROOT . '/core/frontends/user_frontend.php');
-//require_once(SITE_ROOT . '/core/controllers/user_controller.php');
-require_once(SITE_ROOT . '/core/controllers/blog_controller.php');
+require_once(SITE_ROOT . '/core/frontends/blog_frontend.php');
 
 if (session_status() === PHP_SESSION_NONE) 
 {
@@ -32,10 +31,6 @@ if (session_status() === PHP_SESSION_NONE)
 					$userFrontend->getHeader()
 				);
 
-				/*$userController = new UserController();
-
-				print($userController->getHeader());*/
-
 			?>
 		</header>
 
@@ -62,20 +57,25 @@ if (session_status() === PHP_SESSION_NONE)
 	<div class="master workspace">
 		<ul id="blog-posts">
 			<?php
-			
-				$blogController = new BlogController(
-					new BlogPost('', '', '')
+
+				$blogFrontend = new BlogFrontend(
+					new BlogPost(
+						'', 
+						'', 
+						'')
 				);
 
 				$result = array();
 
 				if(isset($_GET['from']) && !empty($_GET['from']))
 				{
-					$result = $blogController->getViewForms($_GET['from']);
+					$result = $blogFrontend->getPosts(
+						$_GET['from']
+					);
 				}
 				else
 				{
-					$result = $blogController->getViewForms();
+					$result = $blogFrontend->getPosts();
 				}
 
 				
@@ -84,7 +84,7 @@ if (session_status() === PHP_SESSION_NONE)
 
 		<?php
 
-			$blogController->getPageSelector();
+			$blogFrontend->getPageSelector();
 			
 		?>
 	</div>
