@@ -1,8 +1,8 @@
 <?php
 
 require_once(__DIR__ . '/config.php');
-require_once(SITE_ROOT . '/core/controllers/comment_controller.php');
 require_once(SITE_ROOT . '/core/frontends/blog_frontend.php');
+require_once(SITE_ROOT . '/core/frontends/comment_frontend.php');
 require_once(SITE_ROOT . '/core/frontends/user_frontend.php');
 
 if (session_status() === PHP_SESSION_NONE) 
@@ -47,14 +47,6 @@ if (session_status() === PHP_SESSION_NONE)
 	<div class="master workspace">
 	<?php
 
-		$commentController = new CommentController(
-			new Comment(
-				(int)($_GET[GET_VAR_NAME_BLOG_POST]),
-				'',
-				''
-				)
-		);
-
 		if(isset($_POST[BLOG_POST_ID_FIELD_NAME]) && !empty($_POST[BLOG_POST_ID_FIELD_NAME]))
 		{
 			$blogFrontend = new BlogFrontend(
@@ -82,13 +74,18 @@ if (session_status() === PHP_SESSION_NONE)
 
 	<?php
 
+		$commentFrontend = new CommentFrontend(
+			new Comment(
+				(int)($_GET[GET_VAR_NAME_BLOG_POST]),
+				'',
+				''
+			)
+		);
+
 		if(isset($_POST[BLOG_POST_ID_FIELD_NAME]) && !empty($_POST[BLOG_POST_ID_FIELD_NAME]))
 		{
-			
 			print(
-				$commentController->getCreationForm(
-					$_POST[BLOG_POST_ID_FIELD_NAME]
-					)
+				$commentFrontend->getCreator()
 			);
 		}
 			
@@ -98,15 +95,17 @@ if (session_status() === PHP_SESSION_NONE)
 
 		if(isset($_POST[BLOG_POST_ID_FIELD_NAME]) && !empty($_POST[BLOG_POST_ID_FIELD_NAME]))
 		{
+			$result = array();
+
 			if(isset($_GET['from']) && !empty($_GET['from']))
 			{
-				$result = $commentController->getViewForms(
-						$_GET['from']
+				$result = $commentFrontend->getComments(
+					$_GET['from']
 				);
 			}
 			else
 			{
-					$result = $commentController->getViewForms();
+				$result = $commentFrontend->getComments();
 			}
 		}
 
@@ -114,7 +113,7 @@ if (session_status() === PHP_SESSION_NONE)
 
 	<?php
 
-		$commentController->getPageSelector();
+		$commentFrontend->getPageSelector();
 
 	?>
 
