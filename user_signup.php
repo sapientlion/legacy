@@ -6,7 +6,7 @@ if(session_status() === PHP_SESSION_NONE)
 }
 
 require_once(__DIR__ . '/config.php');
-require_once(SITE_ROOT . '/core/controllers/user_controller.php');
+require_once(SITE_ROOT . '/core/frontends/user_frontend.php');
 
 ?>
 <!DOCTYPE html>
@@ -24,10 +24,10 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 		<header class="master" id="header-top">
 			<?php
 
-				$userController = new UserController();
+				$userFrontend = new UserFrontend();
 
 				print(
-					$userController->getHeader()
+					$userFrontend->getHeader()
 				);
 
 			?>
@@ -46,7 +46,7 @@ require_once(SITE_ROOT . '/core/controllers/user_controller.php');
 		<?php
 
 			print(
-				$userController->getSignupForm()
+				$userFrontend->getSignupForm()
 			);
 
 		?>

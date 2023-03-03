@@ -3,7 +3,7 @@
 require_once(__DIR__ . '/config.php');
 require_once(SITE_ROOT . '/core/controllers/blog_controller.php');
 require_once(SITE_ROOT . '/core/controllers/comment_controller.php');
-require_once(SITE_ROOT . '/core/controllers/user_controller.php');
+require_once(SITE_ROOT . '/core/frontends/user_frontend.php');
 
 if (session_status() === PHP_SESSION_NONE) 
 {
@@ -26,10 +26,10 @@ if (session_status() === PHP_SESSION_NONE)
 		<header class="master" id="header-top">
 			<?php
 
-				$userController = new UserController();
+				$userFrontend = new UserFrontend();
 
 				print(
-					$userController->getHeader()
+					$userFrontend->getHeader()
 				);
 
 			?>
