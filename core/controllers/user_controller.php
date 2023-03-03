@@ -638,13 +638,8 @@ class UserController extends SystemController
 	 * @param  User $user user credentials as an object.
 	 * @return void on failure.
 	 */
-	public function __construct(?User $user = NULL)
+	public function __construct(User $user)
 	{
-		if(is_null($user))
-		{
-			return;
-		}
-
 		$this->user = $user;
 
 		try

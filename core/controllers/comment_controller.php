@@ -147,13 +147,8 @@ class CommentController implements ICommentController
 	 * @return void
 	 * @throws PDOException On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	public function __construct(?Comment $comment = NULL)
+	public function __construct(Comment $comment)
 	{
-		if(is_null($comment))
-		{
-			return;
-		}
-
 		$this->comment = $comment;
 
 		try

@@ -252,13 +252,8 @@ class BlogController extends SystemController implements IBlogController
 	 * @return void
 	 * @throws PDOException On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	public function __construct(?BlogPost $post = NULL)
+	public function __construct(BlogPost $post)
 	{
-		if(is_null($post))
-		{
-			return;
-		}
-
 		$this->post = $post;
 
 		try

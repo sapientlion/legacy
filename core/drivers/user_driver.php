@@ -247,7 +247,9 @@ class UserDriver implements IUserDriver
 	 */
 	private function exit() : bool
 	{
-		$userController = new UserController();
+		$userController = new UserController(
+			new User('', '')
+		);
 
 		$result = $userController->signOut();
 
