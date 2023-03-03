@@ -137,12 +137,12 @@ class CommentDriver extends SystemController implements ICommentDriver
 		$blogPostController = new CommentController(
 			new Comment(-1,
 			'',
-			'')
+			'',
+			$_POST[COMMENT_ID_FIELD_NAME]
+			)
 		);
 
-		$result = $blogPostController->delete(
-			$_POST[COMMENT_ID_FIELD_NAME]
-		);
+		$result = $blogPostController->delete();
 
 		return $result;
 	}

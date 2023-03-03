@@ -3,10 +3,10 @@
 interface ICommentController
 {
 	public function create() : bool;
-	public function read(int $id) : array;
+	public function read() : array;
 	public function readAll() : array;
-	public function update(int $id) : bool;
-	public function delete(int $id) : bool;
+	public function update() : bool;
+	public function delete() : bool;
 }
 
 ?>

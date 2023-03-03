@@ -81,11 +81,12 @@ class CommentController implements ICommentController
 	 * @return bool TRUE on success or FALSE on failure.
 	 * @throws PDOException On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	private function doUpdate(int $id) : bool
+	private function doUpdate() : bool
 	{
 		$post = $this->comment->postID;
 		$author = $this->comment->author;
 		$content = $this->comment->content;
+		$id = $this->comment->id;
 
 		//
 		// UPDATE comment SET post = :post, author = :author, content = :content WHERE id = :id
@@ -120,8 +121,10 @@ class CommentController implements ICommentController
 	 * @return bool TRUE on success or FALSE on failure.
 	 * @throws PDOException On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	private function doDelete(int $id) : bool
+	private function doDelete() : bool
 	{
+		$id = $this->comment->id;
+
 		//
 		// DELETE FROM comment WHERE id = :id
 		//
@@ -195,7 +198,7 @@ class CommentController implements ICommentController
 	 * if something's wrong with the database or if a wrong ID was supplied prior to method execution. 
 	 * @throws PDOException On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	public function read(int $id) : array
+	public function read() : array
 	{
 		try
 		{
@@ -208,7 +211,7 @@ class CommentController implements ICommentController
 
 			$stmt = $this->dbh->prepare($query);
 
-			$stmt->bindParam(':' . DB_TABLE_COMMENT_ID, $id);
+			$stmt->bindParam(':' . DB_TABLE_COMMENT_ID, $this->comment->id);
 			$stmt->execute();
 			$result = $stmt->fetch();
 	
@@ -278,11 +281,11 @@ class CommentController implements ICommentController
 	 * @return bool TRUE on success or FALSE on failure.
 	 * @throws PDOException On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	public function update(int $id) : bool
+	public function update() : bool
 	{
 		try
 		{
-			$result = $this->doUpdate($id);
+			$result = $this->doUpdate();
 
 			return $result;
 		}
@@ -301,11 +304,11 @@ class CommentController implements ICommentController
 	 * @return bool TRUE on success or FALSE on failure.
 	 * @throws On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	public function delete(int $id) : bool
+	public function delete() : bool
 	{
 		try
 		{
-			$result = $this->doDelete($id);
+			$result = $this->doDelete();
 			
 			return $result;
 		}

@@ -14,7 +14,12 @@ require_once(SITE_ROOT . '/core/settings/paths.php');
 require_once(SITE_ROOT . '/core/settings/session.php');
 
 class CommentFrontend extends CommentController implements ICommentFrontend
-{
+{	
+	/**
+	 * Get a comment creator.
+	 *
+	 * @return string a comment creator.
+	 */
 	public function getCreator() : string
 	{
 		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
@@ -48,7 +53,13 @@ class CommentFrontend extends CommentController implements ICommentFrontend
 
 		return $form;
 	}
-
+	
+	/**
+	 * Get all possible comments from DB.
+	 *
+	 * @param  int $from a starting point.
+	 * @return array list of all found blog post comments on success and an empty string on failure.
+	 */
 	public function getComments(int $from = 0) : array
 	{
 		$result = $this->readAll();
@@ -66,16 +77,30 @@ class CommentFrontend extends CommentController implements ICommentFrontend
 				foreach ($result as $post) 
 				{
 					$comment = '<form class="master comment" method="post">
-					<input class="hidden" type="text" id="' . COMMENT_ID_FIELD_NAME . '-' . $post[DB_TABLE_COMMENT_ID] . '" name="' . COMMENT_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_ID] . '" readonly><br>
+					<input class="hidden" type="text" id="' . 
+					COMMENT_ID_FIELD_NAME . '-' . 
+					$post[DB_TABLE_COMMENT_ID] . '" name="' . 
+					COMMENT_ID_FIELD_NAME . '" value="' . 
+					$post[DB_TABLE_COMMENT_ID] . '" readonly><br>
 
-					<input class="hidden" type="text" id="' . COMMENT_POST_ID_FIELD_NAME . '-' . $post[DB_TABLE_COMMENT_POST_ID] . '" name="' . COMMENT_POST_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_POST_ID] . '" readonly><br>
+					<input class="hidden" type="text" id="' . 
+					COMMENT_POST_ID_FIELD_NAME . '-' . 
+					$post[DB_TABLE_COMMENT_POST_ID] . '" name="' . 
+					COMMENT_POST_ID_FIELD_NAME . '" value="' . 
+					$post[DB_TABLE_COMMENT_POST_ID] . '" readonly><br>
 					
 					<div class="comment-left">
-						<textarea id="' . COMMENT_CONTENT_FIELD_NAME . '" name="' . COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150" readonly>' . $post[DB_TABLE_COMMENT_CONTENT] . '</textarea><br>
+						<textarea id="' . 
+						COMMENT_CONTENT_FIELD_NAME . '" name="' . 
+						COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150" readonly>' . 
+						$post[DB_TABLE_COMMENT_CONTENT] . '</textarea><br>
 					</div>
 
 					<div class="comment-right">
-						<input type="text" id="' . COMMENT_AUTHOR_FIELD_NAME . '" name="' . COMMENT_AUTHOR_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_AUTHOR] . '" readonly><br>
+						<input type="text" id="' . 
+						COMMENT_AUTHOR_FIELD_NAME . '" name="' . 
+						COMMENT_AUTHOR_FIELD_NAME . '" value="' . 
+						$post[DB_TABLE_COMMENT_AUTHOR] . '" readonly><br>
 					</div>
 
 					</form>';
@@ -88,19 +113,39 @@ class CommentFrontend extends CommentController implements ICommentFrontend
 				foreach ($result as $post) 
 				{
 					$comment = '<form class="master comment" method="post">
-					<input class="hidden" type="text" id="' . COMMENT_ID_FIELD_NAME . '-' . $post[DB_TABLE_COMMENT_ID] . '" name="' . COMMENT_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_ID] . '" readonly><br>
-					<input class="hidden" type="text" id="' . COMMENT_POST_ID_FIELD_NAME . '-' . $post[DB_TABLE_COMMENT_POST_ID] . '" name="' . COMMENT_POST_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_POST_ID] . '" readonly><br>
+					<input class="hidden" type="text" id="' . 
+					COMMENT_ID_FIELD_NAME . '-' . 
+					$post[DB_TABLE_COMMENT_ID] . '" name="' . 
+					COMMENT_ID_FIELD_NAME . '" value="' . 
+					$post[DB_TABLE_COMMENT_ID] . '" readonly><br>
+					<input class="hidden" type="text" id="' . 
+					COMMENT_POST_ID_FIELD_NAME . '-' . 
+					$post[DB_TABLE_COMMENT_POST_ID] . '" name="' . 
+					COMMENT_POST_ID_FIELD_NAME . '" value="' . 
+					$post[DB_TABLE_COMMENT_POST_ID] . '" readonly><br>
 					
 					<div class="comment-left">
-						<textarea id="' . COMMENT_CONTENT_FIELD_NAME . '" name="' . COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150" readonly>' . $post[DB_TABLE_COMMENT_CONTENT] . '</textarea><br>
+						<textarea id="' . 
+						COMMENT_CONTENT_FIELD_NAME . '" name="' . 
+						COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150" readonly>' . 
+						$post[DB_TABLE_COMMENT_CONTENT] . '</textarea><br>
 					</div>
 					
 					<div class="comment-right">
-						<input type="text" id="' . COMMENT_AUTHOR_FIELD_NAME . '" name="' . COMMENT_AUTHOR_FIELD_NAME . '" value="' . $post[DB_TABLE_COMMENT_AUTHOR] . '" readonly><br>
+						<input type="text" id="' . 
+						COMMENT_AUTHOR_FIELD_NAME . '" name="' . 
+						COMMENT_AUTHOR_FIELD_NAME . '" value="' . 
+						$post[DB_TABLE_COMMENT_AUTHOR] . '" readonly><br>
 					
-						<button type="submit" formaction="' . COMMENT_ACTION_PATH . '" name="' . COMMENT_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_COMMENT_UPDATE . '">Update</button>
+						<button type="submit" formaction="' . 
+						COMMENT_ACTION_PATH . '" name="' . 
+						COMMENT_SUBMIT_BUTTON_NAME . '" value="' . 
+						ACTION_NAME_COMMENT_UPDATE . '">Update</button>
 
-						<button type="submit" formaction="' . COMMENT_ACTION_PATH . '" name="' . COMMENT_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_COMMENT_REMOVAL . '">Delete</button>
+						<button type="submit" formaction="' . 
+						COMMENT_ACTION_PATH . '" name="' . 
+						COMMENT_SUBMIT_BUTTON_NAME . '" value="' . 
+						ACTION_NAME_COMMENT_REMOVAL . '">Delete</button>
 					</div>
 
 					</form>';
@@ -118,7 +163,13 @@ class CommentFrontend extends CommentController implements ICommentFrontend
 
 		return $result;
 	}
-
+	
+	/**
+	 * Get a typical page selector, but for the comments.
+	 *
+	 * @param  int $from a starting point.
+	 * @return int total number of pages for storing the comments.
+	 */
 	public function getPageSelector(int $from = 0) : int
 	{
 		//
