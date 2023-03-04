@@ -132,7 +132,8 @@ class BlogDriver extends SystemController implements IBlogDriver
 
 	private function read(array $postData) : array
 	{
-		$blogPostController = new BlogController(new BlogPost(
+		$blogPostController = new BlogController(
+			new BlogPost(
 			'',
 			'',
 			'')
@@ -140,6 +141,23 @@ class BlogDriver extends SystemController implements IBlogDriver
 
 		$result = $blogPostController->read(
 			$postData[BLOG_POST_ID_FIELD_NAME]
+		);
+
+		return $result;
+	}
+
+	private function readAll(array $searchData) : array
+	{
+		$blogPostController = new BlogController(
+			new BlogPost(
+			'',
+			'',
+			'')
+		);
+
+		$result = $blogPostController->readAll(
+			$searchData[BLOG_POST_SEARCH_FILTER_FIELD_NAME],
+			$searchData[BLOG_POST_SEARCH_INPUT_FIELD_NAME]
 		);
 
 		return $result;
@@ -232,6 +250,23 @@ class BlogDriver extends SystemController implements IBlogDriver
 			);
 
 			return $result;
+		}
+
+		if(isset($_GET[BLOG_POST_SEARCH_INPUT_FIELD_NAME]) && !empty($_GET[BLOG_POST_SEARCH_INPUT_FIELD_NAME]))
+		{
+			$searchData = [
+				BLOG_POST_SEARCH_INPUT_FIELD_NAME => $_GET[BLOG_POST_SEARCH_INPUT_FIELD_NAME],
+				BLOG_POST_SEARCH_FILTER_FIELD_NAME => $_GET[BLOG_POST_SEARCH_FILTER_FIELD_NAME]
+			];
+			
+			$result = $this->readAll($searchData);
+
+			header(
+				'Location: /index.php?' . BLOG_POST_SEARCH_INPUT_FIELD_NAME . '=' . $_GET[BLOG_POST_SEARCH_INPUT_FIELD_NAME] . 
+				'&' . BLOG_POST_SEARCH_FILTER_FIELD_NAME . '=' . $_GET[BLOG_POST_SEARCH_FILTER_FIELD_NAME]
+			);
+
+			return true;
 		}
 
 		if(isset($_POST[BLOG_POST_SUBMIT_BUTTON_NAME]) && $_POST[BLOG_POST_SUBMIT_BUTTON_NAME] === ACTION_NAME_BLOG_POST_UPDATE)

@@ -108,9 +108,19 @@ class BlogFrontend extends BlogController
 	 * @param  int $from a starting point.
 	 * @return array list of all blog posts located in DB.
 	 */
-	public function getPosts(int $from = 0) : array
+	public function getPosts(int $from = 0, string $fFlag = '', string $keyword = '') : array
 	{
-		$result = $this->readAll();
+		$result = array();
+
+		if($fFlag > 0)
+		{
+			$result = $this->readAll($fFlag, $keyword);
+		}
+		else
+		{
+			$result = $this->readAll();
+		}
+		
 		$totalPosts = count($result);
 
 		if($totalPosts > 5)
@@ -262,6 +272,30 @@ class BlogFrontend extends BlogController
 		print('</ol>');
 
 		return $totalPages;
+	}
+
+	public function getSearchBar() : string
+	{
+		$form = '<form class="master search-bar" method="get">
+		<input type="text" id="' . 
+		BLOG_POST_SEARCH_INPUT_FIELD_NAME . '" name="' . 
+		BLOG_POST_SEARCH_INPUT_FIELD_NAME . '"><br>
+
+		<select id="' .
+			BLOG_POST_SEARCH_FILTER_FIELD_NAME . '" name="' . 
+			BLOG_POST_SEARCH_FILTER_FIELD_NAME . '">
+			<option value="' . BLOG_POST_SEARCH_TITLE_FIELD_NAME . '">by ' . BLOG_POST_SEARCH_TITLE_FIELD_NAME . '</option>
+			<option value="' . BLOG_POST_SEARCH_AUTHOR_FIELD_NAME . '">by ' . BLOG_POST_SEARCH_AUTHOR_FIELD_NAME . '</option>
+		</select>
+
+			<button type="submit" formaction="' . 
+				BLOG_ACTION_PATH . '" name="' .
+				BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . 
+				ACTION_NAME_BLOG_POST_SEARCH . '">Search
+			</button>
+		</form>';
+
+		return $form;
 	}
 }
 

@@ -10,6 +10,7 @@ define('GET_VAR_NAME_BLOG_POST_ID', 'id');
 define('GET_VAR_NAME_BLOG_POST', 'post');
 define('ACTION_NAME_BLOG_POST_CREATION', 'create');
 define('ACTION_NAME_BLOG_POST_VIEW', 'read');
+define('ACTION_NAME_BLOG_POST_SEARCH', 'search');
 define('ACTION_NAME_BLOG_POST_UPDATE', 'update');
 define('ACTION_NAME_BLOG_POST_REMOVAL', 'delete');
 

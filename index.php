@@ -3,6 +3,7 @@
 require_once(__DIR__ . '/config.php');
 require_once(SITE_ROOT . '/core/frontends/user_frontend.php');
 require_once(SITE_ROOT . '/core/frontends/blog_frontend.php');
+require_once(SITE_ROOT . '/core/settings/input.php');
 
 if (session_status() === PHP_SESSION_NONE) 
 {
@@ -43,39 +44,58 @@ if (session_status() === PHP_SESSION_NONE)
 		</header>
 	</header>
 
-	<form class="master search-bar">
-		<input type="text" id="search-bar-input" name="search-bar-input"><br>
+	<?php
 
-		<select id="search-bar-filter" name="search-bar-filter">
-			<option value="title">by title</option>
-			<option value="author">by author</option>
-		</select>
+		$blogFrontend = new BlogFrontend(
+			new BlogPost(
+			'', 
+			'', 
+			'')
+		);
 
-		<button type="submit" value="search" id="submission-button">Search</button>	
-	</form>
+		print(
+			$blogFrontend->getSearchBar()
+		);
+		
+	?>
 
 	<div class="master workspace">
 		<ul id="blog-posts">
 			<?php
 
-				$blogFrontend = new BlogFrontend(
-					new BlogPost(
-						'', 
-						'', 
-						'')
-				);
-
 				$result = array();
 
 				if(isset($_GET['from']) && !empty($_GET['from']))
 				{
-					$result = $blogFrontend->getPosts(
-						$_GET['from']
-					);
+					if(isset($_GET[BLOG_POST_SEARCH_INPUT_FIELD_NAME]) && !empty($_GET[BLOG_POST_SEARCH_INPUT_FIELD_NAME]))
+					{
+						$result = $blogFrontend->getPosts(
+							$_GET['from'],
+							$_GET[BLOG_POST_SEARCH_FILTER_FIELD_NAME],
+							$_GET[BLOG_POST_SEARCH_INPUT_FIELD_NAME]
+						);
+					}
+					else
+					{
+						$result = $blogFrontend->getPosts(
+							$_GET['from']
+						);
+					}
 				}
 				else
 				{
-					$result = $blogFrontend->getPosts();
+					if(isset($_GET[BLOG_POST_SEARCH_INPUT_FIELD_NAME]) && !empty($_GET[BLOG_POST_SEARCH_INPUT_FIELD_NAME]))
+					{
+						$result = $blogFrontend->getPosts(
+							0,
+							$_GET[BLOG_POST_SEARCH_FILTER_FIELD_NAME],
+							$_GET[BLOG_POST_SEARCH_INPUT_FIELD_NAME]
+						);
+					}
+					else
+					{
+						$result = $blogFrontend->getPosts();
+					}
 				}
 
 				

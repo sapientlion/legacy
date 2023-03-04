@@ -132,27 +132,51 @@ class BlogController extends SystemController implements IBlogController
 	 * @param  int $to ID to stop at.
 	 * @return array Of all known blog posts.
 	 */
-	private function doReadAll() : array
+	private function doReadAll(string $fFlag = '', string $keyword = '') : array
 	{
-		//
-		// SELECT * FROM post WHERE id BETWEEN :from AND :to
-		//
-		$string = "SELECT * FROM " . 
-		DB_TABLE_BLOG_POST;
+		$string = '';
+
+		if(!empty($keyword))
+		{
+			switch($fFlag)
+			{
+				//
+				// Search by author name.
+				//
+				case BLOG_POST_SEARCH_AUTHOR_FIELD_NAME:
+				{
+					$string = "SELECT * FROM " . 
+					DB_TABLE_BLOG_POST . " WHERE " . DB_TABLE_BLOG_POST_USER . " = :keyword";
+				}
+				//
+				// Search by blog post title.
+				//
+				case BLOG_POST_SEARCH_TITLE_FIELD_NAME:
+				{
+					$string = "SELECT * FROM " . 
+					DB_TABLE_BLOG_POST . " WHERE " . DB_TABLE_BLOG_POST_TITLE . " = :keyword";
+				}
+			}
+		}
+		else
+		{
+			//
+			// SELECT * FROM post WHERE id BETWEEN :from AND :to
+			//
+			$string = "SELECT * FROM " . 
+			DB_TABLE_BLOG_POST;
+		}
 		
 		$stmt = $this->dbh->prepare($string);
+
+		if(!empty($keyword))
+		{
+			$stmt->bindParam(':keyword', $keyword);
+		}
 
 		$stmt->execute();
 
 		$result = $stmt->fetchAll();
-
-		//
-		// Also return an empty array in case of a failure (empty list for example).
-		//
-		if(!$result)
-		{
-			return array();
-		}
 
 		foreach($result as &$blogPost)
 		{
@@ -322,11 +346,11 @@ class BlogController extends SystemController implements IBlogController
 	 * @return array|null array of blog posts or null, if nothing was found or if there's a problem with the DB.
 	 * @throws PDOException On error if PDO::ERRMODE_EXCEPTION option is true.
 	 */
-	public function readAll() : array
+	public function readAll(string $fFlag = '', string $keyword = '') : array
 	{
 		try
 		{
-			$result = $this->doReadAll();
+			$result = $this->doReadAll($fFlag, $keyword);
 	
 			return $result;
 		}
@@ -334,7 +358,7 @@ class BlogController extends SystemController implements IBlogController
 		{
 			print 'Error!: ' . $e->getMessage() . '<br/>';
 
-			return null;
+			return array();
 		}
 	}
 	
