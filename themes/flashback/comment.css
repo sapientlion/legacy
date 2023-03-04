@@ -1,0 +1,47 @@
+.comment
+{
+	display: grid;
+	justify-content: space-between;
+}
+
+.comment-top
+{
+	display: flex;
+	grid-column: 1;
+	grid-row: 1;
+}
+
+.comment-top input
+{
+	display: none;
+}
+
+.comment-top textarea
+{
+	background-color: inherit;
+	border: none;
+	cursor: default;
+	outline: none;
+}
+
+.comment-bottom
+{
+	align-items: center;
+	background-color: brown;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	grid-column: 2;
+	grid-row: 1;
+	justify-content: space-evenly;
+}
+
+.comment-bottom input
+{
+	background-color: inherit;
+	border: none;
+	color: white;
+	font-size: large;
+	outline: none;
+	text-align: center;
+}

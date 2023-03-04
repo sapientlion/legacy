@@ -14,6 +14,7 @@ if (session_status() === PHP_SESSION_NONE)
 
 <html>
 <head>
+	<link rel="stylesheet" href="themes/flashback/blog_post.css" type="text/css">
 	<link rel="stylesheet" href="themes/flashback/native.css" type="text/css">
 	<link rel="stylesheet" href="themes/flashback/class.css" type="text/css">
 	<link rel="stylesheet" href="themes/flashback/id.css" type="text/css">

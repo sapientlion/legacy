@@ -55,20 +55,25 @@ class BlogFrontend extends BlogController
 
 		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
 		{
-			$form = '<form class="blog-post" method="post">
-			<div class="blog-post-top">
-				<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
-				<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . 
-				BLOG_POST_TITLE_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
+			$form = '<form class="blog-post-reader" method="post">
+			<div class="blog-post-reader-top">
+				<div class="blog-post-reader-top-labels">
+					<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
+					<label for="' . BLOG_POST_AUTHOR_FIELD_NAME .  '">Author:</label><br>
+				</div>
+				
+				<div class="blog-post-reader-top-fields">
+					<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . 
+					BLOG_POST_TITLE_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
 			
-				<label for="' . BLOG_POST_AUTHOR_FIELD_NAME .  '">Author:</label><br>
-				<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . 
-				BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
+					<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . 
+					BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
+				</div>
 			</div>
 	
-			<div class="blog-post-middle">
+			<div class="blog-post-reader-middle">
 				<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . 
-				BLOG_POST_CONTENT_FIELD_NAME . '" rows="25" cols="190" readonly>' . $result[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
+				BLOG_POST_CONTENT_FIELD_NAME . '" rows="25" cols="165" readonly>' . $result[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
 			</div>
 	
 			</form>';
@@ -76,23 +81,28 @@ class BlogFrontend extends BlogController
 			return $form;
 		}
 
-		$form = '<form class="blog-post" method="post">
-		<div class="blog-post-top">
-			<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
-			<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . 
-			BLOG_POST_TITLE_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
+		$form = '<form class="blog-post-reader" method="post">
+		<div class="blog-post-reader-top">
+			<div class="blog-post-reader-top-labels">
+				<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
+				<label for="' . BLOG_POST_AUTHOR_FIELD_NAME .  '">Author:</label><br>
+			</div>
+			
+			<div class="blog-post-reader-top-fields">
+				<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . 
+				BLOG_POST_TITLE_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
 		
-			<label for="' . BLOG_POST_AUTHOR_FIELD_NAME .  '">Author:</label><br>
-			<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . 
-			BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
+				<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . 
+				BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
+			</div>
 		</div>
 
-		<div class="blog-post-middle">
+		<div class="blog-post-reader-middle">
 			<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . 
-			BLOG_POST_CONTENT_FIELD_NAME . '" rows="25" cols="190" readonly>' . $result[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
+			BLOG_POST_CONTENT_FIELD_NAME . '" rows="25" cols="165" readonly>' . $result[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
 		</div>
 		
-		<div class="blog-post-bottom">
+		<div class="blog-post-reader-bottom">
 			<button type="submit" formaction="' . BLOG_UPDATE_PAGE_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_UPDATE . '">Edit</button>
 			<button type="submit" formaction="' . BLOG_REMOVAL_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_REMOVAL . '">Delete</button>
 		</div>

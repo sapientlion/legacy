@@ -1,0 +1,25 @@
+.blog-post
+{
+	display: flex;
+	flex-direction: column;
+}
+
+.blog-post input, .blog-post textarea
+{
+	background-color: inherit;
+	border: none;
+	border-bottom-color: maroon;
+	border-bottom-style: solid;
+	font-size: large;
+	outline: none;
+}
+
+.blog-post-controller
+{
+	align-items: center;
+	background-color: brown;
+	display: flex;
+	gap: 16px;
+	justify-content: center;
+	padding: 8px;
+}

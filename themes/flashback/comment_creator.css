@@ -1,0 +1,21 @@
+.comment-creator
+{
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+}
+
+.comment-creator-top
+{
+	display: flex;
+}
+
+.comment-creator-bottom
+{
+	display: flex;
+	flex-direction: row;
+	gap: 16px;
+	justify-content: center;
+	padding: 8px;
+}

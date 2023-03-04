@@ -42,11 +42,6 @@ button:active, select:active
 	color: black;
 }
 
-form
-{
-	display: grid;
-}
-
 input
 {
 	padding: 8px;
@@ -64,6 +59,11 @@ ul, ol
 {
 	margin: 0;
 	padding: 0;
+}
+
+ul
+{
+	width: 100%;
 }
 
 textarea

@@ -27,26 +27,30 @@ class CommentFrontend extends CommentController implements ICommentFrontend
 			return '';
 		}
 
-		$form = '<div class="master" id="comment-creator">
+		$form = '<div class="master comment-creator">
 			<form method="post">
 
-			<input class="hidden" type="text" id="' . 
-			COMMENT_POST_ID_FIELD_NAME . '-' . $this->comment->postID . '" name="' . 
-			COMMENT_POST_ID_FIELD_NAME . '" value="' . $this->comment->postID . '" readonly><br>
+			<div class="comment-creator-top">
+				<input class="hidden" type="text" id="' . 
+				COMMENT_POST_ID_FIELD_NAME . '-' . $this->comment->postID . '" name="' . 
+				COMMENT_POST_ID_FIELD_NAME . '" value="' . $this->comment->postID . '" readonly><br>
 
-			<input class="hidden" type="text" id="' . 
-			COMMENT_AUTHOR_FIELD_NAME . '" name="' . 
-			COMMENT_AUTHOR_FIELD_NAME . '" value="' . 
-			$_SESSION[SESSION_VAR_NAME_USER_NAME] . '" readonly><br>
+				<input class="hidden" type="text" id="' . 
+				COMMENT_AUTHOR_FIELD_NAME . '" name="' . 
+				COMMENT_AUTHOR_FIELD_NAME . '" value="' . 
+				$_SESSION[SESSION_VAR_NAME_USER_NAME] . '" readonly><br>
 
-			<textarea id="' . 
-			COMMENT_CONTENT_FIELD_NAME . '" name="' . 
-			COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150"></textarea><br>
+				<textarea id="' . 
+				COMMENT_CONTENT_FIELD_NAME . '" name="' . 
+				COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150"></textarea><br>
+			</div>
 		
-			<button type="submit" formaction="' . 
-			COMMENT_ACTION_PATH . '" name="' . 
-			COMMENT_SUBMIT_BUTTON_NAME . '" value="' . 
-			ACTION_NAME_COMMENT_CREATION . '">Comment</button>
+			<div class="comment-creator-bottom">
+				<button type="submit" formaction="' . 
+				COMMENT_ACTION_PATH . '" name="' . 
+				COMMENT_SUBMIT_BUTTON_NAME . '" value="' . 
+				ACTION_NAME_COMMENT_CREATION . '">Comment</button>
+			</div>
 		</div>
 
 		</form>';
@@ -77,26 +81,26 @@ class CommentFrontend extends CommentController implements ICommentFrontend
 				foreach ($result as $post) 
 				{
 					$comment = '<form class="master comment" method="post">
-					<input class="hidden" type="text" id="' . 
-					COMMENT_ID_FIELD_NAME . '-' . 
-					$post[DB_TABLE_COMMENT_ID] . '" name="' . 
-					COMMENT_ID_FIELD_NAME . '" value="' . 
-					$post[DB_TABLE_COMMENT_ID] . '" readonly><br>
+					<div class="comment-top">
+						<input class="hidden" type="text" id="' . 
+						COMMENT_ID_FIELD_NAME . '-' . 
+						$post[DB_TABLE_COMMENT_ID] . '" name="' . 
+						COMMENT_ID_FIELD_NAME . '" value="' . 
+						$post[DB_TABLE_COMMENT_ID] . '" readonly><br>
 
-					<input class="hidden" type="text" id="' . 
-					COMMENT_POST_ID_FIELD_NAME . '-' . 
-					$post[DB_TABLE_COMMENT_POST_ID] . '" name="' . 
-					COMMENT_POST_ID_FIELD_NAME . '" value="' . 
-					$post[DB_TABLE_COMMENT_POST_ID] . '" readonly><br>
-					
-					<div class="comment-left">
+						<input class="hidden" type="text" id="' . 
+						COMMENT_POST_ID_FIELD_NAME . '-' . 
+						$post[DB_TABLE_COMMENT_POST_ID] . '" name="' . 
+						COMMENT_POST_ID_FIELD_NAME . '" value="' . 
+						$post[DB_TABLE_COMMENT_POST_ID] . '" readonly><br>
+
 						<textarea id="' . 
 						COMMENT_CONTENT_FIELD_NAME . '" name="' . 
-						COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150" readonly>' . 
+						COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="135" readonly>' . 
 						$post[DB_TABLE_COMMENT_CONTENT] . '</textarea><br>
 					</div>
 
-					<div class="comment-right">
+					<div class="comment-bottom">
 						<input type="text" id="' . 
 						COMMENT_AUTHOR_FIELD_NAME . '" name="' . 
 						COMMENT_AUTHOR_FIELD_NAME . '" value="' . 
@@ -113,25 +117,28 @@ class CommentFrontend extends CommentController implements ICommentFrontend
 				foreach ($result as $post) 
 				{
 					$comment = '<form class="master comment" method="post">
-					<input class="hidden" type="text" id="' . 
-					COMMENT_ID_FIELD_NAME . '-' . 
-					$post[DB_TABLE_COMMENT_ID] . '" name="' . 
-					COMMENT_ID_FIELD_NAME . '" value="' . 
-					$post[DB_TABLE_COMMENT_ID] . '" readonly><br>
-					<input class="hidden" type="text" id="' . 
-					COMMENT_POST_ID_FIELD_NAME . '-' . 
-					$post[DB_TABLE_COMMENT_POST_ID] . '" name="' . 
-					COMMENT_POST_ID_FIELD_NAME . '" value="' . 
-					$post[DB_TABLE_COMMENT_POST_ID] . '" readonly><br>
+
 					
-					<div class="comment-left">
+					<div class="comment-top">
+						<input class="hidden" type="text" id="' . 
+						COMMENT_ID_FIELD_NAME . '-' . 
+						$post[DB_TABLE_COMMENT_ID] . '" name="' . 
+						COMMENT_ID_FIELD_NAME . '" value="' . 
+						$post[DB_TABLE_COMMENT_ID] . '" readonly><br>
+						
+						<input class="hidden" type="text" id="' . 
+						COMMENT_POST_ID_FIELD_NAME . '-' . 
+						$post[DB_TABLE_COMMENT_POST_ID] . '" name="' . 
+						COMMENT_POST_ID_FIELD_NAME . '" value="' . 
+						$post[DB_TABLE_COMMENT_POST_ID] . '" readonly><br>
+
 						<textarea id="' . 
 						COMMENT_CONTENT_FIELD_NAME . '" name="' . 
-						COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="150" readonly>' . 
+						COMMENT_CONTENT_FIELD_NAME . '" rows="15" cols="135" readonly>' . 
 						$post[DB_TABLE_COMMENT_CONTENT] . '</textarea><br>
 					</div>
 					
-					<div class="comment-right">
+					<div class="comment-bottom">
 						<input type="text" id="' . 
 						COMMENT_AUTHOR_FIELD_NAME . '" name="' . 
 						COMMENT_AUTHOR_FIELD_NAME . '" value="' . 
