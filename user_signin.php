@@ -17,6 +17,7 @@ require_once(SITE_ROOT . '/core/frontends/user_frontend.php');
 	<link rel="stylesheet" href="themes/flashback/native.css" type="text/css">
 	<link rel="stylesheet" href="themes/flashback/class.css" type="text/css">
 	<link rel="stylesheet" href="themes/flashback/id.css" type="text/css">
+	<link rel="stylesheet" href="themes/flashback/user_form.css" type="text/css">
 	<title>Legacy | Signin</title>
 </head>
 
@@ -43,7 +44,7 @@ require_once(SITE_ROOT . '/core/frontends/user_frontend.php');
 		</header>
 	</header>
 
-	<div class="master workspace">
+	<div class="master workspace workspace-user-form">
 		<?php
 
 			print(

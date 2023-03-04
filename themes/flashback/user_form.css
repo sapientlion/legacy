@@ -1,0 +1,34 @@
+.user-form
+{
+	display: grid;
+}
+
+.user-form-labels, .user-form-fields
+{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+}
+
+.user-form-labels
+{
+	gap: 16px;
+	grid-column: 1;
+	grid-row: 1;
+}
+
+.user-form-fields
+{
+	gap: 16px;
+	grid-column: 2;
+	grid-row: 1;
+}
+
+.user-form-controller
+{
+	display: flex;
+	gap: 16px;
+	grid-column: 1 / 3;
+	grid-row: 3;
+	justify-content: center;
+}

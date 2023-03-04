@@ -45,7 +45,7 @@ class UserFrontend implements IUserFrontend
 	*/
 	public function getSignupForm() : string
 	{
-		$form = '<form action="' . USER_SIGNUP_PATH . '" method="post">
+		$form = '<form class="user-form" action="' . USER_SIGNUP_PATH . '" method="post">
 			<div class="user-form-labels">
 				<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
 				<label for="' . SIGNUP_EMAIL_FIELD_NAME . '">E-mail:</label><br>
@@ -90,7 +90,7 @@ class UserFrontend implements IUserFrontend
 	*/
 	public function getUpdateForm() : string
 	{
-		$form = '<form action="' . USER_UPDATE_PATH . '" method="post">
+		$form = '<form class="user-form" action="' . USER_UPDATE_PATH . '" method="post">
 			<div class="user-form-labels">
 				<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
 				<label for="' . SIGNUP_EMAIL_FIELD_NAME . '">E-mail:</label><br>
@@ -165,7 +165,7 @@ class UserFrontend implements IUserFrontend
 	*/
 	public function getSigninForm() : string
 	{
-		$form = '<form action="' . USER_SIGNIN_PATH . '" method="post">
+		$form = '<form class="user-form" action="' . USER_SIGNIN_PATH . '" method="post">
 			<div class="user-form-labels">
 				<label for="' . SIGNUP_USER_NAME_FIELD_NAME . '">Username:</label><br>
 				<label for="' . SIGNUP_PASSWORD_FIELD_NAME . '">Password:</label><br>
