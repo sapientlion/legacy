@@ -252,7 +252,7 @@ class BlogDriver extends SystemController implements IBlogDriver
 			return $result;
 		}
 
-		if(isset($_GET[BLOG_POST_SEARCH_INPUT_FIELD_NAME]) && !empty($_GET[BLOG_POST_SEARCH_INPUT_FIELD_NAME]))
+		if(isset($_GET[BLOG_POST_SEARCH_INPUT_FIELD_NAME]))
 		{
 			$searchData = [
 				BLOG_POST_SEARCH_INPUT_FIELD_NAME => $_GET[BLOG_POST_SEARCH_INPUT_FIELD_NAME],
