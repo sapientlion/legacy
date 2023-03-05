@@ -53,9 +53,17 @@ if (session_status() === PHP_SESSION_NONE)
 		}
 		else
 		{
-			$blogFrontend = new BlogFrontend();
+			$blogFrontend = new BlogFrontend(
+				new BlogPost(
+					'',
+					'',
+					''
+				)
+			);
 
-			$blogFrontend->getCreator();
+			print(
+				$blogFrontend->getCreator()
+			);
 		}
 
 		?>

@@ -15,6 +15,21 @@ require_once(SITE_ROOT . '/core/settings/session.php');
 
 class BlogFrontend extends BlogController
 {	
+	private function check() : bool
+	{
+		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		{
+			return false;
+		}
+
+		if(empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		{
+			return false;
+		}
+		
+		return true;
+	}
+
 	/**
 	 * Get a blog post creator.
 	 *
@@ -35,12 +50,39 @@ class BlogFrontend extends BlogController
 
 		</form>';
 
-		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		//
+		// A discretion flag; if FALSE then user will get a limited set of tools to work with and if TRUE - contrary to the former.
+		//
+		$dFlag = true;
+
+		if(!$this->check())
 		{
-			return $form;
+			$dFlag = false;
+		}
+		else
+		{
+			if(!isset($_SESSION[SESSION_VAR_NAME_USER_CAN_CREATE_POSTS]))
+			{
+				$dFlag = false;
+			}
+	
+			if(empty($_SESSION[SESSION_VAR_NAME_USER_CAN_CREATE_POSTS]))
+			{
+				$dFlag = false;
+			}
+	
+			if((bool)($_SESSION[SESSION_VAR_NAME_USER_CAN_CREATE_POSTS]) !== true)
+			{
+				$dFlag = false;
+			}
 		}
 
-		return '';
+		if(!$dFlag)
+		{
+			return '';
+		}
+
+		return $form;
 	}
 	
 	/**
@@ -51,33 +93,82 @@ class BlogFrontend extends BlogController
 	 */
 	public function getPost() : string
 	{
+		//
+		// A discretion flag; if FALSE then user will get a limited set of tools to work with and if TRUE - contrary to the former.
+		//
+		$dFlag = true;
 		$result = $this->read($this->post->id);
 
-		if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		if(!$this->check())
 		{
-			$form = '<form class="blog-post-reader" method="post">
-			<div class="blog-post-reader-top">
-				<div class="blog-post-reader-top-labels">
-					<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
-					<label for="' . BLOG_POST_AUTHOR_FIELD_NAME .  '">Author:</label><br>
-				</div>
-				
-				<div class="blog-post-reader-top-fields">
-					<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . 
-					BLOG_POST_TITLE_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
-			
-					<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . 
-					BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
-				</div>
-			</div>
+			$dFlag = false;
+		}
+		else
+		{
+			if($result[DB_TABLE_BLOG_POST_USER] !== $_SESSION[SESSION_VAR_NAME_USER_NAME])
+			{
+				$dFlag = false;
+			}
 	
-			<div class="blog-post-reader-middle">
-				<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . 
-				BLOG_POST_CONTENT_FIELD_NAME . '" rows="25" cols="165" readonly>' . $result[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
-			</div>
+			if(!isset($_SESSION[SESSION_VAR_NAME_USER_CAN_READ_POSTS]))
+			{
+				return '';
+			}
 	
-			</form>';
+			if(empty($_SESSION[SESSION_VAR_NAME_USER_CAN_READ_POSTS]))
+			{
+				return '';
+			}
+	
+			if((bool)($_SESSION[SESSION_VAR_NAME_USER_CAN_READ_POSTS]) !== true)
+			{
+				return '';
+			}
+	
+			//
+			// Check whether user can alter blog posts or not.
+			//
+			if(!isset($_SESSION[SESSION_VAR_NAME_USER_CAN_UPDATE_POSTS]))
+			{
+				$dFlag = false;
+			}
+	
+			if(empty($_SESSION[SESSION_VAR_NAME_USER_CAN_UPDATE_POSTS]))
+			{
+				$dFlag = false;
+			}
+	
+			if((bool)($_SESSION[SESSION_VAR_NAME_USER_CAN_UPDATE_POSTS]) !== true)
+			{
+				$dFlag = false;
+			}
+		}
 
+		$form = '<form class="blog-post-reader" method="post">
+		<div class="blog-post-reader-top">
+			<div class="blog-post-reader-top-labels">
+				<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
+				<label for="' . BLOG_POST_AUTHOR_FIELD_NAME .  '">Author:</label><br>
+			</div>
+			
+			<div class="blog-post-reader-top-fields">
+				<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . 
+				BLOG_POST_TITLE_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
+		
+				<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . 
+				BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $result[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
+			</div>
+		</div>
+
+		<div class="blog-post-reader-middle">
+			<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . 
+			BLOG_POST_CONTENT_FIELD_NAME . '" rows="25" cols="165" readonly>' . $result[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
+		</div>
+
+		</form>';
+
+		if(!$dFlag)
+		{
 			return $form;
 		}
 
@@ -113,10 +204,12 @@ class BlogFrontend extends BlogController
 	}
 	
 	/**
-	 * Get multiple posts from DB.
+	 * Get all posts from DB.
 	 *
-	 * @param  int $from a starting point.
-	 * @return array list of all blog posts located in DB.
+	 * @param  int $from a starting point to begin from.
+	 * @param  string $fFlag a filter flag.
+	 * @param  string $keyword a keyword.
+	 * @return array list of all blog posts discoverd in DB.
 	 */
 	public function getPosts(int $from = 0, string $fFlag = '', string $keyword = '') : array
 	{
@@ -138,61 +231,95 @@ class BlogFrontend extends BlogController
 			$result = array_slice($result, $from, 5);
 		}
 
-		if($totalPosts > 0)
+		foreach($result as $post) 
 		{
-			if(!isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
-			{
-				foreach ($result as $post) 
-				{
-					$blogPost = '<form class="master blog-post" action="" method="post">
-					<input class="hidden" type="text" id="' . BLOG_POST_ID_FIELD_NAME . '-' . $post[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_ID] . '" readonly><br>
-					
-					<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . BLOG_POST_TITLE_FIELD_NAME . '" value="Title: ' . $post[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
-					
-					<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . BLOG_POST_AUTHOR_FIELD_NAME . '" value="Author: ' . $post[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
-					
-					<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '" rows="5" cols="150" readonly>' . $post[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
+			$dFlag = true;
+			$blogPost = '';
 
-					<div class="blog-post-controller">
-						<button type="submit" formaction="' . BLOG_VIEW_PAGE_PATH . '?post=' . $post[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_VIEW . '">View</button>
-					</div>
-					
-					</form>';
-					
-					print($blogPost);
-				}
+			if(!$this->check())
+			{
+				$dFlag = false;
 			}
 			else
 			{
-				foreach ($result as $post) 
+				if($post[DB_TABLE_BLOG_POST_USER] !== $_SESSION[SESSION_VAR_NAME_USER_NAME])
 				{
-					$blogPost = '<form class="blog-post" method="post">
-					<input class="hidden" type="text" id="' . BLOG_POST_ID_FIELD_NAME . '-' . $post[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_ID] . '" readonly><br>
-					
-					<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . BLOG_POST_TITLE_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
-					
-					<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
-													
-					<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '" rows="5" cols="150" readonly>' . $post[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
-					
-					<div class="blog-post-controller">
-						<button type="submit" formaction="' . BLOG_VIEW_PAGE_PATH . '?post=' . $post[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_VIEW . '">View</button>
-
-						<button type="submit" formaction="' . BLOG_UPDATE_PAGE_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_UPDATE . '">Edit</button>
-
-						<button type="submit" formaction="' . BLOG_REMOVAL_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_REMOVAL . '">Delete</button>
-					</div>
-					
-					</form>';
-													
-					print($blogPost);
+					$dFlag = false;
+				}
+	
+				if(!isset($_SESSION[SESSION_VAR_NAME_USER_CAN_READ_POSTS]))
+				{
+					return array();
+				}
+		
+				if(empty($_SESSION[SESSION_VAR_NAME_USER_CAN_READ_POSTS]))
+				{
+					return array();
+				}
+		
+				if((bool)($_SESSION[SESSION_VAR_NAME_USER_CAN_READ_POSTS]) !== true)
+				{
+					return array();
+				}
+	
+				//
+				// Check whether user can alter blog posts or not.
+				//
+				if(!isset($_SESSION[SESSION_VAR_NAME_USER_CAN_UPDATE_POSTS]))
+				{
+					$dFlag = false;
+				}
+		
+				if(empty($_SESSION[SESSION_VAR_NAME_USER_CAN_UPDATE_POSTS]))
+				{
+					$dFlag = false;
+				}
+		
+				if((bool)($_SESSION[SESSION_VAR_NAME_USER_CAN_UPDATE_POSTS]) !== true)
+				{
+					$dFlag = false;
 				}
 			}
-		}
-		else
-		{
-			$blogPost = '<form class="master blog-post"></form>';
 
+			if(!$dFlag)
+			{
+				$blogPost = '<form class="master blog-post" action="" method="post">
+				<input class="hidden" type="text" id="' . BLOG_POST_ID_FIELD_NAME . '-' . $post[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_ID] . '" readonly><br>
+				
+				<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . BLOG_POST_TITLE_FIELD_NAME . '" value="Title: ' . $post[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
+				
+				<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . BLOG_POST_AUTHOR_FIELD_NAME . '" value="Author: ' . $post[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
+				
+				<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '" rows="5" cols="150" readonly>' . $post[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
+	
+				<div class="blog-post-controller">
+					<button type="submit" formaction="' . BLOG_VIEW_PAGE_PATH . '?post=' . $post[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_VIEW . '">View</button>
+				</div>
+				
+				</form>';
+			}
+			else
+			{
+				$blogPost = '<form class="blog-post" method="post">
+				<input class="hidden" type="text" id="' . BLOG_POST_ID_FIELD_NAME . '-' . $post[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_ID_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_ID] . '" readonly><br>
+				
+				<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . BLOG_POST_TITLE_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_TITLE] . '" readonly><br>
+				
+				<input type="text" id="' . BLOG_POST_AUTHOR_FIELD_NAME . '" name="' . BLOG_POST_AUTHOR_FIELD_NAME . '" value="' . $post[DB_TABLE_BLOG_POST_USER] . '" readonly><br>
+												
+				<textarea id="' . BLOG_POST_CONTENT_FIELD_NAME . '" name="' . BLOG_POST_CONTENT_FIELD_NAME . '" rows="5" cols="150" readonly>' . $post[DB_TABLE_BLOG_POST_CONTENT] . '</textarea><br>
+				
+				<div class="blog-post-controller">
+					<button type="submit" formaction="' . BLOG_VIEW_PAGE_PATH . '?post=' . $post[DB_TABLE_BLOG_POST_ID] . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_VIEW . '">View</button>
+
+					<button type="submit" formaction="' . BLOG_UPDATE_PAGE_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_UPDATE . '">Edit</button>
+
+					<button type="submit" formaction="' . BLOG_REMOVAL_PATH . '" name="' . BLOG_POST_SUBMIT_BUTTON_NAME . '" value="' . ACTION_NAME_BLOG_POST_REMOVAL . '">Delete</button>
+				</div>
+				
+				</form>';
+			}
+			
 			print($blogPost);
 		}
 
@@ -228,12 +355,49 @@ class BlogFrontend extends BlogController
 
 		</form>';
 
-		if(isset($_SESSION[SESSION_VAR_NAME_USER_NAME]) && !empty($_SESSION[SESSION_VAR_NAME_USER_NAME]))
+		//
+		// A discretion flag; if FALSE then user will get a limited set of tools to work with and if TRUE - contrary to the former.
+		//
+		$dFlag = true;
+
+		if(!$this->check())
 		{
-			return $form;
+			$dFlag = false;
+		}
+		else
+		{
+			if($result[DB_TABLE_BLOG_POST_USER] !== $_SESSION[SESSION_VAR_NAME_USER_NAME])
+			{
+				$dFlag = false;
+			}
+	
+			if(!isset($_SESSION[SESSION_VAR_NAME_USER_CAN_READ_POSTS]))
+			{
+				$dFlag = false;
+			}
+	
+			if(empty($_SESSION[SESSION_VAR_NAME_USER_CAN_READ_POSTS]))
+			{
+				$dFlag = false;
+			}
+	
+			if((bool)($_SESSION[SESSION_VAR_NAME_USER_CAN_READ_POSTS]) !== true)
+			{
+				$dFlag = false;
+			}
+	
+			if((bool)($_SESSION[SESSION_VAR_NAME_USER_CAN_READ_POSTS]) !== true)
+			{
+				$dFlag = false;
+			}
 		}
 
-		return '';
+		if(!$dFlag)
+		{
+			return '';
+		}
+
+		return $form;
 	}
 	
 	/**

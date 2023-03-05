@@ -16,14 +16,23 @@ define('DB_TABLE_USER_ID', 'id');
 define('DB_TABLE_USER_NAME', 'username');
 define('DB_TABLE_USER_EMAIL', 'email');
 define('DB_TABLE_USER_PASSWORD', 'password');
+
 define('DB_TABLE_USER_CAN_CREATE_POSTS', 'can_create_blog_posts');
+define('DB_TABLE_USER_CAN_READ_POSTS', 'can_read_blog_posts');
 define('DB_TABLE_USER_CAN_UPDATE_POSTS', 'can_update_blog_posts');
 define('DB_TABLE_USER_CAN_DELETE_POSTS', 'can_delete_blog_posts');
+
+define('DB_TABLE_USER_CAN_CREATE_COMMENTS', 'can_create_comments');
+define('DB_TABLE_USER_CAN_READ_COMMENTS', 'can_read_comments');
+define('DB_TABLE_USER_CAN_UPDATE_COMMENTS', 'can_update_comments');
+define('DB_TABLE_USER_CAN_DELETE_COMMENTS', 'can_delete_comments');
+
 define('DB_TABLE_BLOG_POST', 'post');
 define('DB_TABLE_BLOG_POST_ID', 'id');
 define('DB_TABLE_BLOG_POST_TITLE', 'title');
 define('DB_TABLE_BLOG_POST_USER', 'author');
 define('DB_TABLE_BLOG_POST_CONTENT', 'content');
+
 define('DB_TABLE_COMMENT', 'comment');
 define('DB_TABLE_COMMENT_ID', 'id');
 define('DB_TABLE_COMMENT_POST_ID', 'post');
