@@ -37,7 +37,7 @@ class BlogFrontend extends BlogController
 	 */
 	public function getCreator() : string
 	{
-		$form = '<form action="' . BLOG_CREATION_PATH . '" method="post">
+		$form = '<form class="blog-post-creator" action="' . BLOG_CREATION_PATH . '" method="post">
 		<label for="' . BLOG_POST_TITLE_FIELD_NAME . '">Title:</label><br>
 		<input type="text" id="' . BLOG_POST_TITLE_FIELD_NAME . '" name="' . BLOG_POST_TITLE_FIELD_NAME . '"><br>
 		
