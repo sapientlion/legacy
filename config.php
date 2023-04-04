@@ -57,6 +57,6 @@ define('DATA_BLOG_POST_CONTENT_LENGTH', 65535);
 
 define('SYSTEM_DEBUGGING', 'true');
 define('SYSTEM_LOG_SIZE', 4096);
-define('SYSTEM_VERSION', 'N/a.');
+define('SYSTEM_VERSION', 'v0.1.0.g72aa2a8');
 
 ?>
